@@ -1,0 +1,1 @@
+Welcome to NJORDX, the new trading platform for the many citizens between Viborg and Skagen.
