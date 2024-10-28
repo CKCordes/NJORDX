@@ -1,3 +1,38 @@
-Welcome to NJORDX, the new trading platform for the many citizens between Viborg and Skagen. \\
-Class diagram: https://app.diagrams.net/#G1xsEcV5EULa1boPV6c4ov6paC7LlGxYId#%7B%22pageId%22%3A%22C5RBs43oDa-KdzZeNtuy%22%7D \\
-Eraser: https://app.eraser.io/workspace/AjzCxI4AjBcn7u6oZSO8 \\
+# Welcome
+Welcome to NJORDX, the new trading platform for the many citizens between Viborg and Skagen. \
+# Build guide
+## Prerequisites
+- CMake
+- C++17 compiler
+- Git
+
+## Installation
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/CKCordes/NJORDX.git
+    cd NJORDX
+    ```
+
+## Building and running the Application
+1. Navigate to build directory
+    ```sh
+    cd build
+    ```
+2. Configure the project with CMake
+    ```sh
+    cmake ..
+    ```
+3. Build the project
+    ```sh
+    cmake --build .
+    ```
+4. Run the executable
+    ```sh
+    ./NjordxApp
+    ```
+
+## Running Tests
+1. Not implemented yet
+    ```sh
+    
+    ```
