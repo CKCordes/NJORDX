@@ -1,5 +1,5 @@
-#ifndef EXCHANGE_H
-#define EXCHANGE_H
+#ifndef NJORDX_H
+#define NJORDX_H
 
 #include <vector>
 #include "order.hpp"
@@ -30,4 +30,4 @@ public:
     void displayAvailableStocks() const;
 };
 
-#endif // EXCHANGE_H
+#endif

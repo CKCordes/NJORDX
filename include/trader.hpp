@@ -5,19 +5,22 @@
 #include <string>
 #include "stock.hpp"
 #include "order.hpp"
+#include "njordx.hpp"
 
 class Trader {
-private:
+protected:
     int traderID;
-    std::string name;
-    std::vector<Stock> ownedStocks;
     double balance;
+    std::vector<Stock> ownedStocks;
 
 public:
-    // Constructor
-    Trader(int id, const std::string& name, double initialBalance);
+    // Pure virtual destructor to make Trader an abstract class
+    virtual ~Trader() = 0;
 
-    // Getters and setters
+    // Pure virtual method for displaying portfolio, making Trader abstract
+    virtual void displayPortfolio() const = 0;
+
+    // Getters and setters for balance
     double getBalance() const;
     void setBalance(double amount);
 
@@ -26,11 +29,13 @@ public:
     void removeStock(const Stock& stock);
 
     // Order methods
-    Order placeBuyOrder(const Stock& stock, int quantity, double price);
-    Order placeSellOrder(const Stock& stock, int quantity, double price);
+    virtual Order placeBuyOrder(const Stock& stock, int quantity, double price);
+    virtual Order placeSellOrder(const Stock& stock, int quantity, double price);
 
-    // Display information
-    void displayPortfolio() const;
+    // Abstract method for creating a stock and adding it to the exchange
+    virtual Stock createStock(int stockID, const std::string& symbol, double initialPrice, Exchange& exchange) = 0;
 };
 
+// Inline definition of pure virtual destructor
+inline Trader::~Trader() {}
 #endif // TRADER_H
