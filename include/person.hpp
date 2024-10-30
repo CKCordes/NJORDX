@@ -7,7 +7,7 @@
 class Person : public Trader {
 private:
     std::string name;
-    std::string socialSecurityNumber;
+    std::string cpr;
 
 public:
     // Constructor

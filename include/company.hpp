@@ -7,7 +7,7 @@
 class Company : public Trader {
 private:
     std::string companyName;
-    std::string registrationNumber;
+    std::string cvr;
 
 public:
     // Constructor
