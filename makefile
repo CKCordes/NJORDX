@@ -1,5 +1,5 @@
 CXX       := g++
-CXX_FLAGS := -Wall -Wextra -std=c++17 -ggdb
+CXX_FLAGS := -Wall -Wextra -std=c++20 -ggdb
 
 BIN     := bin
 SRC     := src
@@ -18,7 +18,7 @@ run: clean all
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 	@echo "Building..."
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $^ -o $@ $(LIBRARIES)
 
 clean:
 	@echo "Clearing..."

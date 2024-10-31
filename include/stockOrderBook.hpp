@@ -3,25 +3,21 @@
 
 #include <unordered_map>
 #include <concepts>
+#include <vector>
+#include <memory>
+#include <iostream>
+#include <algorithm>
+#include <functional>
 
-#include "order.hpp"
-#include "stock.hpp"
 
 /* Associative container for holding stocks and orders */
 /* The idea is that stockID/orderID is the key */
 
 template<typename T>
-concept Hashable = requires(T a) {
-    { std::hash<T>{}(a) } -> std::convertible_to<size_t>;
-}; // First requirement for key to unordered_map
-
-template<typename T>
-concept EqComparable = requires(T a) {
-    { a == a } -> std::convertible_to<bool>;
-}; // Second requirement for key to unordered_map
-
-template<typename K>
-concept ValidKey = Hashable<K> && EqComparable<K>;
+concept ValidKey = requires(T a) {
+    { std::hash<T>{}(a) } -> std::convertible_to<size_t>; // First requirement for key to unordered_map
+    { a == a } -> std::convertible_to<bool>; // Second requirement for key to unordered_map
+}; 
 
 // THIS MAP DOES NOT DYNAMICALLY RESIZE. IF PLANNING ON USING WITH HIGH LOADS: BE CAREFUL
 template<ValidKey Key, typename Value>
@@ -44,9 +40,6 @@ class OrderBook {
         // For hashing the keys.
         std::hash<Key> hasher;
 
-        // Self explainatory
-        static const size_t default_bucket_count = 16
-
         // to find the correct key, in a single container.
         auto find_in_container(const Container&, const Key&) const;
         
@@ -54,12 +47,12 @@ class OrderBook {
         size_t get_container_index(const Key&) const;
 
     public:
-        OrderBook(int);
-        void insert(const Key&, const Value&);
-        void erase(const Key&);
-        bool contains(const Key&) const;
-        Value get(const Key&) const;
+        OrderBook(int bucket_count);
+        void insert(const Key& key, const Value& value);
+        void erase(const Key& key);
+        bool contains(const Key& key);
+        Value get(const Key& key);
         void openBook() const;
 };
 
-#endif
+#endif // ORDERBOOK_H
