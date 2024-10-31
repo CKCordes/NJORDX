@@ -1,7 +1,7 @@
 {
 	"name": "njordx container",
 	"image": "docker.io/library/ubuntu:latest",
-	"postCreateCommand": "apt-get update && apt-get install -y git",
+	"postCreateCommand": "apt-get update && apt-get install -y git make g++",
 	"customizations": {
 		"vscode": {
 		  "extensions": []
