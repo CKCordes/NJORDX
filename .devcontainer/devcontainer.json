@@ -1,0 +1,19 @@
+{
+	"name": "njordx container",
+	"image": "docker.io/library/ubuntu:latest",
+	"postCreateCommand": "apt-get update && apt-get install -y git",
+	"customizations": {
+		"vscode": {
+		  "extensions": []
+		},
+		"settings": {
+			"terminal.integrated.profiles.linux": {
+				"bash": {
+					"path": "bash",
+					"icon": "terminal-bash"
+				}
+			},
+			"terminal.integrated.defaultProfile.linux": "bash"
+		}
+	}
+}
