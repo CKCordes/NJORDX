@@ -34,31 +34,32 @@ Order newOrder = std::move(order);
 
 
 // Constructor
-//Njordx::Njordx() : buyOrders{}, sellOrders{} {}
-
-// Method to add a buy order to the Njordx
-void Njordx::addBuyOrder(const Order* order) {
-    return;
-}
+Njordx::Njordx() : buyOrders(16), sellOrders(16) {}
 
 // Method to add a sell order to the Njordx
-void Njordx::addSellOrder(const Order* order) {
-    return;
+void Njordx::addOrder(const OrderType type, const Order* order) {
+    if (type == OrderType::SELL) {
+      sellOrders.insert(order->getOrderID(), *order);
+    } else if (type == OrderType::BUY) {
+      buyOrders.insert(order->getOrderID(), *order);
+    } else {
+        throw std::invalid_argument("Invalid order type");
+    }
 }
 
 // Method to match buy and sell orders
-void Njordx::matchOrders() {
-    return;
+Order Njordx::matchOrders() {
+    throw std::logic_error("Not implemented yet");
 }
 
 //Display orderbooks
-void Njordx::displayOrderBook() const {
-    /*std::ostream_iterator<Order> out_it (std::cout, "\n");
-    // Buy orders
-    copy(buyOrders.begin(), buyOrders.end(), out_it); // Wtf det her bør ik virk
-    // Sell orders
-    copy(sellOrders.begin(), sellOrders.end(), out_it); // Wtf det her bør ik virk
-    */
-   return;
+void Njordx::displayOrderBook(const OrderType type) const {
+    if (type == OrderType::SELL) {
+        throw std::logic_error("Not implemented yet");
+    } else if (type == OrderType::BUY) {
+        throw std::logic_error("Not implemented yet");
+    } else {
+        throw std::invalid_argument("Invalid order type");
+    }
 }
 

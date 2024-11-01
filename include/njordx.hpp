@@ -3,29 +3,24 @@
 
 #include <vector>
 
-#include "stockOrderBook.hpp"
+#include "stockOrderBook.tpp"
 #include "order.hpp"
-#include "stock.hpp"
 
 class Njordx {
-private:
-    //OrderBook<int, Order> buyOrders;
-    //OrderBook<int, Order> sellOrders;
-    
-    std::vector<Order> buyOrders;
-    std::vector<Order> sellOrders;
+private:   
+    OrderBook<int, Order> buyOrders;
+    OrderBook<int, Order> sellOrders;
 
 public:
-    // Constructor
+    // Constructor, no need for rule of 3
     Njordx();
 
     // Order management methods
-    void addBuyOrder(const Order* order);
-    void addSellOrder(const Order* order);
-    void matchOrders();
+    void addOrder(const OrderType type, const Order* order);
+    Order matchOrders();
 
     // Display methods
-    void displayOrderBook() const;
+    void displayOrderBook(const OrderType type) const;
 };
 
 #endif // NJORDX_H
