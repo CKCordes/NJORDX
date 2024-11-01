@@ -47,11 +47,25 @@ class OrderBook {
         size_t get_container_index(const Key&) const;
 
     public:
+        // Implementing the rule of 5
+        // Constructor
         OrderBook(int bucket_count);
+        // Destructor 1
+        ~OrderBook();
+        // Copy constructor 2
+        OrderBook(const OrderBook& other);
+        // Copy Assignment 3
+        OrderBook& operator=(const OrderBook& other);
+        // Move constructor 4
+        OrderBook(OrderBook&& other) noexcept;
+        // Move Assignment 5
+        OrderBook& operator=(OrderBook&& other) noexcept;
+        
+
         void insert(const Key& key, const Value& value);
         void erase(const Key& key);
-        bool contains(const Key& key);
-        Value get(const Key& key);
+        bool contains(const Key& key) const;
+        Value get(const Key& key) const;
         void openBook() const;
 };
 

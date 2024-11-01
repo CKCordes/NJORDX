@@ -11,10 +11,61 @@ typedef struct KeyValuePair KeyValuePair; // https://www.reddit.com/r/C_Programm
 template<typename Key, typename Value>
 using Container = std::vector<std::unique_ptr<KeyValuePair>>;
 
-
+// Constructor
 template<typename Key, typename Value>
 requires ValidKey<Key>
 OrderBook<Key, Value>::OrderBook(int bucket_count) : table(bucket_count) {}
+
+// Destructor
+template<typename Key, typename Value>
+requires ValidKey<Key>
+OrderBook<Key, Value>::~OrderBook() {
+    for(auto& con : table) {
+        con.clear();
+    }
+}
+
+// Copy constructor
+template<typename Key, typename Value>
+requires ValidKey<Key>
+OrderBook<Key, Value>::OrderBook(const OrderBook& other) : table(other.table.size()) {
+    for(size_t i = 0; i < other.table.size(); i++) {
+        const Container& other_con = other.table[i];
+        Container& this_con = table[i];
+
+        for(const auto& kv : other_con) {
+            this_con.push_back(std::make_unique<KeyValuePair>(*kv));
+        }
+    }
+}
+
+// Copy Assignment
+template<typename Key, typename Value>
+requires ValidKey<Key>
+OrderBook<Key, Value>& OrderBook<Key, Value>::operator=(const OrderBook& other) {
+    if (this == &other) {
+        return *this;
+    }
+    OrderBook<Key, Value> tmp(other);
+    std::swap(*this, tmp); // Virker det her virkelig?
+    return *this;
+}
+
+// Move constructor
+template<typename Key, typename Value>
+requires ValidKey<Key>
+OrderBook<Key, Value>::OrderBook(OrderBook&& other) noexcept : table(std::move(other.table)) {}
+
+// Move assignment
+template<typename Key, typename Value>
+requires ValidKey<Key>
+OrderBook<Key, Value>& OrderBook<Key, Value>::operator=(OrderBook&& other) noexcept {
+    if (this == &other) {
+        return *this;
+    }
+    table = std::move(other.table);
+    return *this;
+}
 
 template<typename Key, typename Value>
 requires ValidKey<Key>
@@ -42,7 +93,7 @@ void OrderBook<Key, Value>::insert(const Key& key, const Value& value) {
     auto it = find_in_container(con, key);
     if (it != con.end()) {
         // The key exists, update value. The iterator is a pointer to keyvalpair
-        (*it)->value = value;
+        *it->value = value;
     } else {
         // We need to make the pair and insert it in the container
         con.push_back(std::make_unique<KeyValuePair>(key, value));
@@ -62,35 +113,35 @@ void OrderBook<Key, Value>::erase(const Key& key) {
     }
 }
 
-template<ValidKey Key, typename Value>
+template<typename Key, typename Value>
 requires ValidKey<Key>
-bool OrderBook<Key, Value>::contains(const Key& key) {
+bool OrderBook<Key, Value>::contains(const Key& key) const {
     size_t table_index = get_container_index(key);
     Container& con = table[table_index];
     return find_in_container(con, key) != con.end();
 }
 
-template<ValidKey Key, typename Value>
+template<typename Key, typename Value>
 requires ValidKey<Key>
-Value OrderBook<Key, Value>::get(const Key& key) {
+Value OrderBook<Key, Value>::get(const Key& key) const {
     size_t table_index = get_container_index(key);
     Container& con = table[table_index];
     auto it = find_in_container(con, key);
     if(it != con.end()) {
-        return (it*)->value;
+        return *it->value;
     } else {
         throw std::out_of_range("Key not found"); // shouldnt be exception
     }
 }
 
-template<ValidKey Key, typename Value>
+template<typename Key, typename Value>
 requires ValidKey<Key>
 void OrderBook<Key, Value>::openBook() const {
     for(int i = 0; i < table.size(); i++) {
         const Container& con = table[i];
         std::cout << "Bucket " << i << ": ";
         for (const auto kv : con) {
-            std::cout << "{" << (kv*)->key << ", " << (kv*)->value << "}";
+            std::cout << "{" << *kv->key << ", " << *kv->value << "}";
         }
         std::cout << "\n";
     }
