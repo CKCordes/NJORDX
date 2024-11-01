@@ -1,16 +1,73 @@
-#include "stockOrderBook.hpp"
-#include <algorithm>
+#ifndef ORDERBOOK_H
+#define ORDERBOOK_H
+
+#include <unordered_map>
+#include <concepts>
+#include <vector>
 #include <memory>
-
 #include <iostream>
+#include <algorithm>
+#include <functional>
 
-constexpr size_t default_bucket_count = 16;
+/* Associative container for holding stocks and orders */
+/* The idea is that stockID/orderID is the key */
 
-typedef struct KeyValuePair KeyValuePair; // https://www.reddit.com/r/C_Programming/comments/19fbthf/how_do_i_hide_the_implementation_of_a_struct_in/
+template<typename T>
+concept ValidKey = requires(T a) {
+    { std::hash<T>{}(a) } -> std::convertible_to<size_t>; // First requirement for key to unordered_map
+    { a == a } -> std::convertible_to<bool>; // Second requirement for key to unordered_map
+}; 
 
-template<typename Key, typename Value>
-using Container = std::vector<std::unique_ptr<KeyValuePair>>;
+// THIS MAP DOES NOT DYNAMICALLY RESIZE. IF PLANNING ON USING WITH HIGH LOADS: BE CAREFUL
+template<ValidKey Key, typename Value>
+class OrderBook {
+    private:
+        struct KeyValuePair {
+            Key key;
+            Value value;
 
+            KeyValuePair(Key k, Value v) : key(std::move(k)), value(std::move(v)) {}
+        };
+
+        // Our map is based on a vector.
+        // A single container is a vector
+        using Container = std::vector<std::unique_ptr<KeyValuePair>>;
+
+        // To take care of hash collisions we create the table as a 2D table
+        std::vector<Container> table;
+
+        // For hashing the keys.
+        std::hash<Key> hasher;
+
+        // to find the correct key, in a single container.
+        auto find_in_container(const Container&, const Key&) const;
+        
+        // The to get the index for the "general" table. 
+        size_t get_container_index(const Key&) const;
+
+        static constexpr int initial_bucket_count = 16;
+
+    public:
+        // Implementing the rule of 5
+        // Constructor
+        OrderBook(int bucket_count = initial_bucket_count);
+        // Destructor 1
+        ~OrderBook();
+        // Copy constructor 2
+        OrderBook(const OrderBook& other);
+        // Copy Assignment 3
+        OrderBook& operator=(const OrderBook& other);
+        // Move constructor 4
+        OrderBook(OrderBook&& other) noexcept;
+        // Move Assignment 5
+        OrderBook& operator=(OrderBook&& other) noexcept;
+        
+
+        void insert(const Key& key, const Value& value);
+        void erase(const Key& key);
+        bool contains(const Key& key) const;
+        Value get(const Key& key) const;
+};
 // Constructor
 template<typename Key, typename Value>
 requires ValidKey<Key>
@@ -76,7 +133,7 @@ auto OrderBook<Key, Value>::find_in_container(const Container& con, const Key& k
     // () takes the kv that are in the vector
     // {} is where we compare the keys
     return std::find_if(con.begin(), con.end(),
-    [key](const std::unique_ptr<KeyValuePair>& kv) { return kv->value == key;});
+    [key](const std::unique_ptr<KeyValuePair>& kv) { return kv->key == key;});
 }
 
 template<typename Key, typename Value>
@@ -93,7 +150,7 @@ void OrderBook<Key, Value>::insert(const Key& key, const Value& value) {
     auto it = find_in_container(con, key);
     if (it != con.end()) {
         // The key exists, update value. The iterator is a pointer to keyvalpair
-        *it->value = value;
+        (*it)->value = value;
     } else {
         // We need to make the pair and insert it in the container
         con.push_back(std::make_unique<KeyValuePair>(key, value));
@@ -134,15 +191,5 @@ Value OrderBook<Key, Value>::get(const Key& key) const {
     }
 }
 
-template<typename Key, typename Value>
-requires ValidKey<Key>
-void OrderBook<Key, Value>::openBook() const {
-    for(int i = 0; i < table.size(); i++) {
-        const Container& con = table[i];
-        std::cout << "Bucket " << i << ": ";
-        for (const auto kv : con) {
-            std::cout << "{" << *kv->key << ", " << *kv->value << "}";
-        }
-        std::cout << "\n";
-    }
-}
+
+#endif // ORDERBOOK_H
