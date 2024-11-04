@@ -2,32 +2,25 @@
 #define NJORDX_H
 
 #include <vector>
-#include "order.hpp"
-#include "stock.hpp"
 
-class Exchange {
-private:
-    std::vector<Order> buyOrders;
-    std::vector<Order> sellOrders;
-    std::vector<Stock> availableStocks;
+#include "stockOrderBook.tpp"
+#include "order.hpp"
+
+class Njordx {
+private:   
+    OrderBook<int, Order> buyOrders;
+    OrderBook<int, Order> sellOrders;
 
 public:
-    // Constructor
-    Exchange();
+    // Constructor, no need for rule of 3
+    Njordx();
 
     // Order management methods
-    void addBuyOrder(const Order& order);
-    void addSellOrder(const Order& order);
-    void matchOrders();
-
-    // Stock management
-    void addStock(const Stock& stock);
-    Stock* findStock(int stockID);
-    void updateStockPrice(int stockID, double newPrice);
+    void addOrder(const OrderType type, const Order* order);
+    Order matchOrders();
 
     // Display methods
-    void displayOrderBook() const;
-    void displayAvailableStocks() const;
+    void displayOrderBook(const OrderType type) const;
 };
 
-#endif
+#endif // NJORDX_H
