@@ -57,7 +57,7 @@ Order Njordx::matchOrders() {
         for (auto sell_order : sellOrders) {
             if (true) { //match(buy_order, sell_order)
                 sell_order = buy_order;
-                return buy_order;
+                return buy_order.value;
             }
         }
     }

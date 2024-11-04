@@ -22,6 +22,7 @@ concept ValidKey = requires(T a) {
 template<ValidKey Key, typename Value>
 class OrderBook {
     private:
+        // Grunden til vi har det i en struct er at vi kan bruge move, og af ingen anden grund.
         struct KeyValuePair {
             Key key;
             Value value;
