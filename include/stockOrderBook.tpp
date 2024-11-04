@@ -48,6 +48,58 @@ class OrderBook {
         static constexpr int initial_bucket_count = 16;
 
     public:
+        // Custom iterator struct for our class
+        struct Iterator { // inspiration from https://www.internalpointers.com/post/writing-custom-iterators-modern-cpp
+            using iterator_category = std::forward_iterator_tag;
+            using difference_type = std::ptrdiff_t;
+            using value_type = KeyValuePair;
+            using pointer = KeyValuePair*;
+            using reference = KeyValuePair&;
+
+            using outer_iterator = typename std::vector<Container>::iterator;
+            using inner_iterator = typename Container::iterator;
+
+
+            Iterator(outer_iterator outer_it, outer_iterator outer_end)
+            : outer_it(outer_it), outer_end(outer_end) {
+                if (outer_it != outer_end) {
+                    inner_it = outer_it->begin();
+                    advance_to_next_valid();
+                }
+            }
+            reference operator*() const { return **inner_it; }
+
+            pointer operator->() { return &**inner_it; }
+
+            Iterator& operator++() { 
+                ++inner_it;
+                advance_to_next_valid();
+                return *this; 
+            }
+
+            Iterator operator++(int) {
+                Iterator tmp = *this;
+                advance_to_next_valid();
+                return tmp;
+            }
+
+            bool operator==(const Iterator& other) const { return inner_it == other.inner_it; }
+
+            bool operator!=(const Iterator& other) const { return outer_it != other.outer_it || inner_it != other.inner_it; }
+
+            private:
+                outer_iterator outer_it;
+                outer_iterator outer_end;
+                inner_iterator inner_it;
+                void advance_to_next_valid() {
+                    while (outer_it != outer_end && inner_it == outer_it->end()) {
+                        ++outer_it;
+                        if (outer_it != outer_end) {
+                            inner_it = outer_it->begin();
+                        }
+                    }
+                }
+        }; 
         // Implementing the rule of 5
         // Constructor
         OrderBook(int bucket_count = initial_bucket_count);
@@ -67,6 +119,9 @@ class OrderBook {
         void erase(const Key& key);
         bool contains(const Key& key) const;
         Value get(const Key& key) const;
+
+        Iterator begin() { return Iterator(table.begin(), table.end()); }
+        Iterator end() { return Iterator(table.end(), table.end()); }      
 };
 // Constructor
 template<typename Key, typename Value>
@@ -190,6 +245,5 @@ Value OrderBook<Key, Value>::get(const Key& key) const {
         throw std::out_of_range("Key not found"); // shouldnt be exception
     }
 }
-
 
 #endif // ORDERBOOK_H

@@ -49,7 +49,19 @@ void Njordx::addOrder(const OrderType type, const Order* order) {
 
 // Method to match buy and sell orders
 Order Njordx::matchOrders() {
-    throw std::logic_error("Not implemented yet");
+    /* USING STD::BIND! 
+    auto match = std::bind([](const Order& buy, const Order& sell) {
+        return buy.getPrice() >= sell.getPrice();
+    }, std::placeholders::_1, std::placeholders::_2);*/
+    for (auto buy_order : buyOrders) {
+        for (auto sell_order : sellOrders) {
+            if (true) { //match(buy_order, sell_order)
+                sell_order = buy_order;
+                return buy_order;
+            }
+        }
+    }
+    return Order(1, OrderType::BUY, 1, 1, 1, 1.0);
 }
 
 //Display orderbooks
