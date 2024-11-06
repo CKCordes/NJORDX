@@ -26,3 +26,7 @@ void Stock::displayInfo() const {
     std::cout << "Symbol: " << symbol << std::endl;
     std::cout << "Price: " << price << std::endl;
 }
+
+bool Stock::operator==(const Stock& other) const {
+    return stockID == other.stockID && symbol == other.symbol;
+}
