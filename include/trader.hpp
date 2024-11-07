@@ -12,6 +12,9 @@ protected:
     int traderID;
     double balance;
     std::vector<Stock> ownedStocks;
+    Njordx* exchange;
+
+    int getOrderID() const;
 
 public:
     // Pure virtual destructor to make Trader an abstract class
@@ -33,7 +36,7 @@ public:
     virtual Order placeSellOrder(const Stock& stock, int quantity, double price);
 
     // Abstract method for creating a stock and adding it to the exchange
-    virtual Stock createStock(int stockID, const std::string& symbol, double initialPrice, Exchange& exchange) = 0;
+    virtual Stock createStock(int stockID, const std::string& symbol, double initialPrice) = 0;
 };
 
 // Inline definition of pure virtual destructor

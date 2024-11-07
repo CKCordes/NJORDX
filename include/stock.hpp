@@ -21,6 +21,11 @@ public:
 
     // Display stock information
     void displayInfo() const;
+
+    // Overloaded equality operator
+    bool operator==(const Stock& other) const;
 };
+
+
 
 #endif // STOCK_H
