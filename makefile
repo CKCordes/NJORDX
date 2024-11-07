@@ -5,8 +5,10 @@ BIN     := bin
 SRC     := src
 INCLUDE := include
 LIB     := lib
+TEST	:= test
 LIBRARIES   := 
 EXECUTABLE  := main
+TEST_EXECUTABLE := test
 
 
 all: $(BIN)/$(EXECUTABLE)
@@ -23,3 +25,8 @@ $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 clean:
 	@echo "Clearing..."
 	-rm $(BIN)/*
+
+unit_tests:
+	@echo "Testing..."
+	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $(TEST)/unit_tests/*.cpp -o $(BIN)/test $(LIBRARIES)
+	./$(BIN)/test
