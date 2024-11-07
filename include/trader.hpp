@@ -14,6 +14,8 @@ protected:
     std::vector<Stock> ownedStocks;
     Njordx* exchange;
 
+    int getOrderID() const;
+
 public:
     // Pure virtual destructor to make Trader an abstract class
     virtual ~Trader() = 0;
