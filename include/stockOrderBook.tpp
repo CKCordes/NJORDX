@@ -1,7 +1,6 @@
 #ifndef ORDERBOOK_H
 #define ORDERBOOK_H
 
-#include <unordered_map>
 #include <concepts>
 #include <vector>
 #include <memory>
@@ -46,7 +45,7 @@ class OrderBook {
         // The to get the index for the "general" table. 
         size_t get_container_index(const Key&) const;
 
-        static constexpr int initial_bucket_count = 16;
+        static constexpr int initial_container_count = 17;
 
     public:
         // Custom iterator struct for our class
@@ -103,7 +102,7 @@ class OrderBook {
         }; 
         // Implementing the rule of 5
         // Constructor
-        OrderBook(int bucket_count = initial_bucket_count);
+        OrderBook(int bucket_count = initial_container_count);
         // Destructor 1
         ~OrderBook();
         // Copy constructor 2

@@ -4,6 +4,21 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+// ----------------------------NOTER--------------------------------//
+// NJORDX bør være singleton
+
+// Vi skal lave en valid aktie list som børsen kan kigge i om en buy order er valid
+
+// en trader (company) opretter en stock (kun sin egen) og sætter til salg. Denne ryger i valid og sellorder
+// En trader (person) opretter en buy order med stock navn. Når denne bliver oprettet, spørger den børsen om stockID og om valid
+// hvis valid, tilføjes order til børsens buyOrders.
+
+// Når børsen matcher en buy og sell order, skal de begge fjernes fra buyOrders og sellOrders
+// Køber mister penge (SALGSPRISEN) sælger får salgsprisen på balance
+
+// traders har en "pending orderbook"
+// --------------------------NOTER SLUT-----------------------------//
+
 /* Gode ting at have med i denne klasse
 Order* order = nullptr;
 
@@ -34,7 +49,7 @@ Order newOrder = std::move(order);
 
 
 // Constructor
-Njordx::Njordx() : buyOrders(16), sellOrders(16) {}
+Njordx::Njordx() : buyOrders(), sellOrders() {}
 
 // Method to add a sell order to the Njordx
 void Njordx::addOrder(const OrderType type, const Order* order) {
@@ -53,6 +68,7 @@ Order Njordx::matchOrders() {
     auto match = std::bind([](const Order& buy, const Order& sell) {
         return buy.getPrice() >= sell.getPrice();
     }, std::placeholders::_1, std::placeholders::_2);*/
+
     for (auto buy_order : buyOrders) {
         for (auto sell_order : sellOrders) {
             if (true) { //match(buy_order, sell_order)
