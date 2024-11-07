@@ -26,7 +26,7 @@ clean:
 	@echo "Clearing..."
 	-rm $(BIN)/*
 
-tests:
+unit_tests:
 	@echo "Testing..."
-	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $(TEST)/*.cpp -o $(BIN)/test $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $(TEST)/unit_tests/*.cpp -o $(BIN)/test $(LIBRARIES)
 	./$(BIN)/test
