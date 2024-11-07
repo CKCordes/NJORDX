@@ -2,8 +2,8 @@
 
 
 // Constructor
-Order::Order(int id, OrderType type, int traderID, int stockID, int quantity, double price)
-    : orderID(id), type(type), traderID(traderID), stockID(stockID), quantity(quantity), price(price) {}
+Order::Order(int id, OrderType type, int traderID, std::string stockSymbol, int quantity, double price)
+    : orderID(id), type(type), traderID(traderID), stockSymbol(stockSymbol), stockID(-1), quantity(quantity), price(price) {}
 
 // Getters
 int Order::getOrderID() const {
@@ -20,6 +20,14 @@ int Order::getTraderID() const {
 
 std::string Order::getStockSymbol() const {
     return stockSymbol;
+}
+
+int Order::getStockID() const {
+    return stockID;
+}
+
+void Order::setStockID(int id) {
+    stockID = id;
 }
 
 int Order::getQuantity() const {

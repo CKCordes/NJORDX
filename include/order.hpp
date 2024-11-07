@@ -12,6 +12,7 @@ private:
     OrderType type;
     int traderID;
     std::string stockSymbol;
+    int stockID;
     int quantity;
     double price;
     bool isFilled;
@@ -25,6 +26,8 @@ public:
     OrderType getOrderType() const;
     int getTraderID() const;
     std::string getStockSymbol() const;
+    int getStockID() const;
+    void setStockID(int id);
     int getQuantity() const;
     double getPrice() const;
     bool getIsFilled() const;
