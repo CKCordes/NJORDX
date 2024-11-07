@@ -11,20 +11,20 @@ private:
     int orderID;
     OrderType type;
     int traderID;
-    int stockID;
+    std::string stockSymbol;
     int quantity;
     double price;
     bool isFilled;
 
 public:
     // Constructor
-    Order(int id, OrderType type, int traderID, int stockId, int quantity, double price);
+    Order(int id, OrderType type, int traderID, std::string stockSymbol, int quantity, double price);
 
     // Getters and setters
     int getOrderID() const;
     OrderType getOrderType() const;
     int getTraderID() const;
-    int getStockID() const;
+    std::string getStockSymbol() const;
     int getQuantity() const;
     double getPrice() const;
     bool getIsFilled() const;

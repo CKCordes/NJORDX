@@ -18,8 +18,8 @@ int Order::getTraderID() const {
     return traderID;
 }
 
-int Order::getStockID() const {
-    return stockID;
+std::string Order::getStockSymbol() const {
+    return stockSymbol;
 }
 
 int Order::getQuantity() const {
@@ -38,7 +38,7 @@ void Order::displayOrderDetails() const {
     std::cout << "Order ID: " << orderID << std::endl;
     std::cout << "Order Type: " << (type == OrderType::BUY ? "BUY" : "SELL") << std::endl;
     std::cout << "Trader ID: " << traderID << std::endl;
-    std::cout << "Stock ID: " << stockID << std::endl;
+    std::cout << "Stock ID: " << stockSymbol << std::endl;
     std::cout << "Quantity: " << quantity << std::endl;
     std::cout << "Price: " << price << std::endl;
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
