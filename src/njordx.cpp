@@ -52,22 +52,25 @@ Order newOrder = std::move(order);
 Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
 // Method to add a sell order to the Njordx
-void Njordx::addOrder(const OrderType type, Order* order) {
+bool Njordx::addOrder(const OrderType type, Order* order) {
     if (type == OrderType::SELL) {
       if (!validStocks.contains(order->getStockSymbol())){
         validStocks.insert(order->getStockSymbol(), order->getStockID());
       } 
       sellOrders.insert(order->getOrderID(), *order);
+      return true;
 
     } else if (type == OrderType::BUY) {
 
       if (validStocks.contains(order->getStockSymbol())) {
         int stockID = validStocks.get(order->getStockSymbol());
         order->setStockID(stockID);
-        buyOrders.insert(order->getOrderID(), *order);  
+        buyOrders.insert(order->getOrderID(), *order);
+        return true;
       } 
       else {
-        throw std::invalid_argument("Stock not valid");
+        std::cout << "Stock not valid" << std::endl;
+        return false;
       }
       
     } else {
