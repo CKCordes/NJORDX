@@ -54,7 +54,11 @@ Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 // Method to add a sell order to the Njordx
 void Njordx::addOrder(const OrderType type, Order* order) {
     if (type == OrderType::SELL) {
+      if (!validStocks.contains(order->getStockSymbol())){
+        validStocks.insert(order->getStockSymbol(), order->getStockID());
+      } 
       sellOrders.insert(order->getOrderID(), *order);
+
     } else if (type == OrderType::BUY) {
 
       if (validStocks.contains(order->getStockSymbol())) {
