@@ -32,7 +32,8 @@ Welcome to NJORDX, the new trading platform for the many citizens between Viborg
     ```
 
 ## Running Tests
-1. Not implemented yet
+1. Compile and run unit tests:
     ```sh
-    
+    make tests
     ```
+## Notes and TODOs
