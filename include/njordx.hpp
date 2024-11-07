@@ -18,7 +18,7 @@ public:
     Njordx();
 
     // Order management methods
-    void addOrder(const OrderType type, Order* order);
+    bool addOrder(const OrderType type, Order* order);
     Order matchOrders();
 
     // Display methods
