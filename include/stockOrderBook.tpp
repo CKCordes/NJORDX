@@ -179,6 +179,7 @@ OrderBook<Key, Value>& OrderBook<Key, Value>::operator=(OrderBook&& other) noexc
     return *this;
 }
 
+// returns an iterator to the first element found in container. If it is not there it returns the end of the container
 template<typename Key, typename Value>
 requires ValidKey<Key>
 auto OrderBook<Key, Value>::find_in_container(const Container& con, const Key& key) const {
@@ -229,7 +230,7 @@ template<typename Key, typename Value>
 requires ValidKey<Key>
 bool OrderBook<Key, Value>::contains(const Key& key) const {
     size_t table_index = get_container_index(key);
-    Container& con = table[table_index];
+    const Container& con = table[table_index];
     return find_in_container(con, key) != con.end();
 }
 
@@ -237,10 +238,10 @@ template<typename Key, typename Value>
 requires ValidKey<Key>
 Value OrderBook<Key, Value>::get(const Key& key) const {
     size_t table_index = get_container_index(key);
-    Container& con = table[table_index];
+    const Container& con = table[table_index];
     auto it = find_in_container(con, key);
     if(it != con.end()) {
-        return *it->value;
+        return (*it)->value;
     } else {
         throw std::out_of_range("Key not found"); // shouldnt be exception
     }
