@@ -2,6 +2,7 @@
 #define ORDER_H
 
 #include <string>
+#include <iostream>
 
 enum class OrderType { BUY, SELL };
 
@@ -17,7 +18,7 @@ private:
 
 public:
     // Constructor
-    Order(int id, OrderType type, int traderID, std::string symbol, int quantity, double price);
+    Order(int id, OrderType type, int traderID, int stockId, int quantity, double price);
 
     // Getters and setters
     int getOrderID() const;
