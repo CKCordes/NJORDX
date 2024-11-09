@@ -34,6 +34,7 @@ Welcome to NJORDX, the new trading platform for the many citizens between Viborg
 ## Running Tests
 1. Compile and run unit tests:
     ```sh
-    make tests
+    make unit_tests
     ```
 ## Notes and TODOs
+- Njordx kan have en liste af traders, her kan vi få variadics med.
