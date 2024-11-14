@@ -18,6 +18,7 @@ class Trader {
         Njordx* exchange;
 
         int getOrderID() const;
+        void printTrader() const;
 
     public:
 
@@ -42,8 +43,16 @@ Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange)
     : traderID(id), balance(initialBalance), exchange(exchange) {}
 
 template <typename Derived>
+Trader<Derived>::printTrader() const {
+    // std::cout << "Trader ID: " << traderID << "\nBalance: " << balance << "\nOwned Stocks: \n";
+    static_cast<const Derived*>(this)->printTrader();
+}
+
+template <typename Derived>
 void Trader<Derived>::displayPortfolio() const {
-    std::cout << "Trader ID: " << traderID << "\nBalance: " << balance << "\nOwned Stocks: \n";
+    static_cast<const Derived*>(this)->printTrader();
+
+   
     //for (auto stock : ownedStocks) {
     //    stock.displayInfo();
     //}
@@ -79,14 +88,16 @@ Order Trader<Derived>::placeSellOrder(const Stock& stock, int quantity, double p
     throw std::logic_error("Not implemented yet");
 }
 
-class Company : public Trader<Company> {
-    public:
-        Company(int id, double initialBalance, Njordx* exchange)
-            : Trader(id, initialBalance, exchange) {}
-        void createStock(int stockID, const std::string& symbol, double initialPrice){
-            std::cout << "Creating stock: " << symbol << std::endl;
-            return;
+class Company : public Trader<Company>{
+
+private:
+    printTrader() const {
+        std::cout << "Trader ID: " << traderID << "\nBalance: " << balance << "\nOwned Stocks: \n";
+        for (auto stock : ownedStocks) {
+            stock.displayInfo();
         }
-};
+    }
+
+}
 
 #endif // TRADER_H
