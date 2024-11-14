@@ -17,13 +17,13 @@ class Trader {
         OrderBook<std::string, Stock&> ownedStocks;
         Njordx* exchange;
 
-        int getOrderID() const;
+        //int getOrderID() const;
         void printTrader() const;
 
     public:
 
         Trader(int, double, Njordx*);
-        ~Trader();
+        ~Trader() = default;
 
         void displayPortfolio() const;
         double getBalance() const;
@@ -42,11 +42,6 @@ template <typename Derived>
 Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange) 
     : traderID(id), balance(initialBalance), exchange(exchange) {}
 
-template <typename Derived>
-Trader<Derived>::printTrader() const {
-    // std::cout << "Trader ID: " << traderID << "\nBalance: " << balance << "\nOwned Stocks: \n";
-    static_cast<const Derived*>(this)->printTrader();
-}
 
 template <typename Derived>
 void Trader<Derived>::displayPortfolio() const {
@@ -70,12 +65,12 @@ void Trader<Derived>::setBalance(double amount) {
 
 template <typename Derived>
 void Trader<Derived>::addStock(const Stock stock) {
-    ownedStocks.insert(stock.getSymbol(), stock);
+    //ownedStocks.insert(stock.getSymbol(), stock);
 }
 
 template <typename Derived>
 void Trader<Derived>::removeStock(const Stock& stock) {
-    ownedStocks.erase(stock.getSymbol());
+    //ownedStocks.erase(stock.getSymbol());
 }
 
 template <typename Derived>
@@ -88,16 +83,5 @@ Order Trader<Derived>::placeSellOrder(const Stock& stock, int quantity, double p
     throw std::logic_error("Not implemented yet");
 }
 
-class Company : public Trader<Company>{
-
-private:
-    printTrader() const {
-        std::cout << "Trader ID: " << traderID << "\nBalance: " << balance << "\nOwned Stocks: \n";
-        for (auto stock : ownedStocks) {
-            stock.displayInfo();
-        }
-    }
-
-}
 
 #endif // TRADER_H
