@@ -58,7 +58,6 @@ bool Njordx::addSellOrder(Order* order) const noexcept {
     } 
     sellOrders.insert(order->getOrderID(), *order);
     return true;
-
 }
 
 bool Njordx::addBuyOrder(Order* order) const noexcept {

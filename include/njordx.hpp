@@ -9,9 +9,9 @@
 
 class Njordx {
 private:   
-    OrderBook<int, Order> buyOrders;
-    OrderBook<int, Order> sellOrders;
-    OrderBook<std::string, int> validStocks;
+    OrderBook<int, Order> buyOrders; /* Key: OrderID, Value: Order */
+    OrderBook<int, Order> sellOrders; /* Key: OrderID, Value: Order */
+    OrderBook<std::string, int> validStocks; /* Key: Stocksymbol, Value: StockID */
 
 public:
     // Constructor, no need for rule of 3
@@ -24,8 +24,6 @@ public:
 
     // Display methods
     void displayOrderBook(const OrderType type) const;
-
-    // 
 };
 
 #endif // NJORDX_H
