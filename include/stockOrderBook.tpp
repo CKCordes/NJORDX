@@ -31,7 +31,7 @@ class OrderBook {
 
         // Our map is based on a vector.
         // A single container is a vector
-        using Container = std::vector<std::unique_ptr<KeyValuePair>>;
+        using Container = std::vector<std::shared_ptr<KeyValuePair>>;
 
         // To take care of hash collisions we create the table as a 2D table
         std::vector<Container> table;
@@ -189,7 +189,7 @@ auto OrderBook<Key, Value>::find_in_container(const Container& con, const Key& k
     // () takes the kv that are in the vector
     // {} is where we compare the keys
     return std::find_if(con.begin(), con.end(),
-    [key](const std::unique_ptr<KeyValuePair>& kv) { return kv->key == key;});
+    [key](const std::shared_ptr<KeyValuePair>& kv) { return kv->key == key;});
 }
 
 template<typename Key, typename Value>
