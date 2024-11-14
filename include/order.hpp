@@ -35,6 +35,9 @@ public:
 
     // Display order information
     void displayOrderDetails() const;
+
+    // Overloaded equality operator
+    bool operator==(const Order& other) const;
 };
 
 #endif // ORDER_H
