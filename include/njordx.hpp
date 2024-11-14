@@ -18,7 +18,8 @@ public:
     Njordx();
 
     // Order management methods
-    bool addOrder(const OrderType type, Order* order);
+    bool addBuyOrder(Order* order) const noexcept;
+    bool addSellOrder(Order* order) const noexcept;
     Order matchOrders();
 
     // Display methods
