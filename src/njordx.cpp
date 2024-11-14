@@ -51,7 +51,8 @@ Order newOrder = std::move(order);
 // Constructor
 Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
-// Method to add a sell order to the Njordx
+/* Inserting in StockOrderBook, has a strong guarentee */
+
 bool Njordx::addSellOrder(Order* order) const noexcept {
     if (!validStocks.contains(order->getStockSymbol())){
       validStocks.insert(order->getStockSymbol(), order->getStockID());
