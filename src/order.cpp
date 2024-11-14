@@ -3,7 +3,7 @@
 
 // Constructor
 Order::Order(int id, OrderType type, int traderID, std::string stockSymbol, int quantity, double price)
-    : orderID(id), type(type), traderID(traderID), stockSymbol(stockSymbol), stockID(-1), quantity(quantity), price(price) {}
+    : orderID(id), type(type), traderID(traderID), stockSymbol(stockSymbol), stockID(-1), quantity(quantity), price(price), isFilled(false) {}
 
 // Getters
 int Order::getOrderID() const {
@@ -38,6 +38,10 @@ double Order::getPrice() const {
     return price;
 }
 
+bool Order::getIsFilled() const {
+    return isFilled;
+}
+
 void Order::setIsFilled(bool status) {
     isFilled = status;
 }
@@ -50,4 +54,8 @@ void Order::displayOrderDetails() const {
     std::cout << "Quantity: " << quantity << std::endl;
     std::cout << "Price: " << price << std::endl;
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
+}
+
+bool Order::operator==(const Order& other) const {
+    return orderID == other.orderID;
 }
