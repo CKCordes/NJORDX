@@ -29,5 +29,5 @@ clean:
 # når du tilføjer tests: skriv $(SRC)/<implementation  af det du tester>.cpp før -o i den midterste linje nedenfor
 unit_tests: 
 	@echo "Testing..."
-	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $(TEST)/unit_tests/*.cpp $(SRC)/stock.cpp $(SRC)/order.cpp -o $(BIN)/test $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $(TEST)/unit_tests/*.cpp $(SRC)/stock.cpp $(SRC)/order.cpp $(SRC)/njordx.cpp -o $(BIN)/test $(LIBRARIES)
 	./$(BIN)/test

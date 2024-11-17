@@ -18,9 +18,9 @@ public:
     Njordx();
 
     // Order management methods
-    bool addBuyOrder(Order* order) const noexcept;
-    bool addSellOrder(Order* order) const noexcept;
-    Order matchOrders();
+    bool addBuyOrder(Order* order) noexcept; // Not const to accomodate Strong guarentee on stockorderbook
+    bool addSellOrder(Order* order) noexcept; // Not const to accomodate Strong guarentee on stockorderbook
+    std::pair<Order, Order> matchOrders();
 
     // Display methods
     void displayOrderBook(const OrderType type) const;

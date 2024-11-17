@@ -53,7 +53,7 @@ Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
 /* Inserting in StockOrderBook, has a strong guarentee */
 
-bool Njordx::addSellOrder(Order* order) const noexcept {
+bool Njordx::addSellOrder(Order* order) noexcept {
     if (!validStocks.contains(order->getStockSymbol())){
       validStocks.insert(order->getStockSymbol(), order->getStockID());
     } 
@@ -61,7 +61,7 @@ bool Njordx::addSellOrder(Order* order) const noexcept {
     return true;
 }
 
-bool Njordx::addBuyOrder(Order* order) const noexcept {
+bool Njordx::addBuyOrder(Order* order) noexcept {
     if (validStocks.contains(order->getStockSymbol())) {
         int stockID = validStocks.get(order->getStockSymbol());
         order->setStockID(stockID);
@@ -74,24 +74,28 @@ bool Njordx::addBuyOrder(Order* order) const noexcept {
       }
 }
 
-// Method to match buy and sell orders
-Order Njordx::matchOrders() {
-    /* USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! */
+/*
+// Method to match buy and sell orders. First is buy, second is sell
+std::pair<Order, Order> Njordx::matchOrders() { 
+    // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! 
+    using namespace std::placeholders;
+    
     auto match = std::bind([](const Order& buy, const Order& sell) {
-        return buy.getPrice() >= sell.getPrice();
-    }, std::placeholders::_1, std::placeholders::_2);
+        if (buy.getStockID() == sell.getStockID()) {
+            return buy.getPrice() >= sell.getPrice();    
+        }
+    }, _1, _2);
 
     for (auto buy_order : buyOrders) {
         for (auto sell_order : sellOrders) {
-            if (true) { //match(buy_order, sell_order)
-                sell_order = buy_order;
-                return buy_order.value;
+            if (match(buy_order.value, sell_order.value)) {
+                return std::make_pair(buy_order.value, sell_order.value);
             }
         }
     }
-    return Order(1, OrderType::BUY, 1, 1, 1, 1.0);
+    return std::make_pair(Order(1,OrderType::BUY,1,"s",2,2), Order(1,OrderType::SELL,1,"s",2,2));
 }
-
+*/
 //Display orderbooks
 void Njordx::displayOrderBook(const OrderType type) const {
     if (type == OrderType::SELL) {
