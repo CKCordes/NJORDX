@@ -66,7 +66,7 @@ void Njordx::matchOrders() {
 
     // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! 
     const CompareOrder OrderComparator = CompareOrder();
-    auto match = std::bind([this, OrderComparator](const Order& buy, const Order& sell) {
+    auto match = std::bind([this, OrderComparator](Order& buy, Order& sell) {
         if (OrderComparator(buy, sell)) {
             int buyer_id = buy.getTraderID();
             int seller_id = sell.getTraderID();
@@ -82,22 +82,19 @@ void Njordx::matchOrders() {
             if (buyer != traders.end() && seller != traders.end()) {
                 (*buyer)->handleOrder(buy);
                 (*seller)->handleOrder(sell);
-
+                buy.setIsFilled(true);
+                sell.setIsFilled(true);
             }
-
-            return buy.getPrice() >= sell.getPrice();    
         }
-        return false;
     }, _1, _2);
 
     for (auto buy_order : buyOrders) {
         for (auto sell_order : sellOrders) {
+            // Not quite needed with std::ref. However, it is there.
             match(std::ref(buy_order.value), std::ref(sell_order.value));
         }
     }
 }
-
-
 
 //Display orderbooks
 void Njordx::displayOrderBook(const OrderType type) const {
