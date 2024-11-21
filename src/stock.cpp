@@ -18,11 +18,17 @@ int Stock::getNumberOfStocks() const {
 }
 
 void Stock::addStocks(int amount) {
-    numberOfStocks += amount;
+    int newAmount = numberOfStocks + amount;
+    numberOfStocks = std::move(newAmount);
 }
 
-void Stock::removeStocks(int amount) {
-    numberOfStocks -= amount;
+bool Stock::removeStocks(int amount) {
+    int newAmount = numberOfStocks - amount;
+    if (newAmount < 0) {
+        return false;
+    }
+    numberOfStocks = std::move(newAmount);
+    return true;
 }
 
 void Stock::displayInfo() const {
