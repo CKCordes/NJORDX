@@ -4,15 +4,15 @@
 #include "trader.tpp"
 #include <string>
 
-class Person : public Trader {
+class Person : public Trader<Person> {
 private:
     std::string name;
     std::string cpr;
 
 public:
     // Constructor
-    Person(int id, const std::string& name, double initialBalance, const std::string& ssn)
-        : traderID(id), name(name), balance(initialBalance), cpr(ssn) {}
+    Person(int id, double initialBalance, Njordx* exchange, const std::string& name, const std::string& ssn)
+        : Trader<Person>(id, initialBalance, exchange), name(name), cpr(ssn) {}
 
     // Overridden methods
     void displayPortfolio() const {
@@ -20,7 +20,7 @@ public:
         std::cout << "CPR: " << cpr << std::endl;
         std::cout << "Trader ID: " << traderID << std::endl;
         std::cout << "Balance: " << balance << std::endl;
-        // std::cout << "Exchange: " << exchange << vstd::endl;
+        std::cout << "Exchange: " << exchange << std::endl;
     }
 
 
