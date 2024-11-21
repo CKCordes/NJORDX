@@ -63,15 +63,13 @@ bool Njordx::addSellOrder(Order* order) noexcept {
 
 bool Njordx::addBuyOrder(Order* order) noexcept {
     if (validStocks.contains(order->getStockSymbol())) {
-        int stockID = validStocks.get(order->getStockSymbol());
-        order->setStockID(stockID);
         buyOrders.insert(order->getOrderID(), *order);
         return true;
-      } 
-      else {
-        std::cout << "Stock not valid" << std::endl;
-        return false;
-      }
+    } 
+    else {
+      std::cout << "Stock not valid" << std::endl;
+      return false;
+    }
 }
 
 /*
