@@ -3,6 +3,9 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
+
+#include "trader.hpp"
 
 enum class OrderType { BUY, SELL };
 
@@ -10,7 +13,9 @@ class Order {
 private:
     int orderID;
     OrderType type;
-    int traderID;
+    
+    std::shared_ptr<Trader> trader;
+    
     std::string stockSymbol;
     int stockID;
     int quantity;
@@ -35,6 +40,9 @@ public:
 
     // Display order information
     void displayOrderDetails() const;
+
+    // Overloaded equality operator
+    bool operator==(const Order& other) const;
 };
 
 #endif // ORDER_H

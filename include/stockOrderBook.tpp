@@ -31,7 +31,7 @@ class OrderBook {
 
         // Our map is based on a vector.
         // A single container is a vector
-        using Container = std::vector<std::unique_ptr<KeyValuePair>>;
+        using Container = std::vector<std::shared_ptr<KeyValuePair>>;
 
         // To take care of hash collisions we create the table as a 2D table
         std::vector<Container> table;
@@ -115,7 +115,7 @@ class OrderBook {
         OrderBook& operator=(OrderBook&& other) noexcept;
         
 
-        void insert(const Key& key, const Value& value);
+        void insert(const Key& key, const Value& value) noexcept;
         void erase(const Key& key);
         bool contains(const Key& key) const;
         Value get(const Key& key) const;
@@ -189,7 +189,7 @@ auto OrderBook<Key, Value>::find_in_container(const Container& con, const Key& k
     // () takes the kv that are in the vector
     // {} is where we compare the keys
     return std::find_if(con.begin(), con.end(),
-    [key](const std::unique_ptr<KeyValuePair>& kv) { return kv->key == key;});
+    [key](const std::shared_ptr<KeyValuePair>& kv) { return kv->key == key;});
 }
 
 template<typename Key, typename Value>
@@ -200,7 +200,7 @@ size_t OrderBook<Key, Value>::get_container_index(const Key& key) const {
 
 template<typename Key, typename Value>
 requires ValidKey<Key>
-void OrderBook<Key, Value>::insert(const Key& key, const Value& value) {
+void OrderBook<Key, Value>::insert(const Key& key, const Value& value) noexcept {
     size_t table_index = get_container_index(key);
     Container& con = table[table_index];
     auto it = find_in_container(con, key);
@@ -209,7 +209,10 @@ void OrderBook<Key, Value>::insert(const Key& key, const Value& value) {
         (*it)->value = value;
     } else {
         // We need to make the pair and insert it in the container
-        con.push_back(std::make_unique<KeyValuePair>(key, value));
+        /* Strong guarentee */
+        Container tmp(con);
+        tmp.push_back(std::make_unique<KeyValuePair>(key, value));
+        con.swap(tmp);
     }
 }
 

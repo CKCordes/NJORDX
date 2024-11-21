@@ -3,7 +3,7 @@
 
 // Constructor
 Order::Order(int id, OrderType type, int traderID, std::string stockSymbol, int quantity, double price)
-    : orderID(id), type(type), traderID(traderID), stockSymbol(stockSymbol), stockID(-1), quantity(quantity), price(price) {}
+    : orderID(id), type(type), traderID(traderID), stockSymbol(stockSymbol), stockID(-1), quantity(quantity), price(price), isFilled(false) {}
 
 // Getters
 int Order::getOrderID() const {
@@ -15,7 +15,7 @@ OrderType Order::getOrderType() const {
 }
 
 int Order::getTraderID() const {
-    return traderID;
+    return trader.get()->getTraderID();
 }
 
 std::string Order::getStockSymbol() const {
@@ -38,8 +38,20 @@ double Order::getPrice() const {
     return price;
 }
 
+bool Order::getIsFilled() const {
+    return isFilled;
+}
+
 void Order::setIsFilled(bool status) {
     isFilled = status;
+    if type == OrderType::BUY {
+        trader.get()->addStock(stockSymbol, quantity);
+    } else if (type == OrderType::SELL) {
+        trader.get()->removeStock(stockSymbol, quantity);
+    } else {
+        std::cerr << "Invalid order type" << std::endl;
+        throw std::invalid_argument("Invalid order type");
+    }
 }
 
 void Order::displayOrderDetails() const {
@@ -50,4 +62,8 @@ void Order::displayOrderDetails() const {
     std::cout << "Quantity: " << quantity << std::endl;
     std::cout << "Price: " << price << std::endl;
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
+}
+
+bool Order::operator==(const Order& other) const {
+    return orderID == other.orderID;
 }
