@@ -21,11 +21,12 @@ private:
 
 public:
     // Constructor
-    Order(int id, OrderType type, int traderID, std::string stockSymbol, std::shared_ptr<Stock> stock, int quantity, double price);
+    Order(int orderID, OrderType type, int traderID, std::shared_ptr<Stock> stock, int quantity, double price);
 
     // Getters and setters
     int getOrderID() const;
     OrderType getOrderType() const;
+    std::string getStockSymbol() const;
     int getTraderID() const;
     int getStockID() const;
     int getQuantity() const;
