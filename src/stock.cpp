@@ -2,8 +2,8 @@
 
 #include "stock.hpp"
 
-Stock::Stock(int id, const std::string& symbol, double initialPrice) 
-    : stockID(id), symbol(symbol), price(initialPrice) {}
+Stock::Stock(int id, const std::string& symbol, int numberOfStocks) 
+    : stockID(id), symbol(symbol), numberOfStocks(numberOfStocks) {}
 
 int Stock::getStockID() const {
     return stockID;
@@ -13,20 +13,30 @@ std::string Stock::getSymbol() const {
     return symbol;
 }
 
-double Stock::getPrice() const {
-    return price;
+int Stock::getNumberOfStocks() const {
+    return numberOfStocks;
 }
 
-void Stock::setPrice(double newPrice) {
-    price = newPrice;
+void Stock::addStocks(int amount) noexcept {
+    int newAmount = numberOfStocks + amount;
+    numberOfStocks = std::move(newAmount);
+}
+
+void Stock::removeStocks(int amount) {
+    int newAmount = numberOfStocks - amount;
+    if (newAmount < 0) {
+        throw std::invalid_argument("Cannot remove more stocks than owned");
+    }
+    numberOfStocks = std::move(newAmount);
 }
 
 void Stock::displayInfo() const {
     std::cout << "Stock ID: " << stockID << std::endl;
     std::cout << "Symbol: " << symbol << std::endl;
-    std::cout << "Price: " << price << std::endl;
+    std::cout << "Number of stocks: " << numberOfStocks << std::endl;
 }
 
+// Operator overloading
 bool Stock::operator==(const Stock& other) const {
     return stockID == other.stockID && symbol == other.symbol;
 }

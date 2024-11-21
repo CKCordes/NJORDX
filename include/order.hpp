@@ -33,6 +33,7 @@ public:
     double getPrice() const;
     bool getIsFilled() const;
     void setIsFilled(bool status);
+    std::shared_ptr<Stock> getStock() const;
 
     // Display order information
     void displayOrderDetails() const;

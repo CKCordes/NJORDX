@@ -9,6 +9,9 @@ class ITrader {
 public: 
     virtual ~ITrader() = default;
 
+    virtual void buyStock(std::shared_ptr<Stock> stock, double total) = 0;
+    virtual void sellStock(std::shared_ptr<Stock> stock, double total) = 0;
+
     virtual void printTrader() const = 0;
     virtual void displayPortfolio() const = 0;
 
@@ -16,7 +19,7 @@ public:
     virtual double getBalance() const = 0;
     virtual void setBalance(double amount) = 0;
 
-    virtual void addStock(const Stock&) = 0;
+    virtual void addStock(const Stock) = 0;
     virtual void removeStock(const Stock&) = 0;
 
     virtual bool placeBuyOrder(const Stock&, int, double) = 0;

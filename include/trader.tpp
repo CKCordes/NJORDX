@@ -12,13 +12,15 @@
 
 template <typename Derived>
 class Trader : ITrader {
-    private:
+    protected:
         int traderID;
         double balance;
-        OrderBook<std::string, Stock&> ownedStocks;
+        OrderBook<std::string, Stock> ownedStocks;
         Njordx* exchange;
 
         //int getOrderID() const;
+        void buyStock(std::shared_ptr<Stock> stock, double total) override;
+        void sellStock(std::shared_ptr<Stock> stock, double total) override;
 
     public:
 
@@ -32,7 +34,7 @@ class Trader : ITrader {
         double getBalance() const override;
         void setBalance(double amount) override;
 
-        void addStock(const Stock&) override;
+        void addStock(const Stock) override;
         void removeStock(const Stock&) override;
         Stock getStock(const std::string& symbol) const;
 
@@ -68,8 +70,8 @@ void Trader<Derived>::setBalance(double amount) {
 }
 
 template <typename Derived>
-void Trader<Derived>::addStock(const Stock& stock) {
-    //ownedStocks.insert(stock.getSymbol(), stock);
+void Trader<Derived>::addStock(const Stock stock) {
+    ownedStocks.insert(stock.getSymbol(), stock);
 }
 
 template <typename Derived>
@@ -111,8 +113,39 @@ bool Trader<Derived>::placeSellOrder(int id, OrderType type, int traderID, std::
 
 template <typename Derived>
 void Trader<Derived>::handleOrder(const Order& order) {
-    throw std::logic_error("Not implemented");
+
+    double price = order.getPrice();
+    int quantity = order.getQuantity();
+    double total = price * quantity;
+    std::shared_ptr<Stock> stock = order.getStock();
+
+    OrderType type = order.getOrderType();
+    switch(type) {
+        case OrderType::BUY:
+            buyStock(stock, total);
+            break;
+        case OrderType::SELL:
+            sellStock(stock, total);
+            break;
+        default:
+            std::cerr << "Invalid order type" << std::endl;
+    }  
 }
+
+template <typename Derived>
+void Trader<Derived>::buyStock(std::shared_ptr<Stock> stock, double total) {
+    balance -= total;
+    addStock(*stock);
+}
+
+template <typename Derived>
+void Trader<Derived>::sellStock(std::shared_ptr<Stock> stock, double total) {
+    balance += total;
+    removeStock(*stock);
+}
+
+
+
 
 
 #endif // TRADER_H

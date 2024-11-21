@@ -52,6 +52,10 @@ void Order::displayOrderDetails() const {
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
 }
 
+std::shared_ptr<Stock> Order::getStock() const {
+    return stock;
+}
+
 bool Order::operator==(const Order& other) const {
     return orderID == other.orderID;
 }

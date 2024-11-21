@@ -7,17 +7,18 @@ class Stock {
 private:
     int stockID;
     std::string symbol;
-    double price;
+    int numberOfStocks;
 
 public:
     // Constructor
-    Stock(int id, const std::string& symbol, double initialPrice);
+    Stock(int id, const std::string& symbol, int numberOfStocks);
 
     // Getters and setters
     int getStockID() const;
     std::string getSymbol() const;
-    double getPrice() const;
-    void setPrice(double newPrice);
+    int getNumberOfStocks() const;
+    void addStocks(int amount) noexcept;
+    void removeStocks(int amount);
 
     // Display stock information
     void displayInfo() const;
