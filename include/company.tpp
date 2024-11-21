@@ -12,21 +12,26 @@ public:
     :  traderID(id), balance(initialBalance), exchange(exchange), companyName(name), cvr(regNumber)  {}
     ~Company() {}
 
-    displayPortfolio() const {
+    void displayPortfolio() const {
         std::cout << "Company Name: " << companyName << std::endl;
         std::cout << "CVR: " << cvr << std::endl;
         std::cout << "Trader ID: " << traderID << std::endl;
         std::cout << "Balance: " << balance << std::endl;
-        std::cout << "Exchange: " << exchange << std::endl;
+        std::cout << "Exchange: " << exchange << vstd::endl;
     }
 
-    Stock createStock(int stockID, const std::string& symbol, double initialPrice, Exchange& exchange){
-        
+    void createStock(int stockID, const std::string& symbol, int numberOfStocks) {
+        Stock newStock(stockID, symbol, numberOfStocks);
+        ownedStocks.insert(symbol, newStock);
     }
 
     // Additional company details accessors
-    std::string getCompanyName() const;
-    std::string getRegistrationNumber() const;
+    std::string getCompanyName() const {
+        return companyName;
+    }
+    std::string getRegistrationNumber() const {
+        return cvr;
+    }
 
     
 };
