@@ -7,7 +7,7 @@ TEST_CASE("Testing Stock class") {
     CHECK(stock.getSymbol() == "AAPL");
     CHECK(stock.getNumberOfStocks() == 100);
     stock.addStocks(200);
-    CHECK(stock.getNumberOfStocks() == 200);
+    CHECK(stock.getNumberOfStocks() == 300);
     stock.removeStocks(250);
     CHECK(stock.getNumberOfStocks() == 50);
     stock.displayInfo();
