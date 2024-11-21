@@ -38,3 +38,4 @@ Welcome to NJORDX, the new trading platform for the many citizens between Viborg
     ```
 ## Notes and TODOs
 - Njordx kan have en liste af traders, her kan vi få variadics med.
+- Tjek om man har nok stocks til at place order i trader

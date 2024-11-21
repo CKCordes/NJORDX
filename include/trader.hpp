@@ -31,6 +31,10 @@ public:
     void addStock(const Stock& stock);
     void removeStock(const Stock& stock);
 
+    int getTraderID() const;
+
+    void handleOrder(const Order& order);
+
     // Order methods
     virtual Order placeBuyOrder(const Stock& stock, int quantity, double price);
     virtual Order placeSellOrder(const Stock& stock, int quantity, double price);

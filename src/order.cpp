@@ -15,7 +15,7 @@ OrderType Order::getOrderType() const {
 }
 
 int Order::getTraderID() const {
-    return traderID;
+    return trader.get()->getTraderID();
 }
 
 std::string Order::getStockSymbol() const {
@@ -44,6 +44,14 @@ bool Order::getIsFilled() const {
 
 void Order::setIsFilled(bool status) {
     isFilled = status;
+    if type == OrderType::BUY {
+        trader.get()->addStock(stockSymbol, quantity);
+    } else if (type == OrderType::SELL) {
+        trader.get()->removeStock(stockSymbol, quantity);
+    } else {
+        std::cerr << "Invalid order type" << std::endl;
+        throw std::invalid_argument("Invalid order type");
+    }
 }
 
 void Order::displayOrderDetails() const {
