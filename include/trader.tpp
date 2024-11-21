@@ -8,9 +8,10 @@
 #include "order.hpp"
 #include "njordx.hpp"
 #include "stockOrderBook.tpp"
+#include "ITrader.hpp"
 
 template <typename Derived>
-class Trader {
+class Trader : ITrader {
     private:
         int traderID;
         double balance;
@@ -24,17 +25,19 @@ class Trader {
         Trader(int, double, Njordx*);
         ~Trader() = default;
 
-        void printTrader() const;
-        void displayPortfolio() const;
+        void printTrader() const override;
+        void displayPortfolio() const override;
 
-        double getBalance() const;
-        void setBalance(double amount);
+        double getBalance() const override;
+        void setBalance(double amount) override;
 
-        void addStock(const Stock);
-        void removeStock(const Stock&);
+        void addStock(const Stock) override;
+        void removeStock(const Stock&) override;
 
-        bool placeBuyOrder(const Stock&, int, double);
-        bool placeSellOrder(int, OrderType, int, std::string, int, double);
+        bool placeBuyOrder(const Stock&, int, double) override;
+        bool placeSellOrder(int, OrderType, int, std::string, int, double) override;
+
+        void handleOrder(const Order&) override;
 
 };
 
@@ -96,6 +99,11 @@ bool Trader<Derived>::placeSellOrder(int id, OrderType type, int traderID, std::
         std::cerr << e.what() << std::endl;
         return false;
     }
+}
+
+template <typename Derived>
+void Trader<Derived>::handleOrder(const Order& order) {
+    raise std::logic_error("Not implemented");
 }
 
 
