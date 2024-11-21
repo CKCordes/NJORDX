@@ -28,11 +28,13 @@ class Trader : ITrader {
         void printTrader() const override;
         void displayPortfolio() const override;
 
+        int getTraderID() const override { return traderID; }
         double getBalance() const override;
         void setBalance(double amount) override;
 
-        void addStock(const Stock) override;
+        void addStock(const Stock&) override;
         void removeStock(const Stock&) override;
+        Stock getStock(const std::string& symbol) const;
 
         bool placeBuyOrder(const Stock&, int, double) override;
         bool placeSellOrder(int, OrderType, int, std::string, int, double) override;
@@ -66,7 +68,7 @@ void Trader<Derived>::setBalance(double amount) {
 }
 
 template <typename Derived>
-void Trader<Derived>::addStock(const Stock stock) {
+void Trader<Derived>::addStock(const Stock& stock) {
     //ownedStocks.insert(stock.getSymbol(), stock);
 }
 
@@ -77,28 +79,34 @@ void Trader<Derived>::removeStock(const Stock& stock) {
 
 template <typename Derived>
 bool Trader<Derived>::placeBuyOrder(const Stock& stock, int quantity, double price) {
-    //Order newOrder = Order(1, OrderType::BUY, traderID, stock.getSymbol(), quantity, price);
-//
-    //try {
-    //    exchange->addBuyOrder(&newOrder);
-    //    return true;
-    //} catch (const std::exception& e) {
-    //    std::cerr << e.what() << std::endl;
-    //    return false;
-    //}
+    Order newOrder = Order(1, OrderType::BUY, traderID, std::make_shared<Stock>(stock), quantity, price);
+
+    try {
+        exchange->addBuyOrder(&newOrder);
+        return true;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
+}
+
+template <typename Derived>
+Stock Trader<Derived>::getStock(const std::string& symbol) const {
+    return ownedStocks.get(symbol);
 }
 
 template <typename Derived>
 bool Trader<Derived>::placeSellOrder(int id, OrderType type, int traderID, std::string stockSymbol, int quantity, double price) {
-    //Order newOrder = Order(id, type, traderID, stockSymbol, quantity, price);
-//
-    //try {
-    //    exchange->addSellOrder(&newOrder);
-    //    return true;
-    //} catch (const std::exception& e) {
-    //    std::cerr << e.what() << std::endl;
-    //    return false;
-   // }
+    Stock stock = getStock(stockSymbol);
+    Order newOrder = Order(id, type, traderID, std::make_shared<Stock>(stock), quantity, price);
+
+    try {
+        exchange->addSellOrder(&newOrder);
+        return true;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+   }
 }
 
 template <typename Derived>
