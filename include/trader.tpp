@@ -12,7 +12,7 @@
 
 template <typename Derived>
 class Trader : ITrader {
-    private:
+    protected:
         int traderID;
         double balance;
         OrderBook<std::string, Stock> ownedStocks;

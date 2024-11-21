@@ -17,7 +17,7 @@ public:
     int getStockID() const;
     std::string getSymbol() const;
     int getNumberOfStocks() const;
-    void addStocks(int amount);
+    void addStocks(int amount) noexcept;
     void removeStocks(int amount);
 
     // Display stock information

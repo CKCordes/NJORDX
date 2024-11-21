@@ -13,7 +13,8 @@ private:
     OrderBook<int, Order> buyOrders; /* Key: OrderID, Value: Order */
     OrderBook<int, Order> sellOrders; /* Key: OrderID, Value: Order */
     OrderBook<std::string, int> validStocks; /* Key: Stocksymbol, Value: StockID */
-    std::pair<Order, Order> matchOrders();
+    void matchOrders();
+    std::vector<ITrader*> traders;
 public:
     // Constructor, no need for rule of 3
     Njordx();

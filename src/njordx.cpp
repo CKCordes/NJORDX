@@ -19,33 +19,6 @@
 // traders har en "pending orderbook"
 // --------------------------NOTER SLUT-----------------------------//
 
-/* Gode ting at have med i denne klasse
-Order* order = nullptr;
-
-auto order = Order(1, OrderType::BUY, 1, 1, 100, 50.0);
-decltype(order) anotherOrder = order;
-
-std::unique_ptr<Order> order = std::make_unique<Order>(1, OrderType::BUY, 1, 1, 100, 50.0);
-
-for (auto it = buyOrders.begin(); it != buyOrders.end(); ++it) {
-    it->displayOrderDetails();
-}
-
-std::sort(buyOrders.begin(), buyOrders.end(), [](const Order& a, const Order& b) {
-    return a.getPrice() > b.getPrice();
-});
-
-if (order.getQuantity() <= 0) {
-    throw std::invalid_argument("Quantity must be positive");
-}
-
-if constexpr (std::is_integral_v<int>) {
-    // Do something
-}
-
-Order newOrder = std::move(order);
-
- */
 
 
 // Constructor
@@ -58,12 +31,16 @@ bool Njordx::addSellOrder(Order* order) noexcept {
       validStocks.insert(order->getStockSymbol(), order->getStockID());
     } 
     sellOrders.insert(order->getOrderID(), *order);
+    
+    // Match orders
+    matchOrders();
     return true;
 }
 
 bool Njordx::addBuyOrder(Order* order) noexcept {
     if (validStocks.contains(order->getStockSymbol())) {
         buyOrders.insert(order->getOrderID(), *order);
+        matchOrders();
         return true;
     } 
     else {
@@ -72,28 +49,53 @@ bool Njordx::addBuyOrder(Order* order) noexcept {
     }
 }
 
-/*
-// Method to match buy and sell orders. First is buy, second is sell
-std::pair<Order, Order> Njordx::matchOrders() { 
-    // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! 
+void Njordx::addTrader(ITrader* trader) noexcept {
+    traders.push_back(trader);
+}
+
+// Functor
+struct CompareOrder {
+    bool operator()(const Order& buy, const Order& sell) const {
+        return (buy.getStockID() == sell.getStockID()) && (buy.getPrice() >= sell.getPrice());
+    }
+};
+
+// Handles matching orders and updating traders
+void Njordx::matchOrders() { 
     using namespace std::placeholders;
-    
-    auto match = std::bind([](const Order& buy, const Order& sell) {
-        if (buy.getStockID() == sell.getStockID()) {
-            return buy.getPrice() >= sell.getPrice();    
+
+    // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! 
+    const CompareOrder OrderComparator = CompareOrder();
+    auto match = std::bind([this, OrderComparator](Order& buy, Order& sell) {
+        if (OrderComparator(buy, sell)) {
+            int buyer_id = buy.getTraderID();
+            int seller_id = sell.getTraderID();
+
+            // Find buyer and seller
+            auto buyer = std::find_if(traders.begin(), traders.end(), [buyer_id](ITrader* trader) {
+                return trader->getTraderID() == buyer_id;
+            });
+            auto seller = std::find_if(traders.begin(), traders.end(), [seller_id](ITrader* trader) {
+                return trader->getTraderID() == seller_id;
+            });
+
+            if (buyer != traders.end() && seller != traders.end()) {
+                (*buyer)->handleOrder(buy);
+                (*seller)->handleOrder(sell);
+                buy.setIsFilled(true);
+                sell.setIsFilled(true);
+            }
         }
     }, _1, _2);
 
     for (auto buy_order : buyOrders) {
         for (auto sell_order : sellOrders) {
-            if (match(buy_order.value, sell_order.value)) {
-                return std::make_pair(buy_order.value, sell_order.value);
-            }
+            // Not quite needed with std::ref. However, it is there.
+            match(std::ref(buy_order.value), std::ref(sell_order.value));
         }
     }
-    return std::make_pair(Order(1,OrderType::BUY,1,"s",2,2), Order(1,OrderType::SELL,1,"s",2,2));
 }
-*/
+
 //Display orderbooks
 void Njordx::displayOrderBook(const OrderType type) const {
     if (type == OrderType::SELL) {
