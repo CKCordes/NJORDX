@@ -2,8 +2,8 @@
 
 
 // Constructor
-Order::Order(int id, OrderType type, int traderID, std::string stockSymbol, std::shared_ptr<Stock> stock, int quantity, double price)
-    : orderID(id), type(type), traderID(traderID), stockSymbol(stockSymbol), stock(stock), quantity(quantity), price(price), isFilled(false) {}
+Order::Order(int id, OrderType type, int traderID, std::shared_ptr<Stock> stock, int quantity, double price)
+    : orderID(id), type(type), traderID(traderID), stock(stock), quantity(quantity), price(price), isFilled(false) {}
 
 // Getters
 int Order::getOrderID() const {
@@ -19,7 +19,7 @@ int Order::getTraderID() const {
 }
 
 std::string Order::getStockSymbol() const {
-    return stockSymbol;
+    return stock.get()->getSymbol();
 }
 
 int Order::getStockID() const {
@@ -46,7 +46,7 @@ void Order::displayOrderDetails() const {
     std::cout << "Order ID: " << orderID << std::endl;
     std::cout << "Order Type: " << (type == OrderType::BUY ? "BUY" : "SELL") << std::endl;
     std::cout << "Trader ID: " << traderID << std::endl;
-    std::cout << "Stock ID: " << stockSymbol << std::endl;
+    std::cout << "Stock ID: " << Order::getStockID() << std::endl;
     std::cout << "Quantity: " << quantity << std::endl;
     std::cout << "Price: " << price << std::endl;
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
