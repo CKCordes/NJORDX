@@ -18,23 +18,23 @@ class Trader {
         Njordx* exchange;
 
         //int getOrderID() const;
-        void printTrader() const;
 
     public:
 
         Trader(int, double, Njordx*);
         ~Trader() = default;
 
+        void printTrader() const;
         void displayPortfolio() const;
+
         double getBalance() const;
         void setBalance(double amount);
 
         void addStock(const Stock);
         void removeStock(const Stock&);
 
-        Order placeBuyOrder(const Stock&, int, double);
-        Order placeSellOrder(const Stock&, int, double);
-
+        bool placeBuyOrder(const Stock&, int, double);
+        bool placeSellOrder(int, OrderType, int, std::string, int, double);
 
 };
 
@@ -42,6 +42,10 @@ template <typename Derived>
 Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange) 
     : traderID(id), balance(initialBalance), exchange(exchange) {}
 
+
+template <typename Derived>
+void Trader<Derived>::printTrader() const {
+    static_cast<const Derived*>(this)->printTrader();}
 
 template <typename Derived>
 void Trader<Derived>::displayPortfolio() const {
@@ -60,22 +64,38 @@ void Trader<Derived>::setBalance(double amount) {
 
 template <typename Derived>
 void Trader<Derived>::addStock(const Stock stock) {
-    //ownedStocks.insert(stock.getSymbol(), stock);
+    ownedStocks.insert(stock.getSymbol(), stock);
 }
 
 template <typename Derived>
 void Trader<Derived>::removeStock(const Stock& stock) {
-    //ownedStocks.erase(stock.getSymbol());
+    ownedStocks.erase(stock.getSymbol());
 }
 
 template <typename Derived>
-Order Trader<Derived>::placeBuyOrder(const Stock& stock, int quantity, double price) {
-    throw std::logic_error("Not implemented yet");
+bool Trader<Derived>::placeBuyOrder(const Stock& stock, int quantity, double price) {
+    Order newOrder = Order(1, OrderType::BUY, traderID, stock.getSymbol(), quantity, price);
+
+    try {
+        exchange->addBuyOrder(&newOrder);
+        return true;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
 }
 
 template <typename Derived>
-Order Trader<Derived>::placeSellOrder(const Stock& stock, int quantity, double price) {
-    throw std::logic_error("Not implemented yet");
+bool Trader<Derived>::placeSellOrder(int id, OrderType type, int traderID, std::string stockSymbol, int quantity, double price) {
+    Order newOrder = Order(id, type, traderID, stockSymbol, quantity, price);
+
+    try {
+        exchange->addSellOrder(&newOrder);
+        return true;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
 }
 
 
