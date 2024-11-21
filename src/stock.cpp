@@ -17,12 +17,12 @@ int Stock::getNumberOfStocks() const {
     return numberOfStocks;
 }
 
-void Stock::addStocks(int amount) {
+void Stock::addStocks(int amount) noexcept {
     int newAmount = numberOfStocks + amount;
     numberOfStocks = std::move(newAmount);
 }
 
-bool Stock::removeStocks(int amount) {
+bool Stock::removeStocks(int amount) noexcept {
     int newAmount = numberOfStocks - amount;
     if (newAmount < 0) {
         return false;
@@ -37,6 +37,7 @@ void Stock::displayInfo() const {
     std::cout << "Number of stocks: " << numberOfStocks << std::endl;
 }
 
+// Operator overloading
 bool Stock::operator==(const Stock& other) const {
     return stockID == other.stockID && symbol == other.symbol;
 }
