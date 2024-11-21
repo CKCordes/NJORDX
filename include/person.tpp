@@ -1,7 +1,7 @@
 #ifndef PERSON_H
 #define PERSON_H
 
-#include "trader.hpp"
+#include "trader.tpp"
 #include <string>
 
 class Person : public Trader {
