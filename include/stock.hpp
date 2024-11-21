@@ -18,7 +18,7 @@ public:
     std::string getSymbol() const;
     int getNumberOfStocks() const;
     void addStocks(int amount);
-    bool removeStocks(int amount);
+    void removeStocks(int amount);
 
     // Display stock information
     void displayInfo() const;

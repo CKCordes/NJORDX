@@ -22,13 +22,12 @@ void Stock::addStocks(int amount) noexcept {
     numberOfStocks = std::move(newAmount);
 }
 
-bool Stock::removeStocks(int amount) noexcept {
+void Stock::removeStocks(int amount) {
     int newAmount = numberOfStocks - amount;
     if (newAmount < 0) {
-        return false;
+        throw std::invalid_argument("Cannot remove more stocks than owned");
     }
     numberOfStocks = std::move(newAmount);
-    return true;
 }
 
 void Stock::displayInfo() const {
