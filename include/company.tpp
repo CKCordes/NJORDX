@@ -10,6 +10,8 @@ class Company : public Trader<Company>{
 public:
     Company(int id, double initialBalance, Njordx* exchange, const std::string& name, const std::string& regNumber) 
     :  Trader<Company>(id, initialBalance, exchange), companyName(name), cvr(regNumber)  {}
+    Company(int id, double initialBalance, const std::string& name, const std::string& regNumber)
+    : Trader<Company>(id, initialBalance), companyName(name), cvr(regNumber) {}
     ~Company() {}
 
     void displayPortfolio() const {

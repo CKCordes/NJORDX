@@ -26,6 +26,7 @@ public:
     virtual bool placeSellOrder(int, OrderType, int, std::string, int, double) = 0;
 
     virtual void handleOrder(const Order&) = 0;
+    //virtual void joinExchange(Njordx* exchange) = 0;
 };
 
 #endif // ITRADER_HPP

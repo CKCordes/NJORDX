@@ -25,12 +25,13 @@ class Trader : ITrader {
     public:
 
         Trader(int, double, Njordx*);
+        Trader(int, double);
         ~Trader() = default;
 
         void printTrader() const override;
         void displayPortfolio() const override;
 
-        int getTraderID() const override { return traderID; }
+        int getTraderID() const override { return traderID; };
         double getBalance() const override;
         void setBalance(double amount) override;
 
@@ -43,11 +44,19 @@ class Trader : ITrader {
 
         void handleOrder(const Order&) override;
 
+        //void joinExchange(Njordx* exchange) override { this->exchange = exchange; };
+
 };
+
+// Delegating constructors
+template <typename Derived>
+Trader<Derived>::Trader(int id, double initialBalance) 
+    : Trader<Derived>(id, initialBalance, nullptr) {}  
 
 template <typename Derived>
 Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange) 
     : traderID(id), balance(initialBalance), exchange(exchange) {}
+
 
 
 template <typename Derived>
