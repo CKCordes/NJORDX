@@ -40,3 +40,4 @@ Welcome to NJORDX, the new trading platform for the many citizens between Viborg
 - Njordx kan have en liste af traders, her kan vi få variadics med.
 
 - Trader skal lave noget exception handling, hvis en trader forsøger at lave en en ordre uden exhange. 
+- Tjek om man har nok stocks til at place order i trader
