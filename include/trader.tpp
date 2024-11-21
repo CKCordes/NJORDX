@@ -45,12 +45,7 @@ Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange)
 
 template <typename Derived>
 void Trader<Derived>::displayPortfolio() const {
-    static_cast<const Derived*>(this)->printTrader();
-
-   
-    //for (auto stock : ownedStocks) {
-    //    stock.displayInfo();
-    //}
+    static_cast<const Derived*>(this)->displayPortfolio();
 }
 
 template <typename Derived>
