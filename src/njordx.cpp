@@ -53,16 +53,24 @@ void Njordx::addTrader(ITrader* trader) noexcept {
     traders.push_back(trader);
 }
 
+// Functor
+struct CompareOrder {
+    bool operator()(const Order& buy, const Order& sell) const {
+        return (buy.getStockID() == sell.getStockID()) && (buy.getPrice() >= sell.getPrice());
+    }
+};
+
 // Handles matching orders and updating traders
 void Njordx::matchOrders() { 
     using namespace std::placeholders;
 
     // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! 
-    auto match = std::bind([this](const Order& buy, const Order& sell) {
-        if ((buy.getStockID() == sell.getStockID()) && (buy.getPrice() >= sell.getPrice())) {
+    const CompareOrder OrderComparator = CompareOrder();
+    auto match = std::bind([this, OrderComparator](const Order& buy, const Order& sell) {
+        if (OrderComparator(buy, sell)) {
             int buyer_id = buy.getTraderID();
             int seller_id = sell.getTraderID();
-            
+
             // Find buyer and seller
             auto buyer = std::find_if(traders.begin(), traders.end(), [buyer_id](ITrader* trader) {
                 return trader->getTraderID() == buyer_id;
