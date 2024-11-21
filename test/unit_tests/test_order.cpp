@@ -14,7 +14,6 @@ TEST_CASE("Testing Order class") {
     CHECK(order.getQuantity() == 10);
     CHECK(order.getPrice() == 100.0);
     CHECK(order.getIsFilled() == false);
-    //CHECK(order.getTransactionFee<OrderType::BUY>() == 0.01);
 
     
     //order.setStockID(1);
