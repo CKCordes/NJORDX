@@ -44,7 +44,7 @@ class Trader : ITrader {
 
         void handleOrder(const Order&) override;
 
-        //void joinExchange(Njordx* exchange) override { this->exchange = exchange; };
+        void joinExchange(Njordx* exchange) override { this->exchange = exchange; };
 
 };
 

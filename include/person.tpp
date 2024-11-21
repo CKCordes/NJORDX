@@ -13,6 +13,8 @@ public:
     // Constructor
     Person(int id, double initialBalance, Njordx* exchange, const std::string& name, const std::string& ssn)
         : Trader<Person>(id, initialBalance, exchange), name(name), cpr(ssn) {}
+    Person(int id, double initialBalance, const std::string& name, const std::string& ssn)
+        : Trader<Person>(id, initialBalance), name(name), cpr(ssn) {}
 
     // Overridden methods
     void displayPortfolio() const {
