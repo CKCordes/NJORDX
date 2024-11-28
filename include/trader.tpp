@@ -40,7 +40,7 @@ class Trader : public ITrader {
         Stock getStock(const std::string& symbol) const;
 
         bool placeBuyOrder(const Stock&, int, double) override;
-        bool placeSellOrder(int, OrderType, int, std::string, int, double) override;
+        bool placeSellOrder(const Stock&, int, double) override;
 
         void handleOrder(const Order&) override;
 
@@ -107,9 +107,8 @@ Stock Trader<Derived>::getStock(const std::string& symbol) const {
 }
 
 template <typename Derived>
-bool Trader<Derived>::placeSellOrder(int id, OrderType type, int traderID, std::string stockSymbol, int quantity, double price) {
-    Stock stock = getStock(stockSymbol);
-    Order newOrder = Order(id, type, traderID, std::make_shared<Stock>(stock), quantity, price);
+bool Trader<Derived>::placeSellOrder(const Stock&  stock, int quantity, double price) {
+    Order newOrder = Order(1, OrderType::SELL, traderID, std::make_shared<Stock>(stock), quantity, price);
 
     try {
         exchange->addSellOrder(&newOrder);

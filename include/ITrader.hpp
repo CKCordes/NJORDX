@@ -25,7 +25,7 @@ public:
     virtual void removeStock(const Stock&) = 0;
 
     virtual bool placeBuyOrder(const Stock&, int, double) = 0;
-    virtual bool placeSellOrder(int, OrderType, int, std::string, int, double) = 0;
+    virtual bool placeSellOrder(const Stock&, int, double) = 0;
 
     virtual void handleOrder(const Order&) = 0;
     virtual void joinExchange(Njordx* exchange) = 0;

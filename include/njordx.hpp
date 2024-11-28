@@ -13,7 +13,6 @@ private:
     OrderBook<int, Order> buyOrders; /* Key: OrderID, Value: Order */
     OrderBook<int, Order> sellOrders; /* Key: OrderID, Value: Order */
     OrderBook<std::string, int> validStocks; /* Key: Stocksymbol, Value: StockID */
-    void matchOrders();
     std::vector<ITrader*> traders;
 public:
     // Constructor, no need for rule of 3
@@ -25,6 +24,7 @@ public:
     void addTrader(ITrader* trader) noexcept;
 
     // Display methods
+    void matchOrders();
     void displayOrderBook(const OrderType type) const;
 };
 
