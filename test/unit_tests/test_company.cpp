@@ -15,6 +15,7 @@ TEST_CASE("Testing initialization of company classes and getters and setters"){
     CHECK(company1.getTraderID() == 1);
     CHECK(company1.getCompanyName() == "Company1");
     CHECK(company1.getRegistrationNumber() == "12345678");
+    
     Stock google = Stock(1, "GOOGL", 100);
     company1.addStock(google);
     CHECK(company1.getStock("GOOGL") == google);
