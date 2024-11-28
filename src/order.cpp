@@ -14,7 +14,7 @@ OrderType Order::getOrderType() const {
     return type;
 }
 
-int Order::getTraderID() const {
+auto Order::getTraderID() const -> decltype(traderID) {
     return traderID;
 }
 
@@ -30,7 +30,7 @@ int Order::getQuantity() const {
     return quantity;
 }
 
-double Order::getPrice() const {
+auto Order::getPrice() const -> decltype(price) {
     return price;
 }
 
@@ -52,7 +52,7 @@ void Order::displayOrderDetails() const {
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
 }
 
-std::shared_ptr<Stock> Order::getStock() const {
+auto Order::getStock() const -> decltype(stock) {
     return stock;
 }
 
