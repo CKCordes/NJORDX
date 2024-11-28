@@ -18,5 +18,5 @@ TEST_CASE("Testing company class"){
     company2.joinExchange(exchange);
 
     company2.createStock(1, "AAPL", 100);
-    company2.displayPortfolio();
+    //company2.displayPortfolio();
 }

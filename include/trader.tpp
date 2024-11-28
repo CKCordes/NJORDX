@@ -15,7 +15,6 @@ class Trader : public ITrader {
     protected:
         int traderID;
         double balance;
-        OrderBook<std::string, Stock> ownedStocks;
         Njordx* exchange;
 
         //int getOrderID() const;
@@ -24,6 +23,7 @@ class Trader : public ITrader {
 
     public:
 
+        OrderBook<std::string, Stock> ownedStocks;
         Trader(int, double, Njordx*);
         Trader(int, double);
         ~Trader() = default;
@@ -85,13 +85,18 @@ void Trader<Derived>::addStock(const Stock stock) {
 
 template <typename Derived>
 void Trader<Derived>::removeStock(const Stock& stock) {
-    ownedStocks.erase(stock.getSymbol());
+    // We can only erase stocks that we own. 
+    if (ownedStocks.contains(stock.getSymbol())){
+        ownedStocks.erase(stock.getSymbol());
+    }
+    else {
+        std::cout << "Seller doesn't own the stock :(" << std::endl;
+    }
 }
 
 template <typename Derived>
 bool Trader<Derived>::placeBuyOrder(const Stock& stock, int quantity, double price) {
-    Order newOrder = Order(1, OrderType::BUY, traderID, std::make_shared<Stock>(stock), quantity, price);
-
+    Order newOrder = Order(OrderType::BUY, traderID, std::make_shared<Stock>(stock), quantity, price);
     try {
         exchange->addBuyOrder(&newOrder);
         return true;
@@ -108,7 +113,7 @@ Stock Trader<Derived>::getStock(const std::string& symbol) const {
 
 template <typename Derived>
 bool Trader<Derived>::placeSellOrder(const Stock&  stock, int quantity, double price) {
-    Order newOrder = Order(1, OrderType::SELL, traderID, std::make_shared<Stock>(stock), quantity, price);
+    Order newOrder = Order(OrderType::SELL, traderID, std::make_shared<Stock>(stock), quantity, price);
 
     try {
         exchange->addSellOrder(&newOrder);
