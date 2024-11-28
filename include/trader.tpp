@@ -11,7 +11,7 @@
 #include "ITrader.hpp"
 
 template <typename Derived>
-class Trader : ITrader {
+class Trader : public ITrader {
     protected:
         int traderID;
         double balance;
