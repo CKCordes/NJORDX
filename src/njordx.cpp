@@ -60,7 +60,7 @@ struct CompareOrder {
     }
 };
 
-// Handles matching orders and updating traders
+// Matches the 
 void Njordx::matchOrders() { 
     using namespace std::placeholders;
 
@@ -90,7 +90,6 @@ void Njordx::matchOrders() {
 
     for (auto buy_order : buyOrders) {
         for (auto sell_order : sellOrders) {
-            // Not quite needed with std::ref. However, it is there.
             match(std::ref(buy_order.value), std::ref(sell_order.value));
         }
     }
