@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <variant>
 // ----------------------------NOTER--------------------------------//
 // NJORDX bør være singleton
 
@@ -19,40 +20,42 @@
 // traders har en "pending orderbook"
 // --------------------------NOTER SLUT-----------------------------//
 
-
-
 // Constructor
 Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
 /* Inserting in StockOrderBook, has a strong guarentee */
-
-bool Njordx::addSellOrder(Order* order) noexcept {
-    if (!validStocks.contains(order->getStockSymbol())){
+bool Njordx::addOrder(Order* order) noexcept {
+    OrderType order_tp = order->getOrderType();
+    switch (order_tp)
+    {
+    case OrderType::SELL:
+        if (!validStocks.contains(order->getStockSymbol())){
         validStocks.insert(order->getStockSymbol(), order->getStockID());
-    } 
+        } 
 
-    sellOrders.insert(order->getOrderID(), *order);
-    
-    // Match orders
-    try {
-        matchOrders();
-    }
-    catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return false;
-    }
-    return true;
-}
+        sellOrders.insert(order->getOrderID(), *order);
 
-bool Njordx::addBuyOrder(Order* order) noexcept {
-    if (validStocks.contains(order->getStockSymbol())) {
-        buyOrders.insert(order->getOrderID(), *order);
-        matchOrders();
+        // Match orders
+        try {
+            matchOrders();
+        }
+        catch (const std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
         return true;
-    } 
-    else {
-      std::cout << "Stock " << order->getStockSymbol() << " is not on the market yet." << std::endl;
-      return false;
+    case OrderType::BUY:
+        if (validStocks.contains(order->getStockSymbol())) {
+            buyOrders.insert(order->getOrderID(), *order);
+            matchOrders();
+            return true;
+        } else {
+          std::cout << "Stock " << order->getStockSymbol() << " is not on the market yet." << std::endl;
+          return false;
+        }
+    default:
+        throw std::invalid_argument("Unimplemented order type");
+        return false;
     }
 }
 

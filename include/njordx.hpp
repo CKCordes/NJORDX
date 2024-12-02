@@ -19,8 +19,7 @@ public:
     Njordx();
 
     // Order management methods
-    bool addBuyOrder(Order* order) noexcept; // Not const to accomodate Strong guarentee on stockorderbook
-    bool addSellOrder(Order* order) noexcept; // Not const to accomodate Strong guarentee on stockorderbook
+    bool addOrder(Order* order) noexcept;
     void addTrader(ITrader* trader) noexcept;
 
     // Display methods

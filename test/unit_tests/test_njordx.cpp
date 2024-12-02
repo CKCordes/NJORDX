@@ -12,8 +12,8 @@ TEST_CASE("Adding orders to exchange") {
 
     Order buy_order(OrderType::BUY, 1, std::make_shared<Stock>(stock), 10, 100.0);
     Order sell_order(OrderType::SELL, 2, std::make_shared<Stock>(stock), 10, 100.0);
-    njordx.addSellOrder(&sell_order);
-    njordx.addBuyOrder(&buy_order);
+    njordx.addOrder(&sell_order);
+    njordx.addOrder(&buy_order);
 }
 
 TEST_CASE("Adding traders to exchange") {
@@ -29,8 +29,8 @@ TEST_CASE("Testing matching of orders") {
     //We should ONLY create and place orders through traders, not directly to the exchange
     //Order sell_order(OrderType::SELL, 2, std::make_shared<Stock>(stock), 10, 100.0);
     //Order buy_order(OrderType::BUY, 1, std::make_shared<Stock>(stock), 10, 100.0);
-    //njordx.addSellOrder(&sell_order);
-    //njordx.addBuyOrder(&buy_order);
+    //njordx.addOrder(&sell_order);
+    //njordx.addOrder(&buy_order);
 
     Njordx njordx;
     Stock stock(1, "AAPLE", 100);

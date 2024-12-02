@@ -114,7 +114,7 @@ bool Trader<Derived>::placeOrder(const Stock& stock, const OrderType order_tp, i
             std::cerr << "Trader has not joined an exchange\n";
             return false;
         }
-        exchange->addBuyOrder(&newOrder);
+        exchange->addOrder(&newOrder);
         return true;
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
