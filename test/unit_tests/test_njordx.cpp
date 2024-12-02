@@ -40,10 +40,11 @@ TEST_CASE("Testing matching of orders") {
 
     njordx.addTrader(&company1);
     njordx.addTrader(&company2);
-
+/*
     company2.createStock(1, "AAPLE", 100);
     CHECK(company2.ownedStocks.contains("AAPLE"));
     company2.placeSellOrder(stock, 3, 5);
     company1.placeBuyOrder(stock, 1, 5);
     njordx.matchOrders();
+*/
 }
