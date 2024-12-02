@@ -225,7 +225,7 @@ void OrderBook<Key, Value>::erase(const Key& key) {
     if(it != con.end()) {
         con.erase(it);
     } else {
-        throw std::out_of_range("Key not found"); // shouldnt be exception
+        throw std::out_of_range("The given key is not inside StockOrderBook"); // shouldnt be exception
     }
 }
 
