@@ -8,7 +8,7 @@
 #include "stock.hpp"
 #include "config.hpp"
 
-enum class OrderType { BUY, SELL };
+enum class OrderType { BUY, SELL, OPTION, FUTURE, SPOT };
 
 class Order {
 private:

@@ -22,11 +22,6 @@ public:
         std::cout << "Exchange: " << exchange << std::endl;
     }
 
-    void createStock(int stockID, const std::string& symbol, int numberOfStocks) {
-        Stock newStock(stockID, symbol, numberOfStocks);
-        ownedStocks.insert(symbol, newStock);
-    }
-
     // Additional company details accessors
     std::string getCompanyName() const {
         return companyName;

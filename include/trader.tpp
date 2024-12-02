@@ -4,11 +4,14 @@
 
 #include <vector>
 #include <string>
+#include <type_traits>
 #include "stock.hpp"
 #include "order.hpp"
 #include "njordx.hpp"
 #include "stockOrderBook.tpp"
 #include "ITrader.hpp"
+
+class Company; // Forward declaration
 
 template <typename Derived>
 class Trader : public ITrader {
@@ -17,10 +20,10 @@ class Trader : public ITrader {
         double balance;
         Njordx* exchange;
 
-        //int getOrderID() const;
         void buyStock(std::shared_ptr<Stock> stock, double total) override;
         void sellStock(std::shared_ptr<Stock> stock, double total) override;
 
+        // Add currency to balance
     public:
 
         OrderBook<std::string, Stock> ownedStocks;
@@ -35,8 +38,18 @@ class Trader : public ITrader {
         double getBalance() const override;
         void setBalance(double amount) override;
 
-        void addStock(const Stock) override;
+        // Enable if the derived class is a company
+        template <typename T = Derived>
+        typename std::enable_if<std::is_same<T, Company>::value, void>::type
+        createStock(int stockID, const std::string& symbol, int numberOfStocks) {
+            Stock newStock(stockID, symbol, numberOfStocks);
+            ownedStocks.insert(symbol, newStock);
+        }
+
+        void addStock(const Stock stock) override;
         void removeStock(const Stock&) override;
+        
+        
         Stock getStock(const std::string& symbol) const;
 
         bool placeOrder(const Stock&, const OrderType, int, double) override;
