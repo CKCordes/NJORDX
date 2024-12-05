@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "stock.hpp"
+#include "config.hpp"
 
 enum class OrderType { BUY, SELL };
 
@@ -19,21 +20,23 @@ private:
     double price;
     bool isFilled;
 
+    int constructOrderID();
+
 public:
     // Constructor
-    Order(int orderID, OrderType type, int traderID, std::shared_ptr<Stock> stock, int quantity, double price);
+    Order(OrderType type, int traderID, std::shared_ptr<Stock> stock, int quantity, double price);
 
     // Getters and setters
     int getOrderID() const;
     OrderType getOrderType() const;
     std::string getStockSymbol() const;
-    int getTraderID() const;
+    auto getTraderID() const -> decltype(traderID);
     int getStockID() const;
     int getQuantity() const;
-    double getPrice() const;
+    auto getPrice() const -> decltype(price);
     bool getIsFilled() const;
     void setIsFilled(bool status);
-    std::shared_ptr<Stock> getStock() const;
+    auto getStock() const -> decltype(stock);
 
     // Display order information
     void displayOrderDetails() const;

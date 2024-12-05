@@ -28,12 +28,19 @@ Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
 bool Njordx::addSellOrder(Order* order) noexcept {
     if (!validStocks.contains(order->getStockSymbol())){
-      validStocks.insert(order->getStockSymbol(), order->getStockID());
+        validStocks.insert(order->getStockSymbol(), order->getStockID());
     } 
+
     sellOrders.insert(order->getOrderID(), *order);
     
     // Match orders
-    matchOrders();
+    try {
+        matchOrders();
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
     return true;
 }
 
@@ -44,7 +51,7 @@ bool Njordx::addBuyOrder(Order* order) noexcept {
         return true;
     } 
     else {
-      std::cout << "Stock not valid" << std::endl;
+      std::cout << "Stock " << order->getStockSymbol() << " is not on the market yet." << std::endl;
       return false;
     }
 }
@@ -60,14 +67,13 @@ struct CompareOrder {
     }
 };
 
-// Handles matching orders and updating traders
+// Matches the 
 void Njordx::matchOrders() { 
     using namespace std::placeholders;
-
     // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! 
     const CompareOrder OrderComparator = CompareOrder();
     auto match = std::bind([this, OrderComparator](Order& buy, Order& sell) {
-        if (OrderComparator(buy, sell)) {
+        if (OrderComparator(buy, sell) && !(buy.getIsFilled() || sell.getIsFilled())) {
             int buyer_id = buy.getTraderID();
             int seller_id = sell.getTraderID();
 
@@ -87,10 +93,8 @@ void Njordx::matchOrders() {
             }
         }
     }, _1, _2);
-
     for (auto buy_order : buyOrders) {
         for (auto sell_order : sellOrders) {
-            // Not quite needed with std::ref. However, it is there.
             match(std::ref(buy_order.value), std::ref(sell_order.value));
         }
     }

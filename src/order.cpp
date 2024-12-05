@@ -2,8 +2,14 @@
 
 
 // Constructor
-Order::Order(int id, OrderType type, int traderID, std::shared_ptr<Stock> stock, int quantity, double price)
-    : orderID(id), type(type), traderID(traderID), stock(stock), quantity(quantity), price(price), isFilled(false) {}
+Order::Order(OrderType type, int traderID, std::shared_ptr<Stock> stock, int quantity, double price)
+    : type(type), traderID(traderID), stock(stock), quantity(quantity), price(price), isFilled(false) {
+        if constexpr (isAmericanEnv()) {
+            orderID = constructOrderID();
+        } else {
+            orderID = constructOrderID() * 1000;
+        }
+    }
 
 // Getters
 int Order::getOrderID() const {
@@ -14,7 +20,7 @@ OrderType Order::getOrderType() const {
     return type;
 }
 
-int Order::getTraderID() const {
+auto Order::getTraderID() const -> decltype(traderID) {
     return traderID;
 }
 
@@ -30,7 +36,7 @@ int Order::getQuantity() const {
     return quantity;
 }
 
-double Order::getPrice() const {
+auto Order::getPrice() const -> decltype(price) {
     return price;
 }
 
@@ -52,8 +58,24 @@ void Order::displayOrderDetails() const {
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
 }
 
-std::shared_ptr<Stock> Order::getStock() const {
+auto Order::getStock() const -> decltype(stock) {
     return stock;
+}
+
+int Order::constructOrderID(){
+    std::hash<double> doubleHasher;
+    std::hash<std::string> stringHasher;
+    std::hash<int> intHasher;
+
+    int moduloVal = 1000;
+
+    size_t hash = 0;
+    hash += doubleHasher(price) % moduloVal;;
+    hash += stringHasher(stock.get()->getSymbol()) % moduloVal;
+    hash += doubleHasher(quantity) % moduloVal;
+    hash += intHasher(traderID) % moduloVal;
+
+    return (static_cast<int>(hash % 1000));
 }
 
 bool Order::operator==(const Order& other) const {
