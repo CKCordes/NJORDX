@@ -3,7 +3,6 @@
 #include "njordx.hpp"
 
 
-// Constructing two company1 and validating
 TEST_CASE("Testing initialization of company classes and getters and setters"){
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
@@ -26,22 +25,37 @@ TEST_CASE("Testing initialization of company classes and getters and setters"){
 TEST_CASE("Testing delegating company constructors, joinExchange() and createStock()"){
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
-    
-    // Constructing company2 and validating    
+     
     Company company2(2, 200, "Company2", "87654321");
     CHECK(company2.getBalance() == 200);
     company2.joinExchange(exchange);
 
+    Stock apple = Stock(1, "AAPL", 100);
     company2.createStock(1, "AAPL", 100);
-    // TODO: Implement this test
+    CHECK(company2.getStock("AAPL") == apple);
     company2.displayPortfolio();
 }
 
-// TODO: lav denne test
 TEST_CASE("Testing company's order related methods"){
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
 
-    // Constructing company3
-    Company company3(3, 300, exchange, "Company3", "123");
+    Company company3(3, 100000, exchange, "Company3", "123");
+    Stock apple = Stock(1, "AAPL", 100);
+    Stock google = Stock(2, "GOOGL", 200);
+    company3.addStock(apple);
+    company3.addStock(google);
+
+    CHECK(company3.placeBuyOrder(google, 1, 100)); // ? der bliver printet at google ikke er på markedet, men den retunere stadig true. Er det rigtigt?
+    CHECK(company3.placeSellOrder(apple, 1, 100));
+
+    Order buyorder(OrderType::BUY, 3, std::make_shared<Stock>(google), 100, 50.0);    
+    Order sellorder(OrderType::SELL, 3, std::make_shared<Stock>(google), 100, 50.0);
+
+    CHECK(company3.getBalance() == 100000);
+    company3.handleOrder(sellorder);
+    CHECK(company3.getBalance() == 100000 + (100 * 50.0));
+    company3.handleOrder(buyorder);
+    CHECK(company3.getBalance() == 100000);
+    
 }
