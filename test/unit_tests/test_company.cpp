@@ -45,8 +45,8 @@ TEST_CASE("Testing company's order related methods"){
     company3.addStock(apple);
     company3.addStock(google);
 
-    CHECK(company3.placeBuyOrder(google, 1, 100)); // ? der bliver printet at google ikke er på markedet, men den retunere stadig true. Er det rigtigt?
-    CHECK(company3.placeSellOrder(apple, 1, 100));
+    CHECK(company3.placeOrder(google, OrderType::BUY, 1, 100)); // ? der bliver printet at google ikke er på markedet, men den retunere stadig true. Er det rigtigt?
+    CHECK(company3.placeOrder(apple, OrderType::SELL, 1, 100));
 
     Order buyorder(OrderType::BUY, 3, std::make_shared<Stock>(google), 100, 50.0);    
     Order sellorder(OrderType::SELL, 3, std::make_shared<Stock>(google), 100, 50.0);
