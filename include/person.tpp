@@ -15,6 +15,7 @@ public:
         : Trader<Person>(id, initialBalance, exchange), name(name), cpr(ssn) {}
     Person(int id, double initialBalance, const std::string& name, const std::string& ssn)
         : Trader<Person>(id, initialBalance), name(name), cpr(ssn) {}
+    Person() : Trader<Person>(0, 0.0), name(""), cpr("") {} // Default constructor
 
     // Overridden methods
     void printTrader() const {

@@ -12,6 +12,7 @@ public:
     :  Trader<Company>(id, initialBalance, exchange), companyName(name), cvr(regNumber)  {}
     Company(int id, double initialBalance, const std::string& name, const std::string& regNumber)
     : Trader<Company>(id, initialBalance), companyName(name), cvr(regNumber) {}
+    Company() : Trader<Company>(0, 0.0), companyName(""), cvr("") {} // Default constructor
     ~Company() {}
 
     // Overridden methods

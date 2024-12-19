@@ -21,11 +21,11 @@ TEST_EXECUTABLE := test
 
 
 all: $(BIN)/$(EXECUTABLE)
-
+# make run ARGS="person John 290700 1000"
 run: clean all
 	clear
 	@echo "Executing..."
-	./$(BIN)/$(EXECUTABLE)
+	./$(BIN)/$(EXECUTABLE) $(ARGS)
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 	@echo "Building..."
@@ -33,7 +33,7 @@ $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 
 clean:
 	@echo "Clearing..."
-	-rm $(BIN)/*
+	-rm ./$(BIN)/*
 
 # når du tilføjer tests: skriv $(SRC)/<implementation  af det du tester>.cpp før -o i den midterste linje nedenfor
 # For at køre dansk miljø, skriv "make unit_tests COUNTRY=DK"
