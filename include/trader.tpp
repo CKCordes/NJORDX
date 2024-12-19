@@ -21,7 +21,9 @@ class Trader : public ITrader {
         Njordx* exchange;
 
         void buyStock(std::shared_ptr<Stock> stock, double total) override;
-        void sellStock(std::shared_ptr<Stock> stock, double total) override;
+        void sellStock(std::shared_ptr<Stock> stock, double total) override; 
+        void addStock(const Stock stock) override;
+        void removeStock(const Stock&) override;
 
         // Add currency to balance
     public:
@@ -46,8 +48,7 @@ class Trader : public ITrader {
             ownedStocks.insert(symbol, newStock);
         }
 
-        void addStock(const Stock stock) override;
-        void removeStock(const Stock&) override;
+
         
         
         Stock getStock(const std::string& symbol) const;
@@ -56,7 +57,7 @@ class Trader : public ITrader {
 
         void handleOrder(const Order&) override;
 
-        void joinExchange(Njordx* exchange) override { this->exchange = exchange; };
+        void joinExchange(Njordx* exchange) override { this->exchange = exchange; exchange->addTrader(this); };
 
 };
 
@@ -67,7 +68,7 @@ Trader<Derived>::Trader(int id, double initialBalance)
 
 template <typename Derived>
 Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange) 
-    : traderID(id), balance(initialBalance), exchange(exchange) {}
+    : traderID(id), balance(initialBalance), exchange(exchange) {if (exchange != nullptr) exchange->addTrader(this);}
 
 
 
