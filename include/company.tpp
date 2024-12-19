@@ -14,10 +14,14 @@ public:
     : Trader<Company>(id, initialBalance), companyName(name), cvr(regNumber) {}
     ~Company() {}
 
+    // Overridden methods
+    void printTrader() const {
+        std::cout << "Trader ID: " << traderID << std::endl;
+    }
     void displayPortfolio() const {
         std::cout << "Company Name: " << companyName << std::endl;
         std::cout << "CVR: " << cvr << std::endl;
-        std::cout << "Trader ID: " << traderID << std::endl;
+        printTrader();
         std::cout << "Balance: " << balance << std::endl;
         std::cout << "Exchange: " << exchange << std::endl;
     }

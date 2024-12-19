@@ -17,10 +17,13 @@ public:
         : Trader<Person>(id, initialBalance), name(name), cpr(ssn) {}
 
     // Overridden methods
+    void printTrader() const {
+        std::cout << "Trader ID: " << traderID << std::endl;
+    }
     void displayPortfolio() const {
         std::cout << "Name: " << name << std::endl;
         std::cout << "CPR: " << cpr << std::endl;
-        std::cout << "Trader ID: " << traderID << std::endl;
+        printTrader(); 
         std::cout << "Balance: " << balance << std::endl;
         std::cout << "Exchange: " << exchange << std::endl;
     }

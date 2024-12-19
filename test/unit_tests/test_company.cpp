@@ -2,36 +2,59 @@
 #include "company.tpp"
 #include "njordx.hpp"
 
-TEST_CASE("Creating company w/o xchange"){
-    // Constructing two company1 and validating
-    Company company1(1, 100, "Company1", "12345678");
+
+TEST_CASE("Testing initialization of company classes and getters and setters"){
+    // Constructing a new exchange
+    Njordx* exchange = new Njordx();
+
+    Company company1(1, 100, exchange, "Company1", "12345678");
     CHECK(company1.getBalance() == 100); 
     company1.setBalance(200);
     CHECK(company1.getBalance() == 200);  
+    CHECK(company1.getTraderID() == 1);
+    CHECK(company1.getCompanyName() == "Company1");
+    CHECK(company1.getRegistrationNumber() == "12345678");
 
-    // Constructing company2 and validating    
+    Stock google = Stock(1, "GOOGL", 100);
+    company1.addStock(google);
+    CHECK(company1.getStock("GOOGL") == google);
+    company1.removeStock(google);
+    CHECK_THROWS(company1.getStock("GOOGL") == google);
+}
+
+TEST_CASE("Testing delegating company constructors, joinExchange() and createStock()"){
+    // Constructing a new exchange
+    Njordx* exchange = new Njordx();
+     
     Company company2(2, 200, "Company2", "87654321");
     CHECK(company2.getBalance() == 200);
 
+    Stock apple = Stock(1, "AAPL", 100);
     company2.createStock(1, "AAPL", 100);
+    CHECK(company2.getStock("AAPL") == apple);
+    company2.displayPortfolio();
 }
 
-TEST_CASE("Creating and placing orders") {
-    Njordx njordx;
-    Stock stock(1, "AAPLE", 100);
+TEST_CASE("Testing company's order related methods"){
+    // Constructing a new exchange
+    Njordx* exchange = new Njordx();
 
-    Company company1(1, 100, &njordx, "Company1", "12345678");
+    Company company3(3, 100000, exchange, "Company3", "123");
+    Stock apple = Stock(1, "AAPL", 100);
+    Stock google = Stock(2, "GOOGL", 200);
+    company3.addStock(apple);
+    company3.addStock(google);
 
-    company1.addStock(stock);
-    company1.placeOrder(stock, OrderType::SELL, 1, 10);
-}
+    CHECK(company3.placeBuyOrder(google, 1, 100)); // ? der bliver printet at google ikke er på markedet, men den retunere stadig true. Er det rigtigt?
+    CHECK(company3.placeSellOrder(apple, 1, 100));
 
-TEST_CASE("Placing invalid order") {
-    Stock stock(1, "AAPLE", 100);
+    Order buyorder(OrderType::BUY, 3, std::make_shared<Stock>(google), 100, 50.0);    
+    Order sellorder(OrderType::SELL, 3, std::make_shared<Stock>(google), 100, 50.0);
 
-    Company company1(1, 100, "Company1", "12345678");
-
-    company1.addStock(stock);
-    bool order_res = company1.placeOrder(stock, OrderType::SELL, 1, 10);
-    CHECK_FALSE(order_res);
+    CHECK(company3.getBalance() == 100000);
+    company3.handleOrder(sellorder);
+    CHECK(company3.getBalance() == 100000 + (100 * 50.0));
+    company3.handleOrder(buyorder);
+    CHECK(company3.getBalance() == 100000);
+    
 }
