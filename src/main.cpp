@@ -9,14 +9,12 @@
 #include "person.tpp"
 
 // Function prototypes
-void handleBuy(const std::string& name);
-void handleSell(const std::string& name);
+void handleBuy(const std::string& stockName);
+void handleSell(const std::string& stockName);
 void handleAvailable() {
     throw std::logic_error("Unimplemented");
 }
-void handleInfo() {
-    throw std::logic_error("Unimplemented");
-}
+void handleInfo(const std::variant<Person, Company>& user);
 void displayHelp();
 
 int main(int argc, char* argv[]) {
@@ -95,7 +93,7 @@ int main(int argc, char* argv[]) {
                 }
                 handleSell(stock);
             } else if (command == "info") {
-                handleInfo();
+                handleInfo(user);
             } else if (command == "available") {
                 handleAvailable();
             } else if (command == "help") {
@@ -124,12 +122,20 @@ void handleAdd(const std::string& num1, const std::string& num2) {
 }
 
 // Function to handle the "greet" command
-void handleBuy(const std::string& stock) {
+void handleBuy(const std::string& stockName) {
     throw std::logic_error("Unimplemented");
 }
 
-void handleSell(const std::string& stock) {
+void handleSell(const std::string& stockName) {
     throw std::logic_error("Unimplemented");
+}
+
+void handleInfo(const std::variant<Person, Company>& user) {
+    if (std::holds_alternative<Person>(user)) {
+        std::get<Person>(user).displayPortfolio();
+    } else {
+        std::get<Company>(user).displayPortfolio();
+    }
 }
 
 // Function to display the help message
