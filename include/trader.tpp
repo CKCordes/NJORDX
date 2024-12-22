@@ -18,13 +18,13 @@ class Trader : public ITrader {
     protected:
         int traderID;
         double balance;
-        Njordx* exchange;
 
         void buyStock(std::shared_ptr<Stock> stock, double total) override;
         void sellStock(std::shared_ptr<Stock> stock, double total) override;
 
         // Add currency to balance
     public:
+        Njordx* exchange;
 
         OrderBook<std::string, Stock> ownedStocks;
         Trader(int, double, Njordx*);

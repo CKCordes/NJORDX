@@ -9,12 +9,12 @@
 #include "person.tpp"
 
 // Function prototypes
-void handleBuy(const std::string& name);
-void handleSell(const std::string& name);
-void handleAvailable() {
+void handleBuy(const std::variant<Person, Company> user, const std::string& stock);
+void handleSell(const std::variant<Person, Company> user, const std::string& stock);
+void handleAvailable(const std::variant<Person, Company> user) {
     throw std::logic_error("Unimplemented");
 }
-void handleInfo() {
+void handleInfo(const std::variant<Person, Company> user) {
     throw std::logic_error("Unimplemented");
 }
 void displayHelp();
@@ -32,9 +32,9 @@ int main(int argc, char* argv[]) {
     // Create exchange
     Njordx* exchange = new Njordx();
     
-    std::string user_tp = argv[1];
-    std::string name = argv[2];
-    std::string reg_number = argv[3];
+    std::string user_tp = std::move(argv[1]);
+    std::string name = std::move(argv[2]);
+    std::string reg_number = std::move(argv[3]);
     int balance = 0;
     try {
         balance = std::stoi(argv[4]);
@@ -47,6 +47,7 @@ int main(int argc, char* argv[]) {
     }
 
     // User er en variant, sombåde kan være en person eller en company
+    // Not really useful as we only define it once, but it's a good example of how to use std::variant
     std::variant<Person, Company> user;
 
     if (user_tp == "person") {
@@ -54,7 +55,7 @@ int main(int argc, char* argv[]) {
         // std::cout << "Creating a new person with name: " << name << " and reg. number: " << reg_number << "\n";
     } else if (user_tp == "company") {
         // std::cout << "Creating a new company with name: " << name << " and reg. number: " << reg_number << "\n";
-        user = Company(1, balance, name, reg_number);
+        user = Company(1, balance, exchange, name, reg_number);
     } else {
         std::cerr << "Error: Unknown user type. Use 'person' or 'company'.\n";
         return 1;
@@ -110,27 +111,26 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-// Function to handle the "add" command
-void handleAdd(const std::string& num1, const std::string& num2) {
-    try {
-        int a = std::stoi(num1);
-        int b = std::stoi(num2);
-        std::cout << "Result: " << a + b << "\n";
-    } catch (const std::invalid_argument&) {
-        throw std::invalid_argument("Invalid input: '" + num1 + "' or '" + num2 + "' is not a number.");
-    } catch (const std::out_of_range&) {
-        throw std::out_of_range("Number out of range. Please use smaller values.");
-    }
-}
-
 // Function to handle the "greet" command
-void handleBuy(const std::string& stock) {
+void handleBuy(const std::variant<Person, Company> user, const std::string& stock) {
+
+}
+
+void handleSell(const std::variant<Person, Company> user, const std::string& stock) {
     throw std::logic_error("Unimplemented");
 }
 
-void handleSell(const std::string& stock) {
+void handleAvailable(const std::variant<Person, Company> user) {
     throw std::logic_error("Unimplemented");
 }
+
+void handleInfo(const std::variant<Person, Company> user) {
+    // Display information about the user
+    std::visit([](auto&& user) {
+        user.displayPortfolio();
+    }, user);
+}
+
 
 // Function to display the help message
 void displayHelp() {
