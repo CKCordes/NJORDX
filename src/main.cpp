@@ -11,12 +11,8 @@
 // Function prototypes
 void handleBuy(const std::variant<Person, Company> user, const std::string& stock);
 void handleSell(const std::variant<Person, Company> user, const std::string& stock);
-void handleAvailable(const std::variant<Person, Company> user) {
-    throw std::logic_error("Unimplemented");
-}
-void handleInfo(const std::variant<Person, Company> user) {
-    throw std::logic_error("Unimplemented");
-}
+void handleAvailable(const std::variant<Person, Company> user);
+void handleInfo(const std::variant<Person, Company> user);
 void displayHelp();
 
 int main(int argc, char* argv[]) {
@@ -87,18 +83,18 @@ int main(int argc, char* argv[]) {
                 if (stock.empty()) {
                     throw std::invalid_argument("Usage: buy <stock>");
                 }
-                handleBuy(stock);
+                handleBuy(user, stock);
             } else if (command == "sell") {
                 std::string stock;
                 iss >> stock;
                 if (stock.empty()) {
                     throw std::invalid_argument("Usage: sell <stock>");
                 }
-                handleSell(stock);
+                handleSell(user, stock);
             } else if (command == "info") {
-                handleInfo();
+                handleInfo(user);
             } else if (command == "available") {
-                handleAvailable();
+                handleAvailable(user);
             } else if (command == "help") {
                 displayHelp();
             } else {
@@ -111,17 +107,24 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-// Function to handle the "greet" command
 void handleBuy(const std::variant<Person, Company> user, const std::string& stock) {
-
+    std::cout << "Unimplemented\n";
 }
 
 void handleSell(const std::variant<Person, Company> user, const std::string& stock) {
-    throw std::logic_error("Unimplemented");
+    std::cout << "Unimplemented\n";
 }
 
 void handleAvailable(const std::variant<Person, Company> user) {
-    throw std::logic_error("Unimplemented");
+    // Access exchange through the user and show available stocks
+    std::visit([](auto&& user) {
+        // Check if excange is nullptr
+        if (user.exchange == nullptr) {
+            std::cerr << "User has not joined an exchange\n";
+            return;
+        }
+        user.exchange->displayAvailableStocks();
+    }, user);
 }
 
 void handleInfo(const std::variant<Person, Company> user) {

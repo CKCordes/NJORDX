@@ -25,6 +25,7 @@ public:
     // Display methods
     void matchOrders();
     void displayOrderBook(const OrderType type) const;
+    void displayAvailableStocks() const;
 };
 
 #endif // NJORDX_H

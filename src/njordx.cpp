@@ -114,3 +114,14 @@ void Njordx::displayOrderBook(const OrderType type) const {
     }
 }
 
+void Njordx::displayAvailableStocks() const {
+    std::cout << "Available stocks:\n";
+    std::cout << "Dummy stocks\n";
+    /*
+    for (auto stock : validStocks) {
+        std::cout << stock.key << " ";
+    }
+    */
+    std::cout << std::endl;
+}
+
