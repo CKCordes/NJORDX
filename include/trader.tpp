@@ -54,7 +54,7 @@ class Trader : public ITrader {
 
         Stock getStock(const std::string& symbol) const;
 
-        bool placeOrder(const Stock&, const OrderType, int, double) override;
+        void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) override;
 
         void handleOrder(const Order&) override;
 
@@ -109,23 +109,21 @@ void Trader<Derived>::removeStock(std::shared_ptr<Stock> stock) {
 }
 
 template <typename Derived>
-bool Trader<Derived>::placeOrder(const Stock& stock, const OrderType order_tp, int quantity, double price) {
-    if (order_tp == OrderType::SELL && !ownedStocks.contains(stock.getSymbol())) {
+void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const OrderType order_tp, int quantity, double price) {
+    if (order_tp == OrderType::SELL && !ownedStocks.contains(stock.get()->getSymbol())) {
         std::cerr << "Trader does not own the stock\n";
-        return false;
+        return;
     }
     
-    Order newOrder = Order(order_tp, traderID, std::make_shared<Stock>(stock), quantity, price);
+    Order newOrder = Order(order_tp, traderID, stock, quantity, price);
     try {
         if (exchange == nullptr) { 
             std::cerr << "Trader has not joined an exchange\n";
-            return false;
+            return;
         }
         exchange->addOrder(&newOrder);
-        return true;
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
-        return false;
     }
 }
 

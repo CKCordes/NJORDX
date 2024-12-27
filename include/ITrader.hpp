@@ -25,7 +25,7 @@ public:
     virtual void removeStock(std::shared_ptr<Stock>) = 0;
     virtual bool ownsStock(const std::string symbol) = 0;
 
-    virtual bool placeOrder(const Stock&, const OrderType, int, double) = 0;
+    virtual void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) = 0;
 
     virtual void handleOrder(const Order&) = 0;
     virtual void joinExchange(Njordx* exchange) = 0;
