@@ -13,6 +13,8 @@ using Variant = std::variant<std::shared_ptr<Person>, std::shared_ptr<Company>>;
 // Function prototypes
 void handleBuy(const Variant user, const std::string& stock, int quantity, double price);
 void handleSell(const Variant user, const std::string& stock, int quatity, double price);
+void handleOrder(const Variant user, const std::string& stock, int quatity, double price, std::string orderType);
+
 void handleAvailable(const Variant user);
 void handleInfo(Variant user);
 void handleCreate(const Variant user, const std::string symbol, const int num);
@@ -80,7 +82,7 @@ int main(int argc, char* argv[]) {
             std::string command;
             iss >> command;
 
-            if (command == "buy") {
+            if (command == "buy" || command == "sell") {
                 std::string stock, quantity_t, price_t;
                 iss >> stock;
                 if (stock.empty()) {
@@ -109,36 +111,8 @@ int main(int argc, char* argv[]) {
                     return 1;
                 }
 
-                handleBuy(user, stock, quantity, price);
-            } else if (command == "sell") {
-                std::string stock, quantity_t, price_t;
-                iss >> stock;
-                if (stock.empty()) {
-                    throw std::invalid_argument("Usage: sell <stock>");
-                }
-                int quantity;
-                iss >> quantity_t;
-                try {
-                    quantity = stoi(quantity_t);
-                } catch (const std::invalid_argument&) {
-                    std::cerr << "Error: Invalid quantity. Please provide a number.\n";
-                    return 1;
-                } catch (const std::out_of_range&) {
-                    std::cerr << "Error: Quantity out of range. Please use a smaller value.\n";
-                    return 1;
-                }
-                double price;
-                iss >> price_t;
-                try {
-                    price = stod(price_t);
-                } catch (const std::invalid_argument&) {
-                    std::cerr << "Error: Invalid price. Please provide a number.\n";
-                    return 1;
-                } catch (const std::out_of_range&) {
-                    std::cerr << "Error: Price out of range. Please use a smaller value.\n";
-                    return 1;
-                }
-                handleSell(user, stock, quantity, price);
+                handleOrder(user, stock, quantity, price, command);
+            
             } else if (command == "info") {
                 handleInfo(user);
             } else if (command == "available") {
@@ -210,6 +184,16 @@ void handleSell(const Variant user, const std::string& stock, int quantity, doub
 
         user->placeOrder(stockPtr, OrderType::SELL, quantity, price);
     }, user);
+}
+
+void handleOrder(const Variant user, const std::string& stock, int quantity, double price, std::string orderType) {
+    if (orderType == "buy") {
+        handleBuy(user, stock, quantity, price);
+    } else if (orderType == "sell") {
+        handleSell(user, stock, quantity, price);
+    } else {
+        throw std::invalid_argument("Unknown order type: " + orderType);
+    }
 }
 
 void handleAvailable(const Variant user) {

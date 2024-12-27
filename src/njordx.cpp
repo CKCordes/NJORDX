@@ -119,19 +119,16 @@ void Njordx::matchOrders() {
 }
 
 //Display orderbooks. Hallo en eller anden fix det her lort, der er så meget kopiering
-void Njordx::displayOrderBook(const OrderType type) { // missing const
-    if (type == OrderType::SELL) {
-        std::cout << "Sell orders:\n";
-        for (auto order : sellOrders) {
-            std::cout << "Stock: " << order.value.get()->getStockSymbol() << ", price: " << order.value.get()->getPrice() << " filled: " << order.value.get()->getIsFilled() << std::endl;
-        }
-    } else if (type == OrderType::BUY) {
-        std::cout << "Buy orders:\n";
-        for (auto order : buyOrders) {
-            std::cout << "Stock: " << order.value.get()->getStockSymbol() << ", price: " << order.value.get()->getPrice() << " filled: " << order.value.get()->getIsFilled() << std::endl;
-        }
-    } else {
-        throw std::invalid_argument("Invalid order type");
+void Njordx::displayOrderBook(const OrderType type) {
+    auto& orders = (type == OrderType::SELL) ? sellOrders : buyOrders;
+    std::string orderTypeStr = (type == OrderType::SELL) ? "Sell" : "Buy";
+
+    std::cout << orderTypeStr << " orders:\n";
+    for (auto& order : orders) {
+        std::cout << "Stock: " << order.value->getStockSymbol() 
+                  << ", price: " << order.value->getPrice() 
+                  << ", filled: " << order.value->getIsFilled() 
+                  << std::endl;
     }
 }
 

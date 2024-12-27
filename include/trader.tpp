@@ -170,8 +170,4 @@ bool Trader<Derived>::ownsStock(const std::string symbol) {
     return ownedStocks.contains(symbol);
 }
 
-
-
-
-
 #endif // TRADER_H
