@@ -4,7 +4,9 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include <type_traits>
+#include <memory>
 #include "stock.hpp"
 #include "order.hpp"
 #include "njordx.hpp"
@@ -26,13 +28,13 @@ class Trader : public ITrader {
     public:
         Njordx* exchange;
 
-        OrderBook<std::string, Stock> ownedStocks;
+        OrderBook<std::string, std::shared_ptr<Stock>> ownedStocks;
         Trader(int, double, Njordx*);
         Trader(int, double);
         ~Trader() = default;
 
         void printTrader() const override;
-        void displayPortfolio() const override;
+        void displayPortfolio() override;
 
         int getTraderID() const override { return traderID; };
         double getBalance() const override;
@@ -42,13 +44,12 @@ class Trader : public ITrader {
         template <typename T = Derived>
         typename std::enable_if<std::is_same<T, Company>::value, void>::type
         createStock(int stockID, const std::string& symbol, int numberOfStocks) {
-            Stock newStock(stockID, symbol, numberOfStocks);
+            auto newStock = std::make_shared<Stock>(stockID, symbol, numberOfStocks);
             ownedStocks.insert(symbol, newStock);
         }
 
-        void addStock(const Stock stock) override;
-        void removeStock(const Stock&) override;
-        
+        void addStock(std::shared_ptr<Stock> stock) override;
+        void removeStock(std::shared_ptr<Stock>) override;
         
         Stock getStock(const std::string& symbol) const;
 
@@ -76,8 +77,8 @@ void Trader<Derived>::printTrader() const {
     static_cast<const Derived*>(this)->printTrader();}
 
 template <typename Derived>
-void Trader<Derived>::displayPortfolio() const {
-    static_cast<const Derived*>(this)->displayPortfolio();
+void Trader<Derived>::displayPortfolio() {
+    static_cast<Derived*>(this)->displayPortfolio();
 }
 
 template <typename Derived>
@@ -91,15 +92,15 @@ void Trader<Derived>::setBalance(double amount) {
 }
 
 template <typename Derived>
-void Trader<Derived>::addStock(const Stock stock) {
-    ownedStocks.insert(stock.getSymbol(), stock);
+void Trader<Derived>::addStock(std::shared_ptr<Stock> stock) {
+    ownedStocks.insert(stock->getSymbol(), stock);
 }
 
 template <typename Derived>
-void Trader<Derived>::removeStock(const Stock& stock) {
+void Trader<Derived>::removeStock(std::shared_ptr<Stock> stock) {
     // We can only erase stocks that we own. 
-    if (ownedStocks.contains(stock.getSymbol())){
-        ownedStocks.erase(stock.getSymbol());
+    if (ownedStocks.contains(stock->getSymbol())){
+        ownedStocks.erase(stock->getSymbol());
     }
     else {
         std::cout << "Seller doesn't own the stock :(" << std::endl;
@@ -124,7 +125,7 @@ bool Trader<Derived>::placeOrder(const Stock& stock, const OrderType order_tp, i
 
 template <typename Derived>
 Stock Trader<Derived>::getStock(const std::string& symbol) const {
-    return ownedStocks.get(symbol);
+    return *(ownedStocks.get(symbol));
 }
 
 template <typename Derived>
@@ -151,13 +152,13 @@ void Trader<Derived>::handleOrder(const Order& order) {
 template <typename Derived>
 void Trader<Derived>::buyStock(std::shared_ptr<Stock> stock, double total) {
     balance -= total;
-    addStock(*stock);
+    addStock(stock);
 }
 
 template <typename Derived>
 void Trader<Derived>::sellStock(std::shared_ptr<Stock> stock, double total) {
     balance += total;
-    removeStock(*stock);
+    removeStock(stock);
 }
 
 

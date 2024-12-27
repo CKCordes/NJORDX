@@ -12,7 +12,8 @@
 void handleBuy(const std::variant<Person, Company> user, const std::string& stock);
 void handleSell(const std::variant<Person, Company> user, const std::string& stock);
 void handleAvailable(const std::variant<Person, Company> user);
-void handleInfo(const std::variant<Person, Company> user);
+void handleInfo(std::variant<Person, Company> user);
+void handleCreate(const std::variant<Person, Company> user, const std::string symbol, const int num);
 void displayHelp();
 
 int main(int argc, char* argv[]) {
@@ -97,6 +98,24 @@ int main(int argc, char* argv[]) {
                 handleAvailable(user);
             } else if (command == "help") {
                 displayHelp();
+            } else if (command == "create") { 
+                std::string sym, quant_t;
+                int quant;
+                iss >> sym;
+                iss >> quant_t;
+                if (sym.empty() || quant_t.empty()) {
+                    throw std::invalid_argument("Usage: create <name> <quantity>");
+                }
+                try {
+                    quant = stoi(quant_t);
+                } catch (const std::invalid_argument&) {
+                    std::cerr << "Error: Invalid balance. Please provide a number.\n";
+                    return 1;
+                } catch (const std::out_of_range&) {
+                    std::cerr << "Error: Balance out of range. Please use a smaller value.\n";
+                    return 1;
+                }
+                handleCreate(user, sym, quant);
             } else {
                 throw std::invalid_argument("Unknown command: " + command + ". Type 'help' for a list of commands.");
             }
@@ -127,21 +146,35 @@ void handleAvailable(const std::variant<Person, Company> user) {
     }, user);
 }
 
-void handleInfo(const std::variant<Person, Company> user) {
+void handleInfo(std::variant<Person, Company> user) {
     // Display information about the user
     std::visit([](auto&& user) {
         user.displayPortfolio();
     }, user);
 }
 
+void handleCreate(std::variant<Person, Company> user, const std::string symbol, const int num) {
+    if(!std::holds_alternative<Company>(user)) {
+        std::cerr << "You are not a company, you cannot create stocks\n";
+        return;
+    }
+    static int stockID = 0; // Ensures we have unique IDs
+    auto& company = std::get<Company>(user);
+    company.createStock(stockID, symbol, num);
+    if (company.ownedStocks.contains(symbol)) {
+        std::cout << "Stock created successfully\n";
+    }
+    stockID++;
+}
 
 // Function to display the help message
 void displayHelp() {
     std::cout << "Available commands:\n"
-              << "  info                  Display information about the user\n"
-              << "  buy                   Buy stocks\n"
-              << "  sell                  Sell stocks\n"
-              << "  available             Display available stocks\n"
-              << "  help                  Display this help message\n"
-              << "  exit                  Exit the program\n";
+              << "  info                        Display information about the user\n"
+              << "  buy <stock>                 Buy stocks\n"
+              << "  sell <stock>                Sell stocks\n"
+              << "  available                   Display available stocks\n"
+              << "  create <name> <quantity>    Create a stock (only available if you are a company)\n" // CHANGE TO NOT BE ABLE TO SEE
+              << "  help                        Display this help message\n"
+              << "  exit                        Exit the program\n";
 }

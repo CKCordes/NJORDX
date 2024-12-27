@@ -21,12 +21,18 @@ public:
     void printTrader() const {
         std::cout << "Trader ID: " << traderID << std::endl;
     }
-    void displayPortfolio() const {
+    void displayPortfolio() {
         std::cout << "Name: " << name << std::endl;
         std::cout << "CPR: " << cpr << std::endl;
         printTrader(); 
         std::cout << "Balance: " << balance << std::endl;
         std::cout << "Exchange: " << exchange << std::endl;
+        // should print owned stocks
+        std::cout << "Owned stocks: " << std::endl;
+
+        for (auto kv : ownedStocks) {
+            std::cout << "Stock: " << kv.key << std::endl;
+        }
     }
 
 

@@ -96,3 +96,14 @@ TEST_CASE("Inserting many elements") {
     }
     CHECK(orderBook.contains(rand() % 1000) == true);
 }
+
+// Testcase for printing elements
+TEST_CASE("Printing elements") {
+    OrderBook<int, float> orderBook;
+    for (int i = 0; i < 10; i++) {
+        orderBook.insert(i, i);
+    }
+    for (auto it = orderBook.begin(); it != orderBook.end(); ++it) {
+        std::cout << it->key << " " << it->value << std::endl;
+    }
+}
