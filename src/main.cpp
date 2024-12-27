@@ -94,6 +94,7 @@ int main(int argc, char* argv[]) {
                 handleSell(user, stock);
             } else if (command == "info") {
                 handleInfo(user);
+                handleInfo(user);
             } else if (command == "available") {
                 handleAvailable(user);
             } else if (command == "help") {
@@ -165,6 +166,14 @@ void handleCreate(std::variant<Person, Company> user, const std::string symbol, 
         std::cout << "Stock created successfully\n";
     }
     stockID++;
+}
+
+void handleInfo(const std::variant<Person, Company>& user) {
+    if (std::holds_alternative<Person>(user)) {
+        std::get<Person>(user).displayPortfolio();
+    } else {
+        std::get<Company>(user).displayPortfolio();
+    }
 }
 
 // Function to display the help message
