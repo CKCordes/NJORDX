@@ -9,7 +9,7 @@ TEST_CASE("Testing init of NJORDX"){
 }
 TEST_CASE("Adding orders to exchange") {
     Njordx njordx;
-    Stock stock(1, "AAPL", 100);
+    Stock stock(1_ID, "AAPL"_SYM, 100_QTY);
 
     Order buy_order(OrderType::BUY, 1, std::make_shared<Stock>(stock), 10, 100.0);
     Order sell_order(OrderType::SELL, 2, std::make_shared<Stock>(stock), 10, 100.0);
@@ -34,7 +34,7 @@ TEST_CASE("Testing matching of orders") {
     //njordx.addOrder(&buy_order);
 
     Njordx njordx;
-    Stock stock(1, "AAPLE", 100);
+    Stock stock(1_ID, "AAPLE"_SYM, 100_QTY);
 
     Company company1(1, 100, "Company1", "12345678");
     company1.joinExchange(&njordx);

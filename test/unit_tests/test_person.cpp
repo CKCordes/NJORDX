@@ -46,7 +46,7 @@ TEST_CASE("Testing person's order related methods"){
 
     // Apple creating stocks and placing a sell order
     Company apple(11, 100, exchange, "Company1", "12345678");
-    apple.createStock(1, "AAPL", 100);
+    apple.createStock(1_ID, "AAPL"_SYM, 100_QTY);
     Stock stock = apple.getStock("AAPL");
     apple.placeOrder(stock, OrderType::SELL, 1, 100);
 
@@ -93,7 +93,7 @@ TEST_CASE("Init of person"){
 
 TEST_CASE("adding stock as person (negative)") {
     Person person1(1, 100, "Person1", "12345678");
-    Stock stock(1, "AAPL", 100);
+    Stock stock(1_ID, "AAPL"_SYM, 100_QTY);
     //person1.addStock(stock);
     CHECK_FALSE(person1.ownsStock("AAPL"));
 }

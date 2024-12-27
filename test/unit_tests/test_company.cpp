@@ -29,8 +29,8 @@ TEST_CASE("Testing delegating company constructors, joinExchange() and createSto
     CHECK(company2.getBalance() == 200);
     company2.joinExchange(exchange);
 
-    Stock apple = Stock(1, "AAPL", 100);
-    company2.createStock(1, "AAPL", 100); 
+    Stock apple = Stock(1_ID, "AAPL"_SYM, 100_QTY);
+    company2.createStock(1_ID, "AAPL"_SYM, 100_QTY); 
     CHECK(company2.getStock("AAPL") == apple);
     company2.displayPortfolio();
 }
@@ -42,7 +42,7 @@ TEST_CASE("Testing company's order related methods"){
     Company company3(3, 100000, exchange, "Company3", "123");
     Company company4(4, 100000, exchange, "Company4", "123");
 
-    company3.createStock(1, "CMPNY3", 100);
+    company3.createStock(1_ID, "CMPNY3"_SYM, 100_QTY);
     
     Stock stock = company3.getStock("CMPNY3");
     CHECK(company3.placeOrder(stock, OrderType::SELL, 1, 200));
@@ -53,7 +53,7 @@ TEST_CASE("Testing company's order related methods"){
     CHECK(company4.getBalance() == 100000);
     CHECK(company2.getBalance() == 0);
 
-    company3.createStock(1, "CMPNY3", 100);
+    company3.createStock(1_ID, "CMPNY3"_SYM, 100_QTY);
     CHECK(company3.placeOrder(stock, OrderType::SELL, 1, 150));
 
     CHECK(company2.getBalance() == 0);
