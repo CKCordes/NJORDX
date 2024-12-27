@@ -52,7 +52,7 @@ class Trader : public ITrader {
             ownedStocks.insert(symbol, newStock);
         }
 
-        Stock getStock(const std::string& symbol) const;
+        std::shared_ptr<Stock> getStock(const std::string& symbol) const;
 
         void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) override;
 
@@ -128,8 +128,8 @@ void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const Order
 }
 
 template <typename Derived>
-Stock Trader<Derived>::getStock(const std::string& symbol) const {
-    return *(ownedStocks.get(symbol));
+std::shared_ptr<Stock> Trader<Derived>::getStock(const std::string& symbol) const {
+    return ownedStocks.get(symbol);
 }
 
 template <typename Derived>

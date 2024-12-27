@@ -12,7 +12,7 @@ using Variant = std::variant<std::shared_ptr<Person>, std::shared_ptr<Company>>;
 
 // Function prototypes
 void handleBuy(const Variant user, const std::string& stock, int quantity, double price);
-void handleSell(const Variant user, const std::string& stock);
+void handleSell(const Variant user, const std::string& stock, int quatity, double price);
 void handleAvailable(const Variant user);
 void handleInfo(Variant user);
 void handleCreate(const Variant user, const std::string symbol, const int num);
@@ -111,12 +111,34 @@ int main(int argc, char* argv[]) {
 
                 handleBuy(user, stock, quantity, price);
             } else if (command == "sell") {
-                std::string stock;
+                std::string stock, quantity_t, price_t;
                 iss >> stock;
                 if (stock.empty()) {
                     throw std::invalid_argument("Usage: sell <stock>");
                 }
-                handleSell(user, stock);
+                int quantity;
+                iss >> quantity_t;
+                try {
+                    quantity = stoi(quantity_t);
+                } catch (const std::invalid_argument&) {
+                    std::cerr << "Error: Invalid quantity. Please provide a number.\n";
+                    return 1;
+                } catch (const std::out_of_range&) {
+                    std::cerr << "Error: Quantity out of range. Please use a smaller value.\n";
+                    return 1;
+                }
+                double price;
+                iss >> price_t;
+                try {
+                    price = stod(price_t);
+                } catch (const std::invalid_argument&) {
+                    std::cerr << "Error: Invalid price. Please provide a number.\n";
+                    return 1;
+                } catch (const std::out_of_range&) {
+                    std::cerr << "Error: Price out of range. Please use a smaller value.\n";
+                    return 1;
+                }
+                handleSell(user, stock, quantity, price);
             } else if (command == "info") {
                 handleInfo(user);
             } else if (command == "available") {
@@ -144,6 +166,9 @@ int main(int argc, char* argv[]) {
             } else {
                 throw std::invalid_argument("Unknown command: " + command + ". Type 'help' for a list of commands.");
             }
+            // Create bogus buy order so stocks can be sold
+            handleBuy(user, "aapl", 10, 100.0);
+
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << "\n";
         }
@@ -163,12 +188,27 @@ void handleBuy(const Variant user, const std::string& stock, int quantity, doubl
         auto stockPtr = std::make_shared<Stock>(-1, stock, quantity); // Reconsider how this is done
         user->placeOrder(stockPtr, OrderType::BUY, quantity, price);
     }, user);
-    std::cout << "User: " << &user << "Stock " << stock << std::endl;
 }
 
-void handleSell(const Variant user, const std::string& stock) {
-    std::cout << "Unimplemented\n";
-    std::cout << "User: " << &user << "Stock " << stock << std::endl;
+void handleSell(const Variant user, const std::string& stock, int quantity, double price) {
+    std::visit([&](auto&& user) {
+        // Check if excange is nullptr
+        if (user->exchange == nullptr) {
+            std::cerr << "User has not joined an exchange\n";
+            return;
+        }
+        // Find the stock that is to be sold. This throws if the user does not own the stock
+        // Im sorry søren, its really not the best way
+        auto stockPtr = user->getStock(stock);
+        
+        // Check if the user has enough stocks to sell
+        if (stockPtr->getNumberOfStocks() < quantity) {
+            std::cerr << "User does not own enough stocks\n";
+            return;
+        }
+
+        user->placeOrder(stockPtr, OrderType::SELL, quantity, price);
+    }, user);
 }
 
 void handleAvailable(const Variant user) {
