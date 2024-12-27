@@ -10,8 +10,8 @@
 
 class Njordx {
 private:   
-    OrderBook<int, Order> buyOrders; /* Key: OrderID, Value: Order */
-    OrderBook<int, Order> sellOrders; /* Key: OrderID, Value: Order */
+    OrderBook<int, std::shared_ptr<Order>> buyOrders; /* Key: OrderID, Value: Order */
+    OrderBook<int, std::shared_ptr<Order>> sellOrders; /* Key: OrderID, Value: Order */
     OrderBook<std::string, int> validStocks; /* Key: Stocksymbol, Value: StockID */
     std::vector<ITrader*> traders;
 public:
@@ -19,13 +19,13 @@ public:
     Njordx();
 
     // Order management methods
-    bool addOrder(Order* order) noexcept;
+    bool addOrder(std::shared_ptr<Order> order) noexcept;
     void addTrader(ITrader* trader) noexcept;
 
     // Display methods
     void matchOrders();
-    void displayOrderBook(const OrderType type) const;
-    void displayAvailableStocks() const;
+    void displayOrderBook(const OrderType type); // missing const
+    void displayAvailableStocks(); // missing const
 };
 
 #endif // NJORDX_H

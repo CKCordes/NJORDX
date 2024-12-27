@@ -168,7 +168,8 @@ int main(int argc, char* argv[]) {
             }
             // Create bogus buy order so stocks can be sold
             handleBuy(user, "aapl", 10, 100.0);
-
+            exchange->displayOrderBook(OrderType::BUY);
+            exchange->displayOrderBook(OrderType::SELL);
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << "\n";
         }
@@ -245,8 +246,8 @@ void handleCreate(Variant user, const std::string symbol, const int num) {
 void displayHelp() {
     std::cout << "Available commands:\n"
               << "  info                                    Display information about the user\n"
-              << "  buy <stock> <quantity> <Total price>    Buy stocks\n"
-              << "  sell <stock>                            Sell stocks\n"
+              << "  buy <stock> <quantity> <total price>    Buy stocks\n"
+              << "  sell <stock> <quantity> <total price>   Sell stocks\n"
               << "  available                               Display available stocks\n"
               << "  create <name> <quantity>                Create a stock (only available if you are a company)\n" // CHANGE TO NOT BE ABLE TO SEE
               << "  help                                    Display this help message\n"

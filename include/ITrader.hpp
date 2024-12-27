@@ -27,7 +27,7 @@ public:
 
     virtual void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) = 0;
 
-    virtual void handleOrder(const Order&) = 0;
+    virtual void handleOrder(const std::shared_ptr<Order>) = 0;
     virtual void joinExchange(Njordx* exchange) = 0;
 };
 

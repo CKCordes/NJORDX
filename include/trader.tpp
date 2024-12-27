@@ -56,7 +56,7 @@ class Trader : public ITrader {
 
         void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) override;
 
-        void handleOrder(const Order&) override;
+        void handleOrder(const std::shared_ptr<Order>) override;
 
         void joinExchange(Njordx* exchange) override { this->exchange = exchange; exchange->addTrader(this); };
 
@@ -115,13 +115,13 @@ void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const Order
         return;
     }
     
-    Order newOrder = Order(order_tp, traderID, stock, quantity, price);
+    auto newOrder = std::make_shared<Order>(order_tp, traderID, stock, quantity, price);
     try {
         if (exchange == nullptr) { 
             std::cerr << "Trader has not joined an exchange\n";
             return;
         }
-        exchange->addOrder(&newOrder);
+        exchange->addOrder(newOrder);
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
@@ -133,14 +133,14 @@ std::shared_ptr<Stock> Trader<Derived>::getStock(const std::string& symbol) cons
 }
 
 template <typename Derived>
-void Trader<Derived>::handleOrder(const Order& order) {
+void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order) {
 
-    double price = order.getPrice();
-    int quantity = order.getQuantity();
+    double price = order->getPrice();
+    int quantity = order->getQuantity();
     double total = price * quantity;
-    std::shared_ptr<Stock> stock = order.getStock();
+    std::shared_ptr<Stock> stock = order->getStock();
 
-    OrderType type = order.getOrderType();
+    OrderType type = order->getOrderType();
     switch(type) {
         case OrderType::BUY:
             buyStock(stock, total);
