@@ -22,12 +22,12 @@ class Trader : public ITrader {
         int traderID;
         double balance;
 
-        OrderBook<std::string, Stock> ownedStocks;
         void buyStock(std::shared_ptr<Stock> stock, double total) override;
         void sellStock(std::shared_ptr<Stock> stock, double total) override; 
-        void addStock(const Stock stock) override;
-        void removeStock(const Stock&) override;
+        void addStock(std::shared_ptr<Stock> stock);
+        void removeStock(std::shared_ptr<Stock> stock);
 
+        OrderBook<std::string, std::shared_ptr<Stock>> ownedStocks; // CHANGE TO PROTECTED AGAIN!
         // Add currency to balance
     public:
         Njordx* exchange;
@@ -52,9 +52,6 @@ class Trader : public ITrader {
             ownedStocks.insert(symbol, newStock);
         }
 
-
-        
-        
         Stock getStock(const std::string& symbol) const;
 
         bool placeOrder(const Stock&, const OrderType, int, double) override;
@@ -167,7 +164,7 @@ void Trader<Derived>::buyStock(std::shared_ptr<Stock> stock, double total) {
 template <typename Derived>
 void Trader<Derived>::sellStock(std::shared_ptr<Stock> stock, double total) {
     balance += total;
-    removeStock(*stock);
+    removeStock(stock);
 }
 
 template <typename Derived>

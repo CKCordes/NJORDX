@@ -8,12 +8,14 @@
 #include "company.tpp"
 #include "person.tpp"
 
+using Variant = std::variant<std::shared_ptr<Person>, std::shared_ptr<Company>>;
+
 // Function prototypes
-void handleBuy(const std::variant<Person, Company> user, const std::string& stock);
-void handleSell(const std::variant<Person, Company> user, const std::string& stock);
-void handleAvailable(const std::variant<Person, Company> user);
-void handleInfo(std::variant<Person, Company> user);
-void handleCreate(const std::variant<Person, Company> user, const std::string symbol, const int num);
+void handleBuy(const Variant user, const std::string& stock);
+void handleSell(const Variant user, const std::string& stock);
+void handleAvailable(const Variant user);
+void handleInfo(Variant user);
+void handleCreate(const Variant user, const std::string symbol, const int num);
 void displayHelp();
 
 int main(int argc, char* argv[]) {
@@ -45,14 +47,14 @@ int main(int argc, char* argv[]) {
 
     // User er en variant, sombåde kan være en person eller en company
     // Not really useful as we only define it once, but it's a good example of how to use std::variant
-    std::variant<Person, Company> user;
+    Variant user;
 
     if (user_tp == "person") {
-        user = Person(1, balance, exchange, name, reg_number);
+        user = std::make_shared<Person>(1, balance, exchange, name, reg_number);
         // std::cout << "Creating a new person with name: " << name << " and reg. number: " << reg_number << "\n";
     } else if (user_tp == "company") {
         // std::cout << "Creating a new company with name: " << name << " and reg. number: " << reg_number << "\n";
-        user = Company(1, balance, exchange, name, reg_number);
+        user = std::make_shared<Company>(1, balance, exchange, name, reg_number);
     } else {
         std::cerr << "Error: Unknown user type. Use 'person' or 'company'.\n";
         return 1;
@@ -94,7 +96,6 @@ int main(int argc, char* argv[]) {
                 handleSell(user, stock);
             } else if (command == "info") {
                 handleInfo(user);
-                handleInfo(user);
             } else if (command == "available") {
                 handleAvailable(user);
             } else if (command == "help") {
@@ -127,53 +128,44 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-void handleBuy(const std::variant<Person, Company> user, const std::string& stock) {
+void handleBuy(const Variant user, const std::string& stock) {
     std::cout << "Unimplemented\n";
+    std::cout << "User: " << &user << "Stock " << stock << std::endl;
 }
 
-void handleSell(const std::variant<Person, Company> user, const std::string& stock) {
+void handleSell(const Variant user, const std::string& stock) {
     std::cout << "Unimplemented\n";
+    std::cout << "User: " << &user << "Stock " << stock << std::endl;
 }
 
-void handleAvailable(const std::variant<Person, Company> user) {
+void handleAvailable(const Variant user) {
     // Access exchange through the user and show available stocks
     std::visit([](auto&& user) {
         // Check if excange is nullptr
-        if (user.exchange == nullptr) {
+        if (user->exchange == nullptr) {
             std::cerr << "User has not joined an exchange\n";
             return;
         }
-        user.exchange->displayAvailableStocks();
+        user->exchange->displayAvailableStocks();
     }, user);
 }
 
-void handleInfo(std::variant<Person, Company> user) {
+void handleInfo(Variant user) {
     // Display information about the user
     std::visit([](auto&& user) {
-        user.displayPortfolio();
+        user->displayPortfolio();
     }, user);
 }
 
-void handleCreate(std::variant<Person, Company> user, const std::string symbol, const int num) {
-    if(!std::holds_alternative<Company>(user)) {
+void handleCreate(Variant user, const std::string symbol, const int num) {
+    if(!std::holds_alternative<std::shared_ptr<Company>>(user)) {
         std::cerr << "You are not a company, you cannot create stocks\n";
         return;
     }
     static int stockID = 0; // Ensures we have unique IDs
-    auto& company = std::get<Company>(user);
-    company.createStock(stockID, symbol, num);
-    if (company.ownedStocks.contains(symbol)) {
-        std::cout << "Stock created successfully\n";
-    }
+    auto& company = std::get<std::shared_ptr<Company>>(user);
+    company->createStock(stockID, symbol, num);
     stockID++;
-}
-
-void handleInfo(const std::variant<Person, Company>& user) {
-    if (std::holds_alternative<Person>(user)) {
-        std::get<Person>(user).displayPortfolio();
-    } else {
-        std::get<Company>(user).displayPortfolio();
-    }
 }
 
 // Function to display the help message

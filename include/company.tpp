@@ -27,14 +27,10 @@ public:
         std::cout << "Exchange: " << exchange << std::endl;
         // Should print owned stocks
         std::cout << "Owned stocks: " << std::endl;
-        if (!this->ownedStocks.contains("ap")) {
-            std::cerr << "ap is not here\n";
-        }
-        std::cout << "orderbook addr: " << &ownedStocks << std::endl;
-
-
+    
         for (auto& stock : ownedStocks) {
-            std::cout << "Stock: " << stock.key << std::endl;
+            
+            std::cout << "Stock: " << stock.key << ", Amount: " << stock.value.get()->getNumberOfStocks() << std::endl;
         }
     }
 
