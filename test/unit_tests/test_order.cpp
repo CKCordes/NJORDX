@@ -3,7 +3,7 @@
 
 TEST_CASE("Testing Order class") {
 
-    Stock stock(1, "AAPL", 100);
+    Stock stock(1_ID, "AAPL"_SYM, 100_QTY);
 
     Order order(OrderType::BUY, 1, std::make_shared<Stock>(stock), 10, 100.0);
     //CHECK(order.getOrderID() < 1000);
@@ -21,7 +21,7 @@ TEST_CASE("Testing Order class") {
     //CHECK(order.getIsFilled() == true);
     //order.displayOrderDetails();
 
-    Stock stock2(2, "GOOGL", 200);
+    Stock stock2(2_ID, "GOOGL"_SYM, 200_QTY);
 
     Order order2(OrderType::SELL, 2, std::make_shared<Stock>(stock2), 20, 200.0);
     CHECK(order == order);

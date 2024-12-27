@@ -21,8 +21,9 @@ public:
     virtual double getBalance() const = 0;
     virtual void setBalance(double amount) = 0;
 
-    virtual void addStock(std::shared_ptr<Stock>) = 0;
-    virtual void removeStock(std::shared_ptr<Stock>) = 0;
+    virtual void addStock(const Stock) = 0;
+    virtual void removeStock(const Stock&) = 0;
+    virtual bool ownsStock(const std::string symbol) = 0;
 
     virtual bool placeOrder(const Stock&, const OrderType, int, double) = 0;
 

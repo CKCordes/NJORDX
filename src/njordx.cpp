@@ -40,7 +40,7 @@ bool Njordx::addOrder(Order* order) noexcept {
             matchOrders();
         }
         catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
+            std::cerr << "Encountered error in matchOrders()" <<  e.what() << std::endl;
             return false;
         }
         return true;
@@ -93,13 +93,19 @@ void Njordx::matchOrders() {
                 (*seller)->handleOrder(sell);
                 buy.setIsFilled(true);
                 sell.setIsFilled(true);
-            }
+            } 
         }
     }, _1, _2);
-    for (auto buy_order : buyOrders) {
-        for (auto sell_order : sellOrders) {
-            match(std::ref(buy_order.value), std::ref(sell_order.value));
+    for (auto& buy_order : buyOrders) {
+        if (buy_order.value.getIsFilled()) {
+            continue;
         }
+       for (auto& sell_order : sellOrders) {
+              if (sell_order.value.getIsFilled()) {
+                continue;
+              }
+           match(std::ref(buy_order.value), std::ref(sell_order.value));
+       }
     }
 }
 
