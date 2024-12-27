@@ -78,14 +78,19 @@ class OrderBook {
             }
 
             Iterator operator++(int) {
+                // Iterator tmp = *this;
+                // advance_to_next_valid();
+                // return tmp;
                 Iterator tmp = *this;
-                advance_to_next_valid();
+                ++(*this);
                 return tmp;
             }
 
-            bool operator==(const Iterator& other) const { return inner_it == other.inner_it; }
+            bool operator==(const Iterator& other) const { 
+                return outer_it == other.outer_it && (outer_it == outer_end || inner_it == other.inner_it); 
+                }
 
-            bool operator!=(const Iterator& other) const { return outer_it != other.outer_it || inner_it != other.inner_it; }
+            bool operator!=(const Iterator& other) const { return !(*this == other); }
 
             private:
                 outer_iterator outer_it;

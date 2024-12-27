@@ -12,6 +12,7 @@
 #include "ITrader.hpp"
 
 class Company; // Forward declaration
+class Person; // Forward declaration
 
 template <typename Derived>
 class Trader : public ITrader {
@@ -20,13 +21,15 @@ class Trader : public ITrader {
         double balance;
         Njordx* exchange;
 
+        OrderBook<std::string, Stock> ownedStocks;
         void buyStock(std::shared_ptr<Stock> stock, double total) override;
-        void sellStock(std::shared_ptr<Stock> stock, double total) override;
+        void sellStock(std::shared_ptr<Stock> stock, double total) override; 
+        void addStock(const Stock stock) override;
+        void removeStock(const Stock&) override;
 
         // Add currency to balance
     public:
 
-        OrderBook<std::string, Stock> ownedStocks;
         Trader(int, double, Njordx*);
         Trader(int, double);
         ~Trader() = default;
@@ -37,6 +40,7 @@ class Trader : public ITrader {
         int getTraderID() const override { return traderID; };
         double getBalance() const override;
         void setBalance(double amount) override;
+        bool ownsStock(const std::string symbol);
 
         // Enable if the derived class is a company
         template <typename T = Derived>
@@ -46,8 +50,7 @@ class Trader : public ITrader {
             ownedStocks.insert(symbol, newStock);
         }
 
-        void addStock(const Stock stock) override;
-        void removeStock(const Stock&) override;
+
         
         
         Stock getStock(const std::string& symbol) const;
@@ -56,7 +59,7 @@ class Trader : public ITrader {
 
         void handleOrder(const Order&) override;
 
-        void joinExchange(Njordx* exchange) override { this->exchange = exchange; };
+        void joinExchange(Njordx* exchange) override { this->exchange = exchange; exchange->addTrader(this); };
 
 };
 
@@ -67,7 +70,7 @@ Trader<Derived>::Trader(int id, double initialBalance)
 
 template <typename Derived>
 Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange) 
-    : traderID(id), balance(initialBalance), exchange(exchange) {}
+    : traderID(id), balance(initialBalance), exchange(exchange) {if (exchange != nullptr) exchange->addTrader(this);}
 
 
 
@@ -108,6 +111,11 @@ void Trader<Derived>::removeStock(const Stock& stock) {
 
 template <typename Derived>
 bool Trader<Derived>::placeOrder(const Stock& stock, const OrderType order_tp, int quantity, double price) {
+    if (order_tp == OrderType::SELL && !ownedStocks.contains(stock.getSymbol())) {
+        std::cerr << "Trader does not own the stock\n";
+        return false;
+    }
+    
     Order newOrder = Order(order_tp, traderID, std::make_shared<Stock>(stock), quantity, price);
     try {
         if (exchange == nullptr) { 
@@ -158,6 +166,11 @@ template <typename Derived>
 void Trader<Derived>::sellStock(std::shared_ptr<Stock> stock, double total) {
     balance += total;
     removeStock(*stock);
+}
+
+template <typename Derived>
+bool Trader<Derived>::ownsStock(const std::string symbol) {
+    return ownedStocks.contains(symbol);
 }
 
 
