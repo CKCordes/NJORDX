@@ -114,3 +114,10 @@ void Njordx::displayOrderBook(const OrderType type) const {
     }
 }
 
+
+int Njordx::getValidStockID(const std::string& stockSymbol) const {
+    if (!validStocks.contains(stockSymbol)) {
+        throw std::invalid_argument("Stock does not exist");
+    }
+    return validStocks.get(stockSymbol);
+}

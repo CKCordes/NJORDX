@@ -27,7 +27,7 @@ void Stock::removeStocks(int amount) {
     if (newAmount < 0) {
         throw std::invalid_argument("Cannot remove more stocks than owned");
     }
-    numberOfStocks = std::move(newAmount);
+    numberOfStocks = newAmount;
 }
 
 void Stock::displayInfo() const {

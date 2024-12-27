@@ -25,6 +25,10 @@ public:
     // Display methods
     void matchOrders();
     void displayOrderBook(const OrderType type) const;
+
+    // Valid stocks implementation
+    int getValidStockID(const std::string& stockSymbol) const;
+
 };
 
 #endif // NJORDX_H
