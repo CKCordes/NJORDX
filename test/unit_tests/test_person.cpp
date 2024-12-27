@@ -15,69 +15,73 @@ TEST_CASE("Testing initialization of person class and getters and setters"){
     CHECK(person1.getTraderID() == 1);
     CHECK(person1.getName() == "Person1");
     CHECK(person1.getSSN() == "12345");
-
-    // Stock google = Stock(1, "GOOGL", 100);
-    // person1.addStock(google);
-    // CHECK(person1.getStock("GOOGL") == google);
-    // person1.removeStock(google);
-    // CHECK_THROWS(person1.getStock("GOOGL") == google);
 }
 
 TEST_CASE("Testing delegating person constructors, joinExchange() and displayPortfolio()"){
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
       
-    Person person2(2, 300, "Person2", "6789");
-    CHECK(person2.getBalance() == 300);
-    person2.joinExchange(exchange);
+    Person person1(1, 300, "Person1", "6789");
+    CHECK(person1.getBalance() == 300);
+    CHECK(person1.getTraderID() == 1);
+    CHECK(person1.getName() == "Person1");
+    CHECK(person1.getSSN() == "6789");
+    // person1.displayPortfolio();
 
-    person2.displayPortfolio();
+    Person person2(2, 300, exchange, "Person2", "6789");
+    person2.joinExchange(exchange);
+    CHECK(person2.getBalance() == 300);
+    CHECK(person2.getTraderID() == 2);
+    CHECK(person2.getName() == "Person2");
+    CHECK(person2.getSSN() == "6789");
+    // person2.displayPortfolio();
 }
 
 TEST_CASE("Testing person's order related methods"){
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
 
-    Person person3(3, 100000, exchange, "person3", "123");
+    // Person will buy stocks from the company
+    Person person1(33, 100000, exchange, "person1", "123");
 
     // Apple creating stocks and placing a sell order
-    Company apple(1, 100, exchange, "Company1", "12345678");
+    Company apple(11, 100, exchange, "Company1", "12345678");
     apple.createStock(1, "AAPL", 100);
     Stock stock = apple.getStock("AAPL");
     apple.placeOrder(stock, OrderType::SELL, 1, 100);
 
-    std::cout << person3.getBalance() << std::endl;
-    // Person3 tries to buy those stocks. 
-    CHECK(person3.placeOrder(stock, OrderType::BUY, 1, 100));
-    std::cout << person3.getBalance() << std::endl;
+    // Person1 tries to buy these stocks. 
+    CHECK(person1.placeOrder(stock, OrderType::BUY, 1, 100));
+    CHECK(person1.getBalance() == 100000 - 100);
+    CHECK(person1.ownsStock("AAPL"));
+    // Stock stock2 = person3.getStock("AAPL");
 
-    // Person4 will be trying to buy those stocks
-    Person person4(4, 100000, exchange, "person4", "123");
+    // Person2 will be trying to buy those stocks, but wont match price
+    Person person2(44, 100000, exchange, "person2", "123");
+    // Person3 will be trying to sell those stocks and match price
+    Person person3(55, 100000, exchange, "person3", "123");
 
     // Person3 tries to sell those stocks.
-    CHECK(person3.placeOrder(stock, OrderType::SELL, 1, 100));
-    CHECK(person4.placeOrder(stock, OrderType::BUY, 1, 100));
+    CHECK(person1.ownsStock("AAPL"));
+    CHECK(person1.placeOrder(stock, OrderType::SELL, 1, 200));
+    CHECK(person2.placeOrder(stock, OrderType::BUY, 1, 150)); // Doesn't match price
+    CHECK(person3.placeOrder(stock, OrderType::BUY, 1, 200)); // Matches price = Stock will be transferred to person3
+    CHECK_FALSE(person1.ownsStock("AAPL"));
+    CHECK_FALSE(person2.ownsStock("AAPL"));
+    CHECK(person3.ownsStock("AAPL"));
+    CHECK(person1.getBalance() == (100000-100) + 200); // Person 1 has gained money from selling the stock
+    CHECK(person2.getBalance() == 100000);
+    CHECK(person3.getBalance() == 100000 - 200);
 
-    // Stock apple = Stock(1, "AAPL", 100);
-    // Stock google = Stock(2, "GOOGL", 200);
-    // person3.addStock(apple);
-    // person3.addStock(google);
+    // Person2 order is now in the orderbook
+    // Person3 will sell the stock to person2
+    CHECK(person3.placeOrder(stock, OrderType::SELL, 1, 150)); // This matches the price
+    CHECK_FALSE(person3.ownsStock("AAPL"));
+    CHECK(person2.ownsStock("AAPL"));
+    CHECK(person3.getBalance() == (100000 - 200) + 150); // Person 3 has lost money from selling the stock
+    CHECK(person2.getBalance() == 100000 - 150);
 
-    // CHECK(person3.placeOrder(google, OrderType::BUY, 1, 100)); // ? der bliver printet at google ikke er på markedet, men den retunere stadig true. Er det rigtigt?
-    // CHECK(person3.placeOrder(apple,OrderType::SELL, 1, 100));
-
-    // Order buyorder(OrderType::BUY, 3, std::make_shared<Stock>(google), 100, 50.0);    
-    // Order sellorder(OrderType::SELL, 3, std::make_shared<Stock>(google), 100, 50.0);
-
-    // CHECK(person3.getBalance() == 100000);
-    // person3.handleOrder(sellorder);
-    // CHECK(person3.getBalance() == 100000 + (100 * 50.0));
-    // person3.handleOrder(buyorder);
-    // CHECK(person3.getBalance() == 100000);
 }
-#include "doctest.h"
-#include "person.tpp"
-#include "njordx.hpp"
 
 TEST_CASE("Init of person"){
     // Constructing two company1 and validating
@@ -91,5 +95,5 @@ TEST_CASE("adding stock as person (negative)") {
     Person person1(1, 100, "Person1", "12345678");
     Stock stock(1, "AAPL", 100);
     //person1.addStock(stock);
-    CHECK_FALSE(person1.ownedStocks.contains("AAPL"));
+    CHECK_FALSE(person1.ownsStock("AAPL"));
 }

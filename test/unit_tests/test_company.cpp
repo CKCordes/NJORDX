@@ -25,10 +25,9 @@ TEST_CASE("Testing initialization of company classes and getters and setters"){
 TEST_CASE("Testing delegating company constructors, joinExchange() and createStock()"){
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
-    std::cout << "Først er vi her" << std::endl;
     Company company2(2, 200, "Company2", "87654321");
-    std::cout << "Nu er vi her" << std::endl;
     CHECK(company2.getBalance() == 200);
+    company2.joinExchange(exchange);
 
     Stock apple = Stock(1, "AAPL", 100);
     company2.createStock(1, "AAPL", 100); 
@@ -39,19 +38,28 @@ TEST_CASE("Testing delegating company constructors, joinExchange() and createSto
 TEST_CASE("Testing company's order related methods"){
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
-
+    Company company2(2, 200, exchange, "Company2", "87654321");
     Company company3(3, 100000, exchange, "Company3", "123");
     Company company4(4, 100000, exchange, "Company4", "123");
-    //Stock apple = Stock(1, "AAPL", 100);
-    // Stock google = Stock(2, "GOOGL", 200);
-    // company3.addStock(apple);
-    // company3.addStock(google);
+
     company3.createStock(1, "CMPNY3", 100);
     
     Stock stock = company3.getStock("CMPNY3");
-    CHECK(company3.placeOrder(stock, OrderType::SELL, 1, 100));
-    CHECK(company4.placeOrder(stock, OrderType::BUY, 1, 100));
-    
+    CHECK(company3.placeOrder(stock, OrderType::SELL, 1, 200));
+    CHECK(company4.placeOrder(stock, OrderType::BUY, 1, 150));
+    CHECK(company2.placeOrder(stock, OrderType::BUY, 1, 200));
+
+    CHECK(company3.getBalance() == 100200);
+    CHECK(company4.getBalance() == 100000);
+    CHECK(company2.getBalance() == 0);
+
+    company3.createStock(1, "CMPNY3", 100);
+    CHECK(company3.placeOrder(stock, OrderType::SELL, 1, 150));
+
+    CHECK(company2.getBalance() == 0);
+    CHECK(company3.getBalance() == 100350);
+    CHECK(company4.getBalance() == 100000 - 150);
+
     // CHECK(company3.placeOrder(google, OrderType::BUY, 1, 100)); // ? der bliver printet at google ikke er på markedet, men den retunere stadig true. Er det rigtigt?
     // CHECK(company3.placeOrder(apple, OrderType::SELL, 1, 100));
 
