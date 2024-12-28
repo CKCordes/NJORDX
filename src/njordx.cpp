@@ -67,8 +67,7 @@ void Njordx::addTrader(ITrader* trader) noexcept {
 struct CompareOrder {
     bool operator()(const std::shared_ptr<Order> buy, const std::shared_ptr<Order> sell) const {
         //return (buy->getStockID() == sell->getStockID()) && (buy->getPrice() >= sell->getPrice());
-        return (buy->getStockSymbol() == sell->getStockSymbol()) && (buy->getPrice() >= sell->getPrice());
-
+        return (buy->getStockSymbol() == sell->getStockSymbol()) && (buy->getPrice() >= sell->getPrice() && buy->getQuantity() == sell->getQuantity());
     }
 };
 
@@ -97,11 +96,13 @@ void Njordx::matchOrders() {
                 std::cerr << "Seller not found" << std::endl;
             }
             if (buyer != traders.end() && seller != traders.end()) {
+                buy->setPrice(sell->getPrice());
                 (*buyer)->handleOrder(buy);
                 (*seller)->handleOrder(sell);
                 std::cout << "Matched order" << std::endl;
                 buy->setIsFilled(true);
                 sell->setIsFilled(true);
+                // Set buy order price to the price of the sell order
             } 
         }
     }, _1, _2);

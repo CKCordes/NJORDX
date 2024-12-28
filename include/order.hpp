@@ -36,6 +36,7 @@ public:
     auto getPrice() const -> decltype(price);
     bool getIsFilled() const;
     void setIsFilled(bool status);
+    void setPrice(double price);
     auto getStock() const -> decltype(stock);
 
     // Display order information

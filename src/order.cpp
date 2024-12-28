@@ -48,6 +48,10 @@ void Order::setIsFilled(bool status) {
     isFilled = status;
 }
 
+void Order::setPrice(double price) {
+    this->price = price;
+}
+
 void Order::displayOrderDetails() const {
     std::cout << "Order ID: " << orderID << std::endl;
     std::cout << "Order Type: " << (type == OrderType::BUY ? "BUY" : "SELL") << std::endl;

@@ -136,8 +136,9 @@ template <typename Derived>
 void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order) {
 
     double price = order->getPrice();
-    int quantity = order->getQuantity();
+    int quantity = order->getQuantity(); // Buying order wants to buy 10 stocks, but the selling order only has 1...
     double total = price * quantity;
+    std::cout << "handle order total: " << total << " = price: " << price << " * quantity: " << quantity << std::endl;
     std::shared_ptr<Stock> stock = order->getStock();
 
     OrderType type = order->getOrderType();
@@ -155,13 +156,24 @@ void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order) {
 
 template <typename Derived>
 void Trader<Derived>::buyStock(std::shared_ptr<Stock> stock, double total) {
+
+    // std::cout << "Balance b4 purchase: " << balance << std::endl;
+    std::cout << "buying total: " << total << std::endl;
     balance -= total;
+    // std::cout << "Balance after purchase: " << balance << std::endl;
+    // std::cout << "Address of buying user: " << this << std::endl;
+
     addStock(stock);
 }
 
 template <typename Derived>
 void Trader<Derived>::sellStock(std::shared_ptr<Stock> stock, double total) {
+    // std::cout << "Balance b4 sale: " << balance << std::endl;
+    std::cout << "selling total: " << total << std::endl;
     balance += total;
+    // std::cout << "Balance after sale: " << balance << std::endl;
+    // std::cout << "Address of selling user: " << this << std::endl;
+
     removeStock(stock);
 }
 

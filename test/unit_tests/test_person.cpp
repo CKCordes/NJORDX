@@ -47,11 +47,11 @@ TEST_CASE("Testing person's order related methods"){
     // Apple creating stocks and placing a sell order
     Company apple(11, 100, exchange, "Company1", "12345678");
     apple.createStock(1_ID, "AAPL"_SYM, 100_QTY);
-    Stock stock = apple.getStock("AAPL");
+    std::shared_ptr<Stock> stock = apple.getStock("AAPL");
     apple.placeOrder(stock, OrderType::SELL, 1, 100);
 
     // Person1 tries to buy these stocks. 
-    CHECK(person1.placeOrder(stock, OrderType::BUY, 1, 100));
+    person1.placeOrder(stock, OrderType::BUY, 1, 100);
     CHECK(person1.getBalance() == 100000 - 100);
     CHECK(person1.ownsStock("AAPL"));
     // Stock stock2 = person3.getStock("AAPL");
@@ -63,9 +63,9 @@ TEST_CASE("Testing person's order related methods"){
 
     // Person3 tries to sell those stocks.
     CHECK(person1.ownsStock("AAPL"));
-    CHECK(person1.placeOrder(stock, OrderType::SELL, 1, 200));
-    CHECK(person2.placeOrder(stock, OrderType::BUY, 1, 150)); // Doesn't match price
-    CHECK(person3.placeOrder(stock, OrderType::BUY, 1, 200)); // Matches price = Stock will be transferred to person3
+    person1.placeOrder(stock, OrderType::SELL, 1, 200);
+    person2.placeOrder(stock, OrderType::BUY, 1, 150); // Doesn't match price
+    person3.placeOrder(stock, OrderType::BUY, 1, 200); // Matches price = Stock will be transferred to person3
     CHECK_FALSE(person1.ownsStock("AAPL"));
     CHECK_FALSE(person2.ownsStock("AAPL"));
     CHECK(person3.ownsStock("AAPL"));
@@ -75,7 +75,7 @@ TEST_CASE("Testing person's order related methods"){
 
     // Person2 order is now in the orderbook
     // Person3 will sell the stock to person2
-    CHECK(person3.placeOrder(stock, OrderType::SELL, 1, 150)); // This matches the price
+    person3.placeOrder(stock, OrderType::SELL, 1, 150); // This matches the price
     CHECK_FALSE(person3.ownsStock("AAPL"));
     CHECK(person2.ownsStock("AAPL"));
     CHECK(person3.getBalance() == (100000 - 200) + 150); // Person 3 has lost money from selling the stock
