@@ -16,6 +16,30 @@
 class Company; // Forward declaration
 class Person; // Forward declaration
 
+// Fixed traits and value traits for calculating total in handleOrder
+template <typename T>
+struct TotalTraits;
+
+template <>
+struct TotalTraits<double> {
+    typedef double TotalType;
+    static TotalType zero() { return static_cast<double>(0); }
+};
+
+template <>
+struct TotalTraits<int> {
+    typedef double TotalType;
+    static TotalType zero() { return static_cast<double>(0); }
+};
+
+template <typename T>
+double calcTotal(T price, int quantity) {
+    typedef typename TotalTraits<T>::TotalType TotalType;
+    TotalType total = TotalTraits<T>::zero();
+    total = price * quantity;
+    return total;
+}
+
 template <typename Derived>
 class Trader : public ITrader {
     protected:
@@ -28,7 +52,10 @@ class Trader : public ITrader {
         void removeStock(std::shared_ptr<Stock> stock);
 
         OrderBook<std::string, std::shared_ptr<Stock>> ownedStocks; // CHANGE TO PROTECTED AGAIN!
+        
         // Add currency to balance
+
+
     public:
         Njordx* exchange;
 
@@ -135,9 +162,12 @@ std::shared_ptr<Stock> Trader<Derived>::getStock(const std::string& symbol) cons
 template <typename Derived>
 void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order) {
 
-    double price = order->getPrice();
-    int quantity = order->getQuantity(); // Buying order wants to buy 10 stocks, but the selling order only has 1...
-    double total = price * quantity;
+    // double price = order->getPrice();
+    // int quantity = order->getQuantity(); // Buying order wants to buy 10 stocks, but the selling order only has 1...
+    // double total = price * quantity;
+
+    double total = calcTotal(order->getPrice(), order->getQuantity());
+    
     std::shared_ptr<Stock> stock = order->getStock();
 
     OrderType type = order->getOrderType();
