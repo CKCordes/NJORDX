@@ -94,8 +94,6 @@ int main(int argc, char* argv[]) {
             if (command == "buy" || command == "sell") {
                 std::string stock, quantity_t, price_t;
                 iss >> stock;
-                iss >> quantity;
-                iss >> price;
                 if (stock.empty()) { // TODO: Skal tilføje manglede argumenter
                     throw std::invalid_argument("Usage: buy <stock> <quantity> <price>");
                 }
