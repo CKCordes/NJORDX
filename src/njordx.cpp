@@ -24,7 +24,7 @@
 Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
 /* Inserting in StockOrderBook, has a strong guarentee */
-bool Njordx::addOrder(Order* order) noexcept {
+bool Njordx::addOrder(std::shared_ptr<Order> order) noexcept {
     OrderType order_tp = order->getOrderType();
     switch (order_tp)
     {
@@ -33,7 +33,7 @@ bool Njordx::addOrder(Order* order) noexcept {
         validStocks.insert(order->getStockSymbol(), order->getStockID());
         } 
 
-        sellOrders.insert(order->getOrderID(), *order);
+        sellOrders.insert(order->getOrderID(), order);
 
         // Match orders
         try {
@@ -46,7 +46,7 @@ bool Njordx::addOrder(Order* order) noexcept {
         return true;
     case OrderType::BUY:
         if (validStocks.contains(order->getStockSymbol())) {
-            buyOrders.insert(order->getOrderID(), *order);
+            buyOrders.insert(order->getOrderID(), order);
             matchOrders();
             return true;
         } else {
@@ -54,7 +54,7 @@ bool Njordx::addOrder(Order* order) noexcept {
           return false;
         }
     default:
-        throw std::invalid_argument("Unimplemented order type");
+        std::cerr << "Invalid order type" << std::endl;
         return false;
     }
 }
@@ -65,20 +65,21 @@ void Njordx::addTrader(ITrader* trader) noexcept {
 
 // Functor
 struct CompareOrder {
-    bool operator()(const Order& buy, const Order& sell) const {
-        return (buy.getStockID() == sell.getStockID()) && (buy.getPrice() >= sell.getPrice());
+    bool operator()(const std::shared_ptr<Order> buy, const std::shared_ptr<Order> sell) const {
+        //return (buy->getStockID() == sell->getStockID()) && (buy->getPrice() >= sell->getPrice());
+        return (buy->getStockSymbol() == sell->getStockSymbol()) && (buy->getPrice() >= sell->getPrice() && buy->getQuantity() == sell->getQuantity());
     }
 };
 
 // Matches the 
 void Njordx::matchOrders() { 
     using namespace std::placeholders;
-    // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! 
+    // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! Who is this guy?
     const CompareOrder OrderComparator = CompareOrder();
-    auto match = std::bind([this, OrderComparator](Order& buy, Order& sell) {
-        if (OrderComparator(buy, sell) && !(buy.getIsFilled() || sell.getIsFilled())) {
-            int buyer_id = buy.getTraderID();
-            int seller_id = sell.getTraderID();
+    auto match = std::bind([this, OrderComparator](std::shared_ptr<Order> buy, std::shared_ptr<Order> sell) {
+        if (OrderComparator(buy, sell) && !(buy->getIsFilled() || sell->getIsFilled())) {
+            int buyer_id = buy->getTraderID();
+            int seller_id = sell->getTraderID();
 
             // Find buyer and seller
             auto buyer = std::find_if(traders.begin(), traders.end(), [buyer_id](ITrader* trader) {
@@ -87,43 +88,54 @@ void Njordx::matchOrders() {
             auto seller = std::find_if(traders.begin(), traders.end(), [seller_id](ITrader* trader) {
                 return trader->getTraderID() == seller_id;
             });
-
+            if (buyer == traders.end()) {
+                std::cerr << "Buyer not found" << std::endl;
+            }
+            if (seller == traders.end()) {
+                std::cerr << "Seller not found" << std::endl;
+            }
             if (buyer != traders.end() && seller != traders.end()) {
+                buy->setPrice(sell->getPrice());
                 (*buyer)->handleOrder(buy);
                 (*seller)->handleOrder(sell);
-                buy.setIsFilled(true);
-                sell.setIsFilled(true);
+                buy->setIsFilled(true);
+                sell->setIsFilled(true);
+                // Set buy order price to the price of the sell order
             } 
         }
     }, _1, _2);
     for (auto& buy_order : buyOrders) {
-        if (buy_order.value.getIsFilled()) {
+        if (buy_order.value.get()->getIsFilled()) {
             continue;
         }
        for (auto& sell_order : sellOrders) {
-              if (sell_order.value.getIsFilled()) {
+              if (sell_order.value.get()->getIsFilled()) {
                 continue;
               }
-           match(std::ref(buy_order.value), std::ref(sell_order.value));
+           match(buy_order.value, sell_order.value);
        }
     }
 }
 
 //Display orderbooks
-void Njordx::displayOrderBook(const OrderType type) const {
-    if (type == OrderType::SELL) {
-        throw std::logic_error("Not implemented yet");
-    } else if (type == OrderType::BUY) {
-        throw std::logic_error("Not implemented yet");
-    } else {
-        throw std::invalid_argument("Invalid order type");
+void Njordx::displayOrderBook(const OrderType type) {
+    auto& orders = (type == OrderType::SELL) ? sellOrders : buyOrders;
+    std::string orderTypeStr = (type == OrderType::SELL) ? "Sell" : "Buy";
+
+    std::cout << orderTypeStr << " orders:\n";
+    for (auto& order : orders) {
+        std::cout << "Stock: " << order.value->getStockSymbol() 
+                  << ", price: " << order.value->getPrice() 
+                  << ", filled: " << order.value->getIsFilled()
+                  << ", quantity: " << order.value->getQuantity() << std::endl;
     }
 }
 
-
-int Njordx::getValidStockID(const std::string& stockSymbol) const {
-    if (!validStocks.contains(stockSymbol)) {
-        throw std::invalid_argument("Stock does not exist");
+void Njordx::displayAvailableStocks() { // missing const
+    std::cout << "Available stocks: ";
+    for (auto stock : validStocks) {
+        std::cout << stock.key << " ";
     }
-    return validStocks.get(stockSymbol);
+    std::cout << std::endl;
 }
+
