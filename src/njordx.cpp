@@ -96,8 +96,9 @@ void Njordx::matchOrders() {
             }
             if (buyer != traders.end() && seller != traders.end()) {
                 buy->setPrice(sell->getPrice());
-                (*buyer)->handleOrder(buy);
-                (*seller)->handleOrder(sell);
+                int quantity = buy->getQuantity();
+                (*buyer)->handleOrder(buy, quantity);
+                (*seller)->handleOrder(sell, quantity);
                 buy->setIsFilled(true);
                 sell->setIsFilled(true);
                 // Set buy order price to the price of the sell order

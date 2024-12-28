@@ -11,8 +11,8 @@ class ITrader {
 public: 
     virtual ~ITrader() = default;
 
-    virtual void buyStock(std::shared_ptr<Stock> stock, double total) = 0;
-    virtual void sellStock(std::shared_ptr<Stock> stock, double total) = 0;
+    virtual void buyStock(std::shared_ptr<Stock>, double, int) = 0;
+    virtual void sellStock(std::shared_ptr<Stock>, double, int) = 0;
 
     virtual void printTrader() const = 0;
     virtual void displayPortfolio() = 0;
@@ -27,7 +27,7 @@ public:
 
     virtual void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) = 0;
 
-    virtual void handleOrder(const std::shared_ptr<Order>) = 0;
+    virtual void handleOrder(const std::shared_ptr<Order>, int) = 0;
     virtual void joinExchange(Njordx* exchange) = 0;
 };
 
