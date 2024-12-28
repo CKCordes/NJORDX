@@ -20,6 +20,12 @@ void handleInfo(Variant user);
 void handleCreate(const Variant user, const std::string symbol, const int num);
 void displayHelp();
 
+// Functions for simulating activity for Søren
+void handleBotOrder(std::shared_ptr<Company> bot_user, const std::string& orderType);
+void handleBuyBot(std::shared_ptr<Company> bot_user);
+void handleSellBot(std::shared_ptr<Company> bot_user);
+void showOrders(Njordx* exchange);
+
 int main(int argc, char* argv[]) {
     try {
         if (argc < 5) {
@@ -61,6 +67,9 @@ int main(int argc, char* argv[]) {
         std::cerr << "Error: Unknown user type. Use 'person' or 'company'.\n";
         return 1;
     }
+
+    // Creating the bot user
+    std::shared_ptr<Company> bot_user = std::make_shared<Company>(2, 100000, exchange, "Søren", "1234567890");
 
     std::string input;
     std::cout << "Welcome to the NJORDX trading platform! Type 'help' for a list of commands.\n";
@@ -137,13 +146,17 @@ int main(int argc, char* argv[]) {
                     return 1;
                 }
                 handleCreate(user, sym, quant);
-            } else {
+            } else if (command == "show_orders") {
+                showOrders(exchange);
+            } else if (command == "buy_bot") {
+                handleBuyBot(bot_user);
+            } else if (command == "sell_bot") {
+                handleSellBot(bot_user);
+            }
+            else {
                 throw std::invalid_argument("Unknown command: " + command + ". Type 'help' for a list of commands.");
             }
-            // Create bogus buy order so stocks can be sold
-            handleBuy(user, "aapl", 10, 100.0);
-            exchange->displayOrderBook(OrderType::BUY);
-            exchange->displayOrderBook(OrderType::SELL);
+            
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << "\n";
         }
@@ -226,6 +239,38 @@ void handleCreate(Variant user, const std::string symbol, const int num) {
     stockID++;
 }
 
+void handleBotOrder(std::shared_ptr<Company> bot_user, const std::string& orderType) {
+    // Simulate a user posting random orders you can match
+    
+    std::vector<std::string> stockNames = {"AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"};
+    std::string randomStock = stockNames[rand() % stockNames.size()];
+    int price = rand() % 100 + 1;
+
+    if (orderType == "sell") {
+        // Create stock to sell
+        handleCreate(bot_user, randomStock, 1);
+    }
+
+    std::cout << "Bot is " << orderType << "ing 1 " << randomStock << " for " << price << "\n";
+    handleOrder(bot_user, randomStock, 1, price, orderType);
+}
+
+void handleBuyBot(std::shared_ptr<Company> bot_user) {
+    handleBotOrder(bot_user, "buy");
+}
+
+void handleSellBot(std::shared_ptr<Company> bot_user) {
+    handleBotOrder(bot_user, "sell");
+}
+
+void showOrders(Njordx* exchange) {
+    // Show all orders
+    std::cout << "Showing all orders\n";
+    exchange->displayOrderBook(OrderType::BUY);
+    std::cout << "\n";
+    exchange->displayOrderBook(OrderType::SELL);
+}
+
 // Function to display the help message
 void displayHelp() {
     std::cout << "Available commands:\n"
@@ -233,7 +278,10 @@ void displayHelp() {
               << "  buy <stock> <quantity> <total price>    Buy stocks\n"
               << "  sell <stock> <quantity> <total price>   Sell stocks\n"
               << "  available                               Display available stocks\n"
-              << "  create <name> <quantity>                Create a stock (only available if you are a company)\n" // CHANGE TO NOT BE ABLE TO SEE
+              << "  create <name> <quantity>                Create a stock (only available if you are a company)\n" // CHANGE TO NOT BE ABLE TO SEE IF PERSON
+              << "  show_orders                             Show all orders\n"
+              << "  buy_bot                                 Simulate a user posting random buy orders you can match\n"
+              << "  sell_bot                                Simulate a user posting random sell orders you can match\n"
               << "  help                                    Display this help message\n"
               << "  exit                                    Exit the program\n";
 }

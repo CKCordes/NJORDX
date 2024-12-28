@@ -78,7 +78,6 @@ void Njordx::matchOrders() {
     const CompareOrder OrderComparator = CompareOrder();
     auto match = std::bind([this, OrderComparator](std::shared_ptr<Order> buy, std::shared_ptr<Order> sell) {
         if (OrderComparator(buy, sell) && !(buy->getIsFilled() || sell->getIsFilled())) {
-            std::cout << "Matching orders" << std::endl;
             int buyer_id = buy->getTraderID();
             int seller_id = sell->getTraderID();
 
@@ -99,7 +98,6 @@ void Njordx::matchOrders() {
                 buy->setPrice(sell->getPrice());
                 (*buyer)->handleOrder(buy);
                 (*seller)->handleOrder(sell);
-                std::cout << "Matched order" << std::endl;
                 buy->setIsFilled(true);
                 sell->setIsFilled(true);
                 // Set buy order price to the price of the sell order
@@ -119,7 +117,7 @@ void Njordx::matchOrders() {
     }
 }
 
-//Display orderbooks. Hallo en eller anden fix det her lort, der er så meget kopiering
+//Display orderbooks
 void Njordx::displayOrderBook(const OrderType type) {
     auto& orders = (type == OrderType::SELL) ? sellOrders : buyOrders;
     std::string orderTypeStr = (type == OrderType::SELL) ? "Sell" : "Buy";
@@ -128,7 +126,8 @@ void Njordx::displayOrderBook(const OrderType type) {
     for (auto& order : orders) {
         std::cout << "Stock: " << order.value->getStockSymbol() 
                   << ", price: " << order.value->getPrice() 
-                  << ", filled: " << order.value->getIsFilled() 
+                  << ", filled: " << order.value->getIsFilled()
+                  << ", quantity: " << order.value->getQuantity() << std::endl;
                   << std::endl;
     }
 }
