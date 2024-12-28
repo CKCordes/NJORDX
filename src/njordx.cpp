@@ -128,7 +128,6 @@ void Njordx::displayOrderBook(const OrderType type) {
                   << ", price: " << order.value->getPrice() 
                   << ", filled: " << order.value->getIsFilled()
                   << ", quantity: " << order.value->getQuantity() << std::endl;
-                  << std::endl;
     }
 }
 
