@@ -138,9 +138,12 @@ void Trader<Derived>::removeStock(std::shared_ptr<Stock> stock) {
 
 template <typename Derived>
 void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const OrderType order_tp, int quantity, double price) {
-    if (order_tp == OrderType::SELL && !ownedStocks.contains(stock.get()->getSymbol())) {
-        std::cerr << "Trader does not own the stock\n";
-        return;
+    if (order_tp == OrderType::SELL) {
+        auto ownedStock = ownedStocks.get(stock->getSymbol());
+        if (!ownedStock || ownedStock.value()->getNumberOfStocks() < quantity) {
+            std::cerr << "Trader does not own enough of the stock\n";
+            return;
+        }
     }
     
     auto newOrder = std::make_shared<Order>(order_tp, traderID, stock, quantity, price);
