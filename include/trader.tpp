@@ -138,6 +138,10 @@ void Trader<Derived>::removeStock(std::shared_ptr<Stock> stock) {
 
 template <typename Derived>
 void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const OrderType order_tp, int quantity, double price) {
+    if (exchange == nullptr) { 
+        std::cerr << "Trader has not joined an exchange\n";
+        return;
+    }
     if (order_tp == OrderType::SELL) {
         auto ownedStock = ownedStocks.get(stock->getSymbol());
         if (!ownedStock || ownedStock.value()->getNumberOfStocks() < quantity) {
@@ -147,13 +151,7 @@ void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const Order
     }
     
     auto newOrder = std::make_shared<Order>(order_tp, traderID, stock, quantity, price);
-   
-    if (exchange == nullptr) { 
-        std::cerr << "Trader has not joined an exchange\n";
-        return;
-    }
     exchange->addOrder(newOrder);
-    
 }
 
 template <typename Derived>

@@ -45,7 +45,6 @@ void Njordx::addTrader(ITrader* trader) noexcept {
 // Functor
 struct CompareOrder {
     bool operator()(const std::shared_ptr<Order> buy, const std::shared_ptr<Order> sell) const {
-        //return (buy->getStockID() == sell->getStockID()) && (buy->getPrice() >= sell->getPrice());
         return (buy->getStockSymbol() == sell->getStockSymbol()) && (buy->getPrice() >= sell->getPrice() && buy->getQuantity() == sell->getQuantity());
     }
 };
