@@ -13,7 +13,6 @@ using Variant = std::variant<std::shared_ptr<Person>, std::shared_ptr<Company>>;
 // Function prototypes
 void handleBuy(const Variant user, const std::string& stock, int quantity, double price);
 void handleSell(const Variant user, const std::string& stock, int quatity, double price);
-void handleOrder(const Variant user, const std::string& stock, int quatity, double price, std::string orderType);
 
 void handleAvailable(const Variant user);
 void handleInfo(Variant user);
@@ -21,8 +20,7 @@ void handleCreate(const Variant user, const std::string symbol, const int num);
 void displayHelp();
 
 // Functions for simulating activity for Søren
-void handleBotOrder(std::shared_ptr<Company> bot_user, const std::string& orderType);
-void handleBuyBot(std::shared_ptr<Company> bot_user);
+void handleBuyBot(std::shared_ptr<Company> bot_user, std::string stockToBuy);
 void handleSellBot(std::shared_ptr<Company> bot_user);
 void showOrders(Njordx* exchange);
 
@@ -119,8 +117,13 @@ int main(int argc, char* argv[]) {
                     std::cerr << "Error: Price out of range. Please use a smaller value.\n";
                     return 1;
                 }
-
-                handleOrder(user, stock, quantity, price, command);
+                if (price < 0) {
+                    throw std::invalid_argument("Error: Price cannot be negative.");
+                }
+                if (quantity <= 0) {
+                    throw std::invalid_argument("Error: Quantity cannot be negative.");
+                }
+                (command == "buy" ? handleBuy : handleSell)(user, stock, quantity, price);
             
             } else if (command == "info") {
                 handleInfo(user);
@@ -149,7 +152,12 @@ int main(int argc, char* argv[]) {
             } else if (command == "show_orders") {
                 showOrders(exchange);
             } else if (command == "buy_bot") {
-                handleBuyBot(bot_user);
+                std::string stockToBuy;
+                iss >> stockToBuy;
+                if (stockToBuy.empty()) {
+                    throw std::invalid_argument("Usage: buy_bot <stock-to-buy>");
+                }
+                handleBuyBot(bot_user, stockToBuy);
             } else if (command == "sell_bot") {
                 handleSellBot(bot_user);
             }
@@ -199,15 +207,6 @@ void handleSell(const Variant user, const std::string& stock, int quantity, doub
     }, user);
 }
 
-void handleOrder(const Variant user, const std::string& stock, int quantity, double price, std::string orderType) {
-    if (orderType == "buy") {
-        handleBuy(user, stock, quantity, price);
-    } else if (orderType == "sell") {
-        handleSell(user, stock, quantity, price);
-    } else {
-        throw std::invalid_argument("Unknown order type: " + orderType);
-    }
-}
 
 void handleAvailable(const Variant user) {
     // Access exchange through the user and show available stocks
@@ -239,28 +238,19 @@ void handleCreate(Variant user, const std::string symbol, const int num) {
     stockID++;
 }
 
-void handleBotOrder(std::shared_ptr<Company> bot_user, const std::string& orderType) {
-    // Simulate a user posting random orders you can match
-    
-    std::vector<std::string> stockNames = {"AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"};
-    std::string randomStock = stockNames[rand() % stockNames.size()];
-    int price = rand() % 100 + 1;
 
-    if (orderType == "sell") {
-        // Create stock to sell
-        handleCreate(bot_user, randomStock, 1);
-    }
-
-    std::cout << "Bot is " << orderType << "ing 1 " << randomStock << " for " << price << "\n";
-    handleOrder(bot_user, randomStock, 1, price, orderType);
-}
-
-void handleBuyBot(std::shared_ptr<Company> bot_user) {
-    handleBotOrder(bot_user, "buy");
+void handleBuyBot(std::shared_ptr<Company> bot_user, const std::string stockToBuy) {
+    handleBuy(bot_user, stockToBuy, 1, 100);
+    std::cout << "Bot is buying 1 " << stockToBuy << " for 100\n";
 }
 
 void handleSellBot(std::shared_ptr<Company> bot_user) {
-    handleBotOrder(bot_user, "sell");
+    std::vector<std::string> stockNames = {"AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"};
+    std::string randomStock = stockNames[rand() % stockNames.size()];
+    int price = rand() % 100 + 1;
+    handleCreate(bot_user, randomStock, 1);
+    handleSell(bot_user, randomStock, 1, price);
+    std::cout << "Bot is selling 1 " << randomStock << " for " << price << "\n";   
 }
 
 void showOrders(Njordx* exchange) {
@@ -280,7 +270,7 @@ void displayHelp() {
               << "  available                               Display available stocks\n"
               << "  create <name> <quantity>                Create a stock (only available if you are a company)\n" // CHANGE TO NOT BE ABLE TO SEE IF PERSON
               << "  show_orders                             Show all orders\n"
-              << "  buy_bot                                 Simulate a user posting random buy orders you can match\n"
+              << "  buy_bot <stock-to-buy>                  Simulate a user posting buy order (price=100) on a stock of your choice\n"
               << "  sell_bot                                Simulate a user posting random sell orders you can match\n"
               << "  help                                    Display this help message\n"
               << "  exit                                    Exit the program\n";

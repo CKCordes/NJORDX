@@ -46,8 +46,8 @@ class Trader : public ITrader {
         int traderID;
         double balance;
 
-        void buyStock(std::shared_ptr<Stock> stock, double total) override;
-        void sellStock(std::shared_ptr<Stock> stock, double total) override; 
+        void buyStock(std::shared_ptr<Stock> stock, double total, int bought_quantity) override;
+        void sellStock(std::shared_ptr<Stock> stock, double total, int bought_quantity) override; 
         void addStock(std::shared_ptr<Stock> stock);
         void removeStock(std::shared_ptr<Stock> stock);
 
@@ -83,7 +83,7 @@ class Trader : public ITrader {
 
         void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) override;
 
-        void handleOrder(const std::shared_ptr<Order>) override;
+        void handleOrder(const std::shared_ptr<Order>, int) override;
 
         void joinExchange(Njordx* exchange) override { this->exchange = exchange; exchange->addTrader(this); };
 
@@ -160,23 +160,29 @@ std::shared_ptr<Stock> Trader<Derived>::getStock(const std::string& symbol) cons
 }
 
 template <typename Derived>
-void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order) {
+void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order, int bought_quantity) {
 
+<<<<<<< HEAD
     // double price = order->getPrice();
     // int quantity = order->getQuantity(); // Buying order wants to buy 10 stocks, but the selling order only has 1...
     // double total = price * quantity;
 
     double total = calcTotal(order->getPrice(), order->getQuantity());
     
+=======
+    double price = order->getPrice();
+
+    double total = price * bought_quantity;
+>>>>>>> 652e20a47388c71799e88a68e7a970f880ffcd3f
     std::shared_ptr<Stock> stock = order->getStock();
 
     OrderType type = order->getOrderType();
     switch(type) {
         case OrderType::BUY:
-            buyStock(stock, total);
+            buyStock(stock, total, bought_quantity);
             break;
         case OrderType::SELL:
-            sellStock(stock, total);
+            sellStock(stock, total, bought_quantity);
             break;
         default:
             std::cerr << "Invalid order type" << std::endl;
@@ -184,15 +190,23 @@ void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order) {
 }
 
 template <typename Derived>
-void Trader<Derived>::buyStock(std::shared_ptr<Stock> stock, double total) {
+void Trader<Derived>::buyStock(std::shared_ptr<Stock> stock, double total, int bought_quantity) {
     balance -= total;
-    addStock(stock);
+    // Add the correct stock amount
+    auto newStock = std::make_shared<Stock>(stock->getStockID(), stock->getSymbol(), bought_quantity);
+    addStock(newStock);
 }
 
 template <typename Derived>
-void Trader<Derived>::sellStock(std::shared_ptr<Stock> stock, double total) {
+void Trader<Derived>::sellStock(std::shared_ptr<Stock> stock, double total, int bought_quantity) {
     balance += total;
-    removeStock(stock);
+    // only remove the stock if quantity goes to 0 or below
+    if (stock->getNumberOfStocks() - bought_quantity <= 0) {
+        removeStock(stock);
+    }
+    else {
+        stock->removeStocks(bought_quantity);
+    }
 }
 
 template <typename Derived>
