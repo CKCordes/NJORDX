@@ -38,7 +38,7 @@ $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 
 clean:
 	@echo "Clearing..."
-	-rm ./$(BIN)/*
+	-rm -f ./$(BIN)/*
 
 # når du tilføjer tests: skriv $(SRC)/<implementation  af det du tester>.cpp før -o i den midterste linje nedenfor
 # For at køre dansk miljø, skriv "make unit_tests COUNTRY=DK"
