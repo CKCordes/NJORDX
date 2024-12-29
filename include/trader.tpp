@@ -147,15 +147,13 @@ void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const Order
     }
     
     auto newOrder = std::make_shared<Order>(order_tp, traderID, stock, quantity, price);
-    try {
-        if (exchange == nullptr) { 
-            std::cerr << "Trader has not joined an exchange\n";
-            return;
-        }
-        exchange->addOrder(newOrder);
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
+   
+    if (exchange == nullptr) { 
+        std::cerr << "Trader has not joined an exchange\n";
+        return;
     }
+    exchange->addOrder(newOrder);
+    
 }
 
 template <typename Derived>
