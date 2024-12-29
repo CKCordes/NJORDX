@@ -23,6 +23,7 @@ void displayHelp();
 void handleBuyBot(std::shared_ptr<Company> bot_user, std::string stockToBuy);
 void handleSellBot(std::shared_ptr<Company> bot_user);
 void showOrders(Njordx* exchange);
+void handleShowOrderBook(Njordx* exchange, const OrderType type);
 
 int main(int argc, char* argv[]) {
     try {
@@ -151,7 +152,22 @@ int main(int argc, char* argv[]) {
                 handleCreate(user, sym, quant);
             } else if (command == "show_orders") {
                 showOrders(exchange);
-            } else if (command == "buy_bot") {
+            } else if (command == "show_order_book") {
+                std::string orderType;
+                iss >> orderType;
+                if (orderType.empty()) {
+                    throw std::invalid_argument("Usage: show_order_book <buy/sell>");
+                }
+                if (orderType == "buy") {
+                    handleShowOrderBook(exchange, OrderType::BUY);
+                } else if (orderType == "sell") {
+                    handleShowOrderBook(exchange, OrderType::SELL);
+                } else {
+                    throw std::invalid_argument("Usage: show_order_book <buy/sell>");
+                }
+            }
+            
+            else if (command == "buy_bot") {
                 std::string stockToBuy;
                 iss >> stockToBuy;
                 if (stockToBuy.empty()) {
@@ -256,9 +272,10 @@ void showOrders(Njordx* exchange) {
     // Show all orders
     std::cout << "Showing all orders\n";
     exchange->displayAllOrders();
-    //exchange->displayOrderBook(OrderType::BUY);
-    //std::cout << "\n";
-    //exchange->displayOrderBook(OrderType::SELL);
+}
+
+void handleShowOrderBook(Njordx* exchange, const OrderType type) {
+    exchange->displayOrderBook(type);
 }
 
 // Function to display the help message
@@ -270,6 +287,7 @@ void displayHelp() {
               << "  available                               Display available stocks\n"
               << "  create <name> <quantity>                Create a stock (only available if you are a company)\n" // CHANGE TO NOT BE ABLE TO SEE IF PERSON
               << "  show_orders                             Show all orders\n"
+              << "  show_order_book <buy/sell>              Show buy or sell orders\n"
               << "  buy_bot <stock-to-buy>                  Simulate a user posting buy order (price=100) on a stock of your choice\n"
               << "  sell_bot                                Simulate a user posting random sell orders you can match\n"
               << "  help                                    Display this help message\n"
