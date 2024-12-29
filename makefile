@@ -11,6 +11,12 @@ else
 endif
 
 BIN     := bin
+
+# Ensure the bin directory exists
+$(BIN):
+	mkdir -p $(BIN)
+
+all: $(BIN) $(BIN)/$(EXECUTABLE)
 SRC     := src
 INCLUDE := include
 LIB     := lib
