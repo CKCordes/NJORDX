@@ -44,7 +44,7 @@ The guides comprises of a list of commands, with a short explaination.
     ```
 4. Imagine you have just turned into an ApS. You would now like to create some stock that can be bought/sold:
     ```sh
-    > create <stock-name> 10
+    > create <stock-name> <amount>
     ```
 5. See the stock has been added to your portfolio:
     ```sh
@@ -56,7 +56,7 @@ The guides comprises of a list of commands, with a short explaination.
     ```
 7. Now wait for someone to buy it! (Nobody will ever come...)
 
-### Using the sell "bots"
+### Using the sell "bot"
 1. Start the application as a company (more interesting as you can create stock):
     ```sh
     make run ARGS="company <name> 123456 1000"
@@ -78,18 +78,34 @@ The guides comprises of a list of commands, with a short explaination.
     > info
     ```
 
-### Using the buy "bots"
-Using the buy bots
+### Using the buy "bot"
+Using the buy bot is much like the sell bot. 
+1. Start the application as a company:
+    ```sh
+    make run ARGS="company <name> 123456 1000"
+    ```
+2. create a stock:
+    ```sh
+    > create <stock name> 10
+    ```
+3. Create sell order for stock:
+    ```sh
+    > sell <stock name> 1 <0<number<100>
+    ```
+4. Activate the buy bot:
+    ```sh
+    > buy_bot <stock name>
+    ```
+5. See that you have now sold stock!
+    ```sh
+    > info
+    ```
 
 ## Notes
  - The difference between available stocks and active sell orders is that once a stock is put on the market, one will always be able to place a buy order on it, even when there is no sell order. If a stock has never been listed on NJORDX, a buy order cannot be placed on it.
 
   - A company can create any stock. This is of course an inteded feature and not a bug. The purpose of this is to display the functionality of the application.
 
- - You MUST match quantity
+ - You MUST match quantity on the orders
 
-
-- Njordx kan have en liste af traders, her kan vi få variadics med.
-
-- Trader skal lave noget exception handling, hvis en trader forsøger at lave en en ordre uden exhange. 
-- Tjek om man har nok stocks til at place order i trader
+ - The njordx system has the possibility of starting without an exchange, this is however not possible for the front end, as it would be a quite dull experience.
