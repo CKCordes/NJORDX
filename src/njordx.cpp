@@ -5,57 +5,36 @@
 #include <iostream>
 #include <iterator>
 #include <variant>
-// ----------------------------NOTER--------------------------------//
-// NJORDX bør være singleton
-
-// Vi skal lave en valid aktie list som børsen kan kigge i om en buy order er valid
-
-// en trader (company) opretter en stock (kun sin egen) og sætter til salg. Denne ryger i valid og sellorder
-// En trader (person) opretter en buy order med stock navn. Når denne bliver oprettet, spørger den børsen om stockID og om valid
-// hvis valid, tilføjes order til børsens buyOrders.
-
-// Når børsen matcher en buy og sell order, skal de begge fjernes fra buyOrders og sellOrders
-// Køber mister penge (SALGSPRISEN) sælger får salgsprisen på balance
-
-// traders har en "pending orderbook"
-// --------------------------NOTER SLUT-----------------------------//
 
 // Constructor
 Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
 /* Inserting in StockOrderBook, has a strong guarentee */
-bool Njordx::addOrder(std::shared_ptr<Order> order) noexcept {
+void Njordx::addOrder(std::shared_ptr<Order> order) noexcept {
     OrderType order_tp = order->getOrderType();
     switch (order_tp)
     {
     case OrderType::SELL:
         if (!validStocks.contains(order->getStockSymbol())){
         validStocks.insert(order->getStockSymbol(), order->getStockID());
-        } 
-
+        }
         sellOrders.insert(order->getOrderID(), order);
-
         // Match orders
-        try {
-            matchOrders();
-        }
-        catch (const std::exception& e) {
-            std::cerr << "Encountered error in matchOrders()" <<  e.what() << std::endl;
-            return false;
-        }
-        return true;
+        matchOrders();
+        return;
+
     case OrderType::BUY:
         if (validStocks.contains(order->getStockSymbol())) {
             buyOrders.insert(order->getOrderID(), order);
             matchOrders();
-            return true;
         } else {
           std::cout << "Stock " << order->getStockSymbol() << " is not on the market yet." << std::endl;
-          return false;
         }
+        return;
+        
     default:
         std::cerr << "Invalid order type" << std::endl;
-        return false;
+        return;
     }
 }
 
@@ -88,20 +67,15 @@ void Njordx::matchOrders() {
             auto seller = std::find_if(traders.begin(), traders.end(), [seller_id](ITrader* trader) {
                 return trader->getTraderID() == seller_id;
             });
-            if (buyer == traders.end()) {
-                std::cerr << "Buyer not found" << std::endl;
-            }
-            if (seller == traders.end()) {
-                std::cerr << "Seller not found" << std::endl;
-            }
-            if (buyer != traders.end() && seller != traders.end()) {
+            if (buyer == traders.end() || seller == traders.end()) {
+                std::cerr << (buyer == traders.end() ? "Buyer" : "Seller") << " not found" << std::endl;
+            } else {
                 buy->setPrice(sell->getPrice());
                 int quantity = buy->getQuantity();
                 (*buyer)->handleOrder(buy, quantity);
                 (*seller)->handleOrder(sell, quantity);
                 buy->setIsFilled(true);
                 sell->setIsFilled(true);
-                // Set buy order price to the price of the sell order
             } 
         }
     }, _1, _2);
@@ -110,10 +84,10 @@ void Njordx::matchOrders() {
             continue;
         }
        for (auto& sell_order : sellOrders) {
-              if (sell_order.value.get()->getIsFilled()) {
-                continue;
-              }
-           match(buy_order.value, sell_order.value);
+            if (sell_order.value.get()->getIsFilled()) {
+              continue;
+            }
+            match(buy_order.value, sell_order.value);
        }
     }
 }

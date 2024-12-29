@@ -19,7 +19,7 @@ public:
     Njordx();
 
     // Order management methods
-    bool addOrder(std::shared_ptr<Order> order) noexcept;
+    void addOrder(std::shared_ptr<Order> order) noexcept;
     void addTrader(ITrader* trader) noexcept;
 
     // Display methods
