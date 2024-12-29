@@ -26,10 +26,8 @@ public:
         std::cout << "CPR: " << cpr << std::endl;
         printTrader(); 
         std::cout << "Balance: " << balance << std::endl;
-        std::cout << "Exchange: " << exchange << std::endl;
         // should print owned stocks
         std::cout << "Owned stocks: " << std::endl;
-
         for (auto kv : ownedStocks) {
             std::cout << "Stock: " << kv.key << std::endl;
         }
