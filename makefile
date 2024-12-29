@@ -25,7 +25,6 @@ LIBRARIES   :=
 EXECUTABLE  := main
 TEST_EXECUTABLE := test
 
-
 all: $(BIN)/$(EXECUTABLE)
 # make run ARGS="person John 290700 1000"
 run: clean all
