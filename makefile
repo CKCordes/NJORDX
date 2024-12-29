@@ -11,6 +11,12 @@ else
 endif
 
 BIN     := bin
+
+# Ensure the bin directory exists
+$(BIN):
+	mkdir -p $(BIN)
+
+all: $(BIN) $(BIN)/$(EXECUTABLE)
 SRC     := src
 INCLUDE := include
 LIB     := lib
@@ -18,7 +24,6 @@ TEST	:= test
 LIBRARIES   := 
 EXECUTABLE  := main
 TEST_EXECUTABLE := test
-
 
 all: $(BIN)/$(EXECUTABLE)
 # make run ARGS="person John 290700 1000"
