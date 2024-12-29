@@ -162,18 +162,9 @@ std::shared_ptr<Stock> Trader<Derived>::getStock(const std::string& symbol) cons
 template <typename Derived>
 void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order, int bought_quantity) {
 
-<<<<<<< HEAD
-    // double price = order->getPrice();
-    // int quantity = order->getQuantity(); // Buying order wants to buy 10 stocks, but the selling order only has 1...
-    // double total = price * quantity;
-
-    double total = calcTotal(order->getPrice(), order->getQuantity());
-    
-=======
     double price = order->getPrice();
 
-    double total = price * bought_quantity;
->>>>>>> 652e20a47388c71799e88a68e7a970f880ffcd3f
+    double total = calcTotal(price, bought_quantity);
     std::shared_ptr<Stock> stock = order->getStock();
 
     OrderType type = order->getOrderType();
