@@ -79,14 +79,14 @@ The guides comprises of a list of commands, with a short explaination.
     ```
 
 ### Using the buy "bots"
-Using the buy bots 
+Using the buy bots
 
 ## Notes
  - The difference between available stocks and active sell orders is that once a stock is put on the market, one will always be able to place a buy order on it, even when there is no sell order. If a stock has never been listed on NJORDX, a buy order cannot be placed on it.
 
   - A company can create any stock. This is of course an inteded feature and not a bug. The purpose of this is to display the functionality of the application.
 
-
+ - You MUST match quantity
 
 
 - Njordx kan have en liste af traders, her kan vi få variadics med.

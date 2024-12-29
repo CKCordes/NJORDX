@@ -36,7 +36,8 @@ TEST_CASE("Getting in orderbook") {
     CHECK(orderBook.get(1) == 1.0);
     CHECK(orderBook.get(2) == 2.0);
     CHECK(orderBook.get(3) == 3.0);
-    CHECK_THROWS(orderBook.get(4));
+    
+    CHECK(!orderBook.get(4).has_value());
 }
 
 // Testing iteration through the orderbook

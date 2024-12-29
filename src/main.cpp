@@ -195,15 +195,19 @@ void handleSell(const Variant user, const std::string& stock, int quantity, doub
         }
         // Find the stock that is to be sold. This throws if the user does not own the stock
         // Im sorry søren, its really not the best way
-        auto stockPtr = user->getStock(stock);
-        
+        auto stockOpt = user->getStock(stock);
+        if (!stockOpt.has_value()) {
+            std::cerr << "User does not own the stock\n";
+            return;
+        }
+        auto stock = stockOpt.value();
         // Check if the user has enough stocks to sell
-        if (stockPtr->getNumberOfStocks() < quantity) {
+        if (stock->getNumberOfStocks() < quantity) {
             std::cerr << "User does not own enough stocks\n";
             return;
         }
 
-        user->placeOrder(stockPtr, OrderType::SELL, quantity, price);
+        user->placeOrder(stock, OrderType::SELL, quantity, price);
     }, user);
 }
 

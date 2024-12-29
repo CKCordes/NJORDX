@@ -41,7 +41,10 @@ TEST_CASE("Testing company's order related methods"){
     Company company4(4, 100000, exchange, "Company4", "123");
 
     company3.createStock(1_ID, "CMPNY3"_SYM, 100_QTY);
-    std::shared_ptr<Stock> stock = company3.getStock("CMPNY3");
+    auto stockOpt = company3.getStock("CMPNY3");
+    CHECK(stockOpt.has_value());
+    auto stock = stockOpt.value();
+    
     company3.placeOrder(stock, OrderType::SELL, 1, 200);
     company3.placeOrder(stock, OrderType::SELL, 1, 200);
     company4.placeOrder(stock, OrderType::BUY, 1, 150);

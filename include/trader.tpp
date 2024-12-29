@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <type_traits>
+#include <optional>
 #include <memory>
 #include "stock.hpp"
 #include "order.hpp"
@@ -79,7 +80,7 @@ class Trader : public ITrader {
             ownedStocks.insert(symbol, newStock);
         }
 
-        std::shared_ptr<Stock> getStock(const std::string& symbol) const;
+        std::optional<std::shared_ptr<Stock>> getStock(const std::string& symbol) const;
 
         void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) override;
 
@@ -155,7 +156,7 @@ void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const Order
 }
 
 template <typename Derived>
-std::shared_ptr<Stock> Trader<Derived>::getStock(const std::string& symbol) const {
+std::optional<std::shared_ptr<Stock>> Trader<Derived>::getStock(const std::string& symbol) const {
     return ownedStocks.get(symbol);
 }
 

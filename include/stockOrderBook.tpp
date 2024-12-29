@@ -7,6 +7,8 @@
 #include <iostream>
 #include <algorithm>
 #include <functional>
+#include <optional>
+
 
 /* Associative container for holding stocks and orders */
 /* The idea is that stockID/orderID is the key */
@@ -123,7 +125,7 @@ class OrderBook {
         void insert(const Key& key, const Value& value) noexcept;
         void erase(const Key& key);
         bool contains(const Key& key) const;
-        Value get(const Key& key) const;
+        std::optional<Value> get(const Key& key) const;
 
         Iterator begin() { return Iterator(table.begin(), table.end()); }
         Iterator end() { return Iterator(table.end(), table.end()); }      
@@ -230,7 +232,7 @@ void OrderBook<Key, Value>::erase(const Key& key) {
     if(it != con.end()) {
         con.erase(it);
     } else {
-        throw std::out_of_range("The given key is not inside StockOrderBook"); // shouldnt be exception
+        std::cout << "Key not found" << std::endl;
     }
 }
 
@@ -244,14 +246,15 @@ bool OrderBook<Key, Value>::contains(const Key& key) const {
 
 template<typename Key, typename Value>
 requires ValidKey<Key>
-Value OrderBook<Key, Value>::get(const Key& key) const {
+std::optional<Value> OrderBook<Key, Value>::get(const Key& key) const {
     size_t table_index = get_container_index(key);
     const Container& con = table[table_index];
     auto it = find_in_container(con, key);
     if(it != con.end()) {
         return (*it)->value;
     } else {
-        throw std::out_of_range("Key not found"); // shouldnt be exception
+        std::cout << "Key not found" << std::endl;
+        return std::nullopt;
     }
 }
 

@@ -38,7 +38,7 @@ TEST_CASE("Testing delegating person constructors, joinExchange() and displayPor
 }
 
 /* BROKEN!!!*/
-/*
+
 TEST_CASE("Testing person's order related methods"){ 
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
@@ -49,7 +49,9 @@ TEST_CASE("Testing person's order related methods"){
     // Apple creating stocks and placing a sell order
     auto apple = std::make_shared<Company>(11, 100, exchange, "Company1", "12345678");
     apple->createStock(1_ID, "AAPL"_SYM, 100_QTY);
-    std::shared_ptr<Stock> stock = apple->getStock("AAPL");
+    auto stockOpt = apple->getStock("AAPL");
+    CHECK(stockOpt.has_value());
+    auto stock = stockOpt.value();
     apple->placeOrder(stock, OrderType::SELL, 1, 100);
 
     // Person1 tries to buy these stocks. 
@@ -63,17 +65,18 @@ TEST_CASE("Testing person's order related methods"){
     auto person2 = std::make_shared<Person>(44, 100000, exchange, "person2", "123");
     // Person3 will be trying to sell those stocks and match price
     auto person3 = std::make_shared<Person>(55, 100000, exchange, "person3", "123");
-    std::cout << "number of stocks for person1 before sale: " << person1->getStock("AAPL")->getNumberOfStocks() << std::endl;
     // Person3 tries to sell those stocks.
     CHECK(person1->ownsStock("AAPL"));
+    stockOpt = person1->getStock("AAPL");
+    CHECK(stockOpt.has_value());
+    stock = stockOpt.value();
     person1->placeOrder(stock, OrderType::SELL, 1, 200);
     person2->placeOrder(stock, OrderType::BUY, 1, 150); // Doesn't match price
     person3->placeOrder(stock, OrderType::BUY, 1, 200); // Matches price = Stock will be transferred to person3
-
-    std::cout << "number of stocks for person1 after sale: " << person1->getStock("AAPL")->getNumberOfStocks() << std::endl;
-
+    
     CHECK_FALSE(person1->ownsStock("AAPL"));
     CHECK_FALSE(person2->ownsStock("AAPL"));
+    
     CHECK(person3->ownsStock("AAPL"));
     CHECK(person1->getBalance() == (100000-100) + 200); // Person 1 has gained money from selling the stock
     CHECK(person2->getBalance() == 100000);
@@ -83,12 +86,13 @@ TEST_CASE("Testing person's order related methods"){
     // Person3 will sell the stock to person2
     person3->placeOrder(stock, OrderType::SELL, 1, 150); // This matches the price
     CHECK_FALSE(person3->ownsStock("AAPL"));
+    
     CHECK(person2->ownsStock("AAPL"));
     CHECK(person3->getBalance() == (100000 - 200) + 150); // Person 3 has lost money from selling the stock
     CHECK(person2->getBalance() == 100000 - 150);
 
 }
-*/
+
 
 TEST_CASE("Init of person"){
     // Constructing two company1 and validating
