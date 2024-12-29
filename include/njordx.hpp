@@ -26,6 +26,9 @@ public:
     void matchOrders();
     void displayOrderBook(const OrderType type); // missing const
     void displayAvailableStocks(); // missing const
+
+    void processOrders(const std::function<void(std::shared_ptr<Order>)>& callback);
+    void displayAllOrders();
 };
 
 #endif // NJORDX_H

@@ -193,8 +193,7 @@ void handleSell(const Variant user, const std::string& stock, int quantity, doub
             std::cerr << "User has not joined an exchange\n";
             return;
         }
-        // Find the stock that is to be sold. This throws if the user does not own the stock
-        // Im sorry søren, its really not the best way
+        // Check if user owns the stock
         auto stockOpt = user->getStock(stock);
         if (!stockOpt.has_value()) {
             std::cerr << "User does not own the stock\n";
@@ -202,10 +201,6 @@ void handleSell(const Variant user, const std::string& stock, int quantity, doub
         }
         auto stock = stockOpt.value();
         // Check if the user has enough stocks to sell
-        if (stock->getNumberOfStocks() < quantity) {
-            std::cerr << "User does not own enough stocks\n";
-            return;
-        }
 
         user->placeOrder(stock, OrderType::SELL, quantity, price);
     }, user);
@@ -260,9 +255,10 @@ void handleSellBot(std::shared_ptr<Company> bot_user) {
 void showOrders(Njordx* exchange) {
     // Show all orders
     std::cout << "Showing all orders\n";
-    exchange->displayOrderBook(OrderType::BUY);
-    std::cout << "\n";
-    exchange->displayOrderBook(OrderType::SELL);
+    exchange->displayAllOrders();
+    //exchange->displayOrderBook(OrderType::BUY);
+    //std::cout << "\n";
+    //exchange->displayOrderBook(OrderType::SELL);
 }
 
 // Function to display the help message

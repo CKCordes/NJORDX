@@ -25,7 +25,8 @@ void Stock::addStocks(int amount) noexcept {
 void Stock::removeStocks(int amount) {
     int newAmount = numberOfStocks - amount;
     if (newAmount < 0) {
-        throw std::invalid_argument("Cannot remove more stocks than owned");
+        std::cerr << "Cannot remove more stocks than owned" << std::endl;
+        return; 
     }
     numberOfStocks = newAmount;
 }

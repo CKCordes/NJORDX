@@ -91,6 +91,28 @@ void Njordx::matchOrders() {
     }
 }
 
+void Njordx::processOrders(const std::function<void(std::shared_ptr<Order>)>& callback) {
+    std::cout << "Buy orders: " << std::endl;
+    for (auto& buy_order : buyOrders) {
+        callback(buy_order.value);
+    }
+    std::cout << "Sell orders: " << std::endl;
+    for (auto& sell_order : sellOrders) {
+        callback(sell_order.value);
+    }
+}
+
+// Example usage of processOrders
+void Njordx::displayAllOrders() {
+    processOrders([](std::shared_ptr<Order> order) {
+        std::cout << "Order ID: " << order->getOrderID()
+                  << ", Stock: " << order->getStockSymbol()
+                  << ", Price: " << order->getPrice()
+                  << ", Quantity: " << order->getQuantity()
+                  << ", Filled: " << order->getIsFilled() << std::endl;
+    });
+}
+
 //Display orderbooks
 void Njordx::displayOrderBook(const OrderType type) {
     auto& orders = (type == OrderType::SELL) ? sellOrders : buyOrders;
