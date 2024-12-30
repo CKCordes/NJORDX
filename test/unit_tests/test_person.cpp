@@ -37,6 +37,23 @@ TEST_CASE("Testing delegating person constructors, joinExchange() and displayPor
     // person2.displayPortfolio();
 }
 
+TEST_CASE("Testing notifyTrader"){
+    // Constructing a new exchange
+    Njordx* exchange = new Njordx();
+
+    auto apple = std::make_shared<Stock>(1_ID, "AAPL"_SYM, 100_QTY);
+
+    auto person1 = std::make_shared<Person>(1, 300, "Person1", "6789");
+
+    person1->placeOrder(apple, OrderType::SELL, 100, 100); // Should fail as person1 isn't connected to an exchange
+
+    person1->joinExchange(exchange);
+
+    person1->placeOrder(apple, OrderType::SELL, 100, 100); // Should fail as person1 doesn't own the stock
+
+
+}
+
 /* BROKEN!!!*/
 
 TEST_CASE("Testing person's order related methods"){ 

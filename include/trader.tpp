@@ -41,6 +41,12 @@ double calcTotal(T price, int quantity) {
     return total;
 }
 
+template <typename... Args>
+void notifyTrader(const std::string& eventType, Args... args) {
+    std::cerr << "Error: [" << eventType << "] ";
+    (std::cerr << ... << args) << std::endl;
+}
+
 template <typename Derived>
 class Trader : public ITrader {
     protected:
@@ -132,20 +138,24 @@ void Trader<Derived>::removeStock(std::shared_ptr<Stock> stock) {
         ownedStocks.erase(stock->getSymbol());
     }
     else {
-        std::cout << "Seller doesn't own the stock :(" << std::endl;
+        notifyTrader("RemoveStock", "Trader does not own stock", stock->getSymbol());
     }
 }
 
 template <typename Derived>
 void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const OrderType order_tp, int quantity, double price) {
     if (exchange == nullptr) { 
-        std::cerr << "Trader has not joined an exchange\n";
+        notifyTrader("PlaceOrder", "Trader is not connected to an exchange");
         return;
     }
     if (order_tp == OrderType::SELL) {
         auto ownedStock = ownedStocks.get(stock->getSymbol());
-        if (!ownedStock || ownedStock.value()->getNumberOfStocks() < quantity) {
-            std::cerr << "Trader does not own enough of the stock\n";
+        if (!ownedStock) {
+            notifyTrader("PlaceOrder", "Trader does not own stock", stock->getSymbol());
+            return;
+        }
+        if (ownedStock.value()->getNumberOfStocks() < quantity) {
+            notifyTrader("PlaceOrder", "Trader does not own enough of the stock");
             return;
         }
     }
