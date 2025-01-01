@@ -49,10 +49,10 @@ struct CompareOrder {
     }
 };
 
-// Matches the 
+// Matches orders in the exchange
 void Njordx::matchOrders() { 
     using namespace std::placeholders;
-    // USING STD::BIND WITH LAMBDA?!?!?!?!?!?!?!?!?! Who is this guy?
+    // Use of std::bind with lambda
     const CompareOrder OrderComparator = CompareOrder();
     auto match = std::bind([this, OrderComparator](std::shared_ptr<Order> buy, std::shared_ptr<Order> sell) {
         if (OrderComparator(buy, sell) && !(buy->getIsFilled() || sell->getIsFilled())) {
@@ -127,7 +127,7 @@ void Njordx::displayOrderBook(const OrderType type) {
     }
 }
 
-void Njordx::displayAvailableStocks() { // missing const
+void Njordx::displayAvailableStocks() { // todo: missing const
     std::cout << "Available stocks: ";
     for (auto stock : validStocks) {
         std::cout << stock.key << " ";

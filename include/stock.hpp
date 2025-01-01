@@ -4,7 +4,6 @@
 #include <string>
 
 
-
 class Stock {
 private:
     int stockID;
@@ -29,6 +28,8 @@ public:
     bool operator==(const Stock& other) const;
 };
 
+// User defined literals
+// ? Hvorfor constexpr?
 namespace StockLiterals {
     constexpr int operator"" _ID(unsigned long long id) {
         return static_cast<int>(id);

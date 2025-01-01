@@ -19,7 +19,7 @@ int Stock::getNumberOfStocks() const {
 
 void Stock::addStocks(int amount) noexcept {
     int newAmount = numberOfStocks + amount;
-    numberOfStocks = std::move(newAmount);
+    numberOfStocks = newAmount;
 }
 
 void Stock::removeStocks(int amount) {

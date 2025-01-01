@@ -8,8 +8,6 @@
 #include <type_traits>
 #include <optional>
 #include <memory>
-#include "stock.hpp"
-#include "order.hpp"
 #include "njordx.hpp"
 #include "stockOrderBook.tpp"
 #include "ITrader.hpp"
@@ -41,6 +39,7 @@ double calcTotal(T price, int quantity) {
     return total;
 }
 
+// Variadic templated function for notifying about errors
 template <typename... Args>
 void notifyTrader(const std::string& eventType, Args... args) {
     std::cerr << "Error: [" << eventType << "] ";
@@ -58,9 +57,9 @@ class Trader : public ITrader {
         void addStock(std::shared_ptr<Stock> stock);
         void removeStock(std::shared_ptr<Stock> stock);
 
-        OrderBook<std::string, std::shared_ptr<Stock>> ownedStocks; // CHANGE TO PROTECTED AGAIN!
+        OrderBook<std::string, std::shared_ptr<Stock>> ownedStocks; // todo: CHANGE TO PROTECTED AGAIN!
         
-        // Add currency to balance
+        // todo: Add currency to balance
 
 
     public:
@@ -104,7 +103,6 @@ Trader<Derived>::Trader(int id, double initialBalance)
 template <typename Derived>
 Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange) 
     : traderID(id), balance(initialBalance), exchange(exchange) {if (exchange != nullptr) exchange->addTrader(this);}
-
 
 
 template <typename Derived>

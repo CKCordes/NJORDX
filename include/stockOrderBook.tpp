@@ -23,7 +23,7 @@ concept ValidKey = requires(T a) {
 template<ValidKey Key, typename Value>
 class OrderBook {
     private:
-        // Grunden til vi har det i en struct er at vi kan bruge move, og af ingen anden grund.
+        // Using a struct to hold the key and value so we can use move semantics
         struct KeyValuePair {
             Key key;
             Value value;
@@ -41,10 +41,10 @@ class OrderBook {
         // For hashing the keys.
         std::hash<Key> hasher;
 
-        // to find the correct key, in a single container.
+        // To find the correct key, in a single container.
         auto find_in_container(const Container&, const Key&) const;
         
-        // The to get the index for the "general" table. 
+        // To get the index for the "general" table. 
         size_t get_container_index(const Key&) const;
 
         static constexpr int initial_container_count = 17;
@@ -80,9 +80,6 @@ class OrderBook {
             }
 
             Iterator operator++(int) {
-                // Iterator tmp = *this;
-                // advance_to_next_valid();
-                // return tmp;
                 Iterator tmp = *this;
                 ++(*this);
                 return tmp;
@@ -166,7 +163,7 @@ OrderBook<Key, Value>& OrderBook<Key, Value>::operator=(const OrderBook& other) 
         return *this;
     }
     OrderBook<Key, Value> tmp(other);
-    std::swap(*this, tmp); // Virker det her virkelig?
+    std::swap(*this, tmp); // todo: Virker det her virkelig?
     return *this;
 }
 
@@ -190,7 +187,7 @@ OrderBook<Key, Value>& OrderBook<Key, Value>::operator=(OrderBook&& other) noexc
 template<typename Key, typename Value>
 requires ValidKey<Key>
 auto OrderBook<Key, Value>::find_in_container(const Container& con, const Key& key) const {
-    // To explain this abomination. Find_if takes the range of elements to examine
+    // Explanation: Find_if takes the range of elements to examine
     // The third parameter is the value to compare the elements to. This is the lambda expression
     // [] captures the key that we are given in the function. 
     // () takes the kv that are in the vector

@@ -10,7 +10,7 @@
 
 using Variant = std::variant<std::shared_ptr<Person>, std::shared_ptr<Company>>;
 
-// Function prototypes
+// todo: Function prototypes (er det stadig prototyper?)
 void handleBuy(const Variant user, const std::string& stock, int quantity, double price);
 void handleSell(const Variant user, const std::string& stock, int quatity, double price);
 
@@ -19,7 +19,7 @@ void handleInfo(Variant user);
 void handleCreate(const Variant user, const std::string symbol, const int num);
 void displayHelp();
 
-// Functions for simulating activity for Søren
+// Functions for simulating activity
 void handleBuyBot(std::shared_ptr<Company> bot_user, std::string stockToBuy);
 void handleSellBot(std::shared_ptr<Company> bot_user);
 void showOrders(Njordx* exchange);
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // User er en variant, sombåde kan være en person eller en company
+    // User is a variant that can be either a person or a company
     // Not really useful as we only define it once, but it's a good example of how to use std::variant
     Variant user;
 
@@ -188,7 +188,6 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-// bool Trader<Derived>::placeOrder(const Stock& stock, const OrderType order_tp, int quantity, double price)
 void handleBuy(const Variant user, const std::string& stock, int quantity, double price) {
      std::visit([&](auto&& user) {
         // Check if excange is nullptr
@@ -197,14 +196,14 @@ void handleBuy(const Variant user, const std::string& stock, int quantity, doubl
             return;
         }
         // Create stock that is to be bought
-        auto stockPtr = std::make_shared<Stock>(-1, stock, quantity); // Reconsider how this is done
+        auto stockPtr = std::make_shared<Stock>(-1, stock, quantity); // todo: Reconsider how this is done
         user->placeOrder(stockPtr, OrderType::BUY, quantity, price);
     }, user);
 }
 
 void handleSell(const Variant user, const std::string& stock, int quantity, double price) {
     std::visit([&](auto&& user) {
-        // Check if excange is nullptr
+        // Check if exchange is nullptr
         if (user->exchange == nullptr) {
             std::cerr << "User has not joined an exchange\n";
             return;
@@ -247,7 +246,7 @@ void handleCreate(Variant user, const std::string symbol, const int num) {
         std::cerr << "You are not a company, you cannot create stocks\n";
         return;
     }
-    static int stockID = 0; // Ensures we have unique IDs
+    static int stockID = 0; // ? Ensures we have unique IDs. How?
     auto& company = std::get<std::shared_ptr<Company>>(user);
     company->createStock(stockID, symbol, num);
     stockID++;
