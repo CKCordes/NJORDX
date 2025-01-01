@@ -26,11 +26,13 @@ public:
         std::cout << "CPR: " << cpr << std::endl;
         printTrader(); 
         std::cout << "Balance: " << balance << std::endl;
-        // should print owned stocks
+        // Should print owned stocks
         std::cout << "Owned stocks: " << std::endl;
-        for (auto kv : ownedStocks) {
-            std::cout << "Stock: " << kv.key << std::endl;
+    
+        for (auto& stock : ownedStocks) {
+            std::cout << "Stock: " << stock.key << ", Amount: " << stock.value.get()->getNumberOfStocks() << std::endl;
         }
+
     }
 
 
