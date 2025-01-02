@@ -12,7 +12,7 @@ Welcome to NJORDX, the new trading platform for the many citizens between Viborg
     git clone https://github.com/CKCordes/NJORDX.git
     cd NJORDX
     ```
-    No further actions are needed
+    No further actions are needed.
 ## Building and running the Application
 1. Configure, build and run the application with make
     ```sh
@@ -26,7 +26,7 @@ Welcome to NJORDX, the new trading platform for the many citizens between Viborg
     ```
 ## Recommended use of the NJORDX application
 To make testing of the application as simple and enjoyable as possible, we have made a list of short guides that display the possibilites offered by the NJORDX application. \
-The guides comprises of a list of commands, with a short explaination.
+The guides comprises of a list of commands, with a short explanation.
 
 ### General runthrough 
 1. Start the application as a company:
@@ -50,9 +50,9 @@ The guides comprises of a list of commands, with a short explaination.
     ```sh
     > info
     ```
-6. Put your stock on the market to be sold
+6. Put your stock on the market to be sold:
     ```sh
-    > sell <stock-name> 5 100
+    > sell <stock-name> <amount> <price>
     ```
 7. Now wait for someone to buy it! (Nobody will ever come...)
 
@@ -90,7 +90,7 @@ Using the buy bot is much like the sell bot.
     ```
 3. Create sell order for stock:
     ```sh
-    > sell <stock name> 1 <0<number<100>
+    > sell <stock name> 1 100
     ```
 4. Activate the buy bot:
     ```sh
@@ -108,4 +108,4 @@ Using the buy bot is much like the sell bot.
 
  - You MUST match quantity on the orders
 
- - The njordx system has the possibility of starting without an exchange, this is however not possible for the front end, as it would be a quite dull experience.
+ - The NJORDX system has the possibility of starting without an exchange, this is however not possible for the front end, as it would be a quite dull experience.

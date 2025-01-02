@@ -51,7 +51,6 @@ TEST_CASE("Testing notifyTrader"){
 
     person1->placeOrder(apple, OrderType::SELL, 100, 100); // Should fail as person1 doesn't own the stock
 
-
 }
 
 /* BROKEN!!!*/
