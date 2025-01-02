@@ -42,7 +42,7 @@ clean:
 
 # når du tilføjer tests: skriv $(SRC)/<implementation  af det du tester>.cpp før -o i den midterste linje nedenfor
 # For at køre dansk miljø, skriv "make unit_tests COUNTRY=DK"
-unit_tests: 
+unit_tests: | $(BIN)
 	@echo "Testing..."
 	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $(TEST)/unit_tests/*.cpp $(SRC)/stock.cpp $(SRC)/order.cpp $(SRC)/njordx.cpp -o $(BIN)/test $(LIBRARIES)
 	./$(BIN)/test
