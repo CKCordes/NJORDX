@@ -2,8 +2,12 @@
 #include "doctest.h"
 #include "stockOrderBook.tpp"
 
+#include <iostream>
+
 // Test case for inserting
 TEST_CASE("Inserting in orderbook") {
+    std::cout << "stockOrderBook tests:" << std::endl;
+
     OrderBook<int, float> orderBook;
     orderBook.insert(1, 1.0);
     orderBook.insert(2, 2.0);
@@ -38,6 +42,8 @@ TEST_CASE("Getting in orderbook") {
     CHECK(orderBook.get(3) == 3.0);
     
     CHECK(!orderBook.get(4).has_value());
+
+    std::cout << std::endl;
 }
 
 // Testing iteration through the orderbook
@@ -107,4 +113,6 @@ TEST_CASE("Printing elements") {
     for (auto it = orderBook.begin(); it != orderBook.end(); ++it) {
         std::cout << it->key << " " << it->value << std::endl;
     }
+
+    std::cout << std::endl;
 }

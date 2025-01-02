@@ -29,7 +29,6 @@ public:
 };
 
 // User defined literals
-// ? Hvorfor constexpr?
 namespace StockLiterals {
     constexpr int operator"" _ID(unsigned long long id) {
         return static_cast<int>(id);
