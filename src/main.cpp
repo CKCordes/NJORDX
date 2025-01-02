@@ -246,7 +246,7 @@ void handleCreate(Variant user, const std::string symbol, const int num) {
         std::cerr << "You are not a company, you cannot create stocks\n";
         return;
     }
-    static int stockID = 0; // ? Ensures we have unique IDs. How?
+    static int stockID = 0; // Ensures we have unique IDs
     auto& company = std::get<std::shared_ptr<Company>>(user);
     company->createStock(stockID, symbol, num);
     stockID++;
