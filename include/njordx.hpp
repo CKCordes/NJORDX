@@ -24,8 +24,8 @@ public:
 
     // Display methods
     void matchOrders();
-    void displayOrderBook(const OrderType type); // todo: missing const
-    void displayAvailableStocks(); //todo: missing const
+    void displayOrderBook(const OrderType type);
+    void displayAvailableStocks(); 
 
     void processOrders(const std::function<void(std::shared_ptr<Order>)>& callback);
     void displayAllOrders();

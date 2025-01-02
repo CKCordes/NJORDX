@@ -57,10 +57,7 @@ class Trader : public ITrader {
         void addStock(std::shared_ptr<Stock> stock);
         void removeStock(std::shared_ptr<Stock> stock);
 
-        OrderBook<std::string, std::shared_ptr<Stock>> ownedStocks; // todo: CHANGE TO PROTECTED AGAIN!
-        
-        // todo: Add currency to balance
-
+        OrderBook<std::string, std::shared_ptr<Stock>> ownedStocks;
 
     public:
         Njordx* exchange;

@@ -170,7 +170,7 @@ OrderBook<Key, Value>& OrderBook<Key, Value>::operator=(const OrderBook& other) 
         return *this;
     }
     OrderBook<Key, Value> tmp(other);
-    std::swap(*this, tmp); // todo: Virker det her virkelig?
+    std::swap(*this, tmp);
     return *this;
 }
 

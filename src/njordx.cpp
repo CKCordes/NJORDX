@@ -127,7 +127,7 @@ void Njordx::displayOrderBook(const OrderType type) {
     }
 }
 
-void Njordx::displayAvailableStocks() { // todo: missing const
+void Njordx::displayAvailableStocks() { 
     std::cout << "Available stocks: ";
     for (auto stock : validStocks) {
         std::cout << stock.key << " ";

@@ -196,7 +196,7 @@ void handleBuy(const Variant user, const std::string& stock, int quantity, doubl
             return;
         }
         // Create stock that is to be bought
-        auto stockPtr = std::make_shared<Stock>(-1, stock, quantity); // todo: Reconsider how this is done
+        auto stockPtr = std::make_shared<Stock>(-1, stock, quantity);
         user->placeOrder(stockPtr, OrderType::BUY, quantity, price);
     }, user);
 }
