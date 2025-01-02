@@ -82,7 +82,7 @@ class Trader : public ITrader {
         typename std::enable_if<std::is_same<T, Company>::value, void>::type
         createStock(int stockID, const std::string& symbol, int numberOfStocks) {
             auto newStock = std::make_shared<Stock>(stockID, symbol, numberOfStocks);
-            ownedStocks.insert(symbol, newStock);
+            ownedStocks.insertStock(symbol, newStock);
         }
 
         std::optional<std::shared_ptr<Stock>> getStock(const std::string& symbol) const;
@@ -126,7 +126,7 @@ void Trader<Derived>::setBalance(double amount) {
 
 template <typename Derived>
 void Trader<Derived>::addStock(std::shared_ptr<Stock> stock) {
-    ownedStocks.insert(stock->getSymbol(), stock);
+    ownedStocks.insertStock(stock->getSymbol(), stock);
 }
 
 template <typename Derived>
@@ -136,7 +136,7 @@ void Trader<Derived>::removeStock(std::shared_ptr<Stock> stock) {
         ownedStocks.erase(stock->getSymbol());
     }
     else {
-        notifyTrader("RemoveStock", "Trader does not own stock", stock->getSymbol());
+        notifyTrader("RemoveStock", "Trader does not own stock ", stock->getSymbol());
     }
 }
 
@@ -149,7 +149,7 @@ void Trader<Derived>::placeOrder(const std::shared_ptr<Stock> stock, const Order
     if (order_tp == OrderType::SELL) {
         auto ownedStock = ownedStocks.get(stock->getSymbol());
         if (!ownedStock) {
-            notifyTrader("PlaceOrder", "Trader does not own stock", stock->getSymbol());
+            notifyTrader("PlaceOrder", "Trader does not own stock ", stock->getSymbol());
             return;
         }
         if (ownedStock.value()->getNumberOfStocks() < quantity) {

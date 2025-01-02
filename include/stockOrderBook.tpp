@@ -9,6 +9,8 @@
 #include <functional>
 #include <optional>
 
+class Stock;
+
 
 /* Associative container for holding stocks and orders */
 /* The idea is that stockID/orderID is the key */
@@ -119,6 +121,11 @@ class OrderBook {
         OrderBook& operator=(OrderBook&& other) noexcept;
         
 
+         // Enable this method only if Key is of type Stock
+        template<typename V = Value>
+        typename std::enable_if<std::is_same<V, std::shared_ptr<Stock>>::value>::type
+        insertStock(const Key& key, const Value& value) noexcept;
+
         void insert(const Key& key, const Value& value) noexcept;
         void erase(const Key& key);
         bool contains(const Key& key) const;
@@ -200,6 +207,26 @@ template<typename Key, typename Value>
 requires ValidKey<Key>
 size_t OrderBook<Key, Value>::get_container_index(const Key& key) const {
     return OrderBook::hasher(key) % table.size();
+}
+
+template<typename Key, typename Value>
+requires ValidKey<Key>
+template<typename V>
+typename std::enable_if<std::is_same<V, std::shared_ptr<Stock>>::value, void>::type
+OrderBook<Key, Value>::insertStock(const Key& key, const Value& value) noexcept {
+    size_t table_index = get_container_index(key);
+    Container& con = table[table_index];
+    auto it = find_in_container(con, key);
+    if (it != con.end()) {
+        // The key exists, it means that the stock is already in the container, so we should update the number of stocks in the container
+        (*it)->value->addStocks(value->getNumberOfStocks());
+    } else {
+        // We need to make the pair and insert it in the container
+        /* Strong guarentee */
+        Container tmp(con);
+        tmp.push_back(std::make_unique<KeyValuePair>(key, value));
+        con.swap(tmp);
+    }
 }
 
 template<typename Key, typename Value>

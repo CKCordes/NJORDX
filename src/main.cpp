@@ -16,12 +16,12 @@ void handleSell(const Variant user, const std::string& stock, int quatity, doubl
 
 void handleAvailable(const Variant user);
 void handleInfo(Variant user);
-void handleCreate(const Variant user, const std::string symbol, const int num);
+void handleCreate(const Variant user, const std::string symbol, const int num, Njordx* exchange);
 void displayHelp();
 
 // Functions for simulating activity
 void handleBuyBot(std::shared_ptr<Company> bot_user, std::string stockToBuy);
-void handleSellBot(std::shared_ptr<Company> bot_user);
+void handleSellBot(std::shared_ptr<Company> bot_user, Njordx* exchange);
 void showOrders(Njordx* exchange);
 void handleShowOrderBook(Njordx* exchange, const OrderType type);
 
@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
                     std::cerr << "Error: Balance out of range. Please use a smaller value.\n";
                     return 1;
                 }
-                handleCreate(user, sym, quant);
+                handleCreate(user, sym, quant, exchange);
             } else if (command == "show_orders") {
                 showOrders(exchange);
             } else if (command == "show_order_book") {
@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
                 }
                 handleBuyBot(bot_user, stockToBuy);
             } else if (command == "sell_bot") {
-                handleSellBot(bot_user);
+                handleSellBot(bot_user, exchange);
             }
             else {
                 throw std::invalid_argument("Unknown command: " + command + ". Type 'help' for a list of commands.");
@@ -241,14 +241,20 @@ void handleInfo(Variant user) {
     }, user);
 }
 
-void handleCreate(Variant user, const std::string symbol, const int num) {
+void handleCreate(Variant user, const std::string symbol, const int num, Njordx* exchange) {
     if(!std::holds_alternative<std::shared_ptr<Company>>(user)) {
         std::cerr << "You are not a company, you cannot create stocks\n";
         return;
     }
-    static int stockID = 0; // ? Ensures we have unique IDs. How?
+    int stockID = exchange->getStockID(symbol);
+    if(stockID == -1){
+        static int uniqueStockID = 0;
+        stockID = uniqueStockID++;
+    }
+   
     auto& company = std::get<std::shared_ptr<Company>>(user);
     company->createStock(stockID, symbol, num);
+    std::cout << "Created stock with ID: " << stockID << " and symbol: " << symbol << " and quantity: " << num << "\n";
     stockID++;
 }
 
@@ -258,11 +264,11 @@ void handleBuyBot(std::shared_ptr<Company> bot_user, const std::string stockToBu
     std::cout << "Bot is buying 1 " << stockToBuy << " for 100\n";
 }
 
-void handleSellBot(std::shared_ptr<Company> bot_user) {
+void handleSellBot(std::shared_ptr<Company> bot_user, Njordx* exchange) {
     std::vector<std::string> stockNames = {"AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"};
     std::string randomStock = stockNames[rand() % stockNames.size()];
     int price = rand() % 100 + 1;
-    handleCreate(bot_user, randomStock, 1);
+    handleCreate(bot_user, randomStock, 1, exchange);
     handleSell(bot_user, randomStock, 1, price);
     std::cout << "Bot is selling 1 " << randomStock << " for " << price << "\n";   
 }

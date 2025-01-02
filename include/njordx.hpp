@@ -29,6 +29,8 @@ public:
 
     void processOrders(const std::function<void(std::shared_ptr<Order>)>& callback);
     void displayAllOrders();
+
+    int getStockID(const std::string& symbol) const;
 };
 
 #endif // NJORDX_H

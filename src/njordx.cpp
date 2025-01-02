@@ -135,3 +135,11 @@ void Njordx::displayAvailableStocks() { // todo: missing const
     std::cout << std::endl;
 }
 
+int Njordx::getStockID(const std::string& symbol) const {
+    if (validStocks.contains(symbol)) {
+        return validStocks.get(symbol).value();
+    } else {
+        return -1;
+    }
+}
+
