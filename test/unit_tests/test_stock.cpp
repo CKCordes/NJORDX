@@ -1,7 +1,11 @@
 #include "doctest.h"
 #include "stock.hpp"
 
+#include <iostream>
+
 TEST_CASE("Testing Stock class") {
+    std::cout << "Stock tests:" << std::endl;
+    
     Stock stock(1_ID, "AAPL"_SYM, 100_QTY);
     CHECK(stock.getStockID() == 1);
     CHECK(stock.getSymbol() == "AAPL");
@@ -14,4 +18,6 @@ TEST_CASE("Testing Stock class") {
     Stock stock2(2_ID, "GOOGL"_SYM, 200_QTY);
     CHECK(stock == stock);
     CHECK_FALSE(stock == stock2);
+
+    std::cout << std::endl;
 }

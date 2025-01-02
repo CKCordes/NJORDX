@@ -3,7 +3,11 @@
 #include "company.tpp"
 #include "njordx.hpp"
 
+#include <iostream>
+
 TEST_CASE("Testing initialization of person class and getters and setters"){
+    std::cout << "Person tests:";
+    
     // Constructing a new exchange
     Njordx* exchange = new Njordx();
 
@@ -15,6 +19,8 @@ TEST_CASE("Testing initialization of person class and getters and setters"){
     CHECK(person1.getTraderID() == 1);
     CHECK(person1.getName() == "Person1");
     CHECK(person1.getSSN() == "12345");
+
+    std::cout << std::endl;
 }
 
 TEST_CASE("Testing delegating person constructors, joinExchange() and displayPortfolio()"){
@@ -26,7 +32,7 @@ TEST_CASE("Testing delegating person constructors, joinExchange() and displayPor
     CHECK(person1.getTraderID() == 1);
     CHECK(person1.getName() == "Person1");
     CHECK(person1.getSSN() == "6789");
-    // person1.displayPortfolio();
+    person1.displayPortfolio();
 
     Person person2(2, 300, exchange, "Person2", "6789");
     person2.joinExchange(exchange);
@@ -34,7 +40,9 @@ TEST_CASE("Testing delegating person constructors, joinExchange() and displayPor
     CHECK(person2.getTraderID() == 2);
     CHECK(person2.getName() == "Person2");
     CHECK(person2.getSSN() == "6789");
-    // person2.displayPortfolio();
+    person2.displayPortfolio();
+
+    std::cout << std::endl;
 }
 
 TEST_CASE("Testing notifyTrader"){
@@ -51,6 +59,7 @@ TEST_CASE("Testing notifyTrader"){
 
     person1->placeOrder(apple, OrderType::SELL, 100, 100); // Should fail as person1 doesn't own the stock
 
+    std::cout << std::endl;
 }
 
 /* BROKEN!!!*/
@@ -111,7 +120,7 @@ TEST_CASE("Testing person's order related methods"){
 
 
 TEST_CASE("Init of person"){
-    // Constructing two company1 and validating
+    // Constructing two person1 and validating
     Person person1(1, 100, "Person1", "12345678");
     CHECK(person1.getBalance() == 100);
     person1.setBalance(200);

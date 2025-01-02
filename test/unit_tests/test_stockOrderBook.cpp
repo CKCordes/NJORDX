@@ -2,8 +2,14 @@
 #include "doctest.h"
 #include "stockOrderBook.tpp"
 
+#include <iostream>
+
 // Test case for inserting
 TEST_CASE("Inserting in orderbook") {
+    std::cout << "stockOrderBook tests:" << std::endl;
+    
+    std::cout << "Inserting in orderbook" << std::endl;
+
     OrderBook<int, float> orderBook;
     orderBook.insert(1, 1.0);
     orderBook.insert(2, 2.0);
@@ -12,6 +18,8 @@ TEST_CASE("Inserting in orderbook") {
     CHECK(orderBook.contains(2) == true);
     CHECK(orderBook.contains(3) == true);
     CHECK(orderBook.contains(4) == false);
+
+    std::cout << std::endl;
 }
 
 // Test case for erasing
@@ -25,6 +33,8 @@ TEST_CASE("Erasing in orderbook") {
     CHECK(orderBook.contains(2) == true);
     CHECK(orderBook.contains(3) == true);
     CHECK(orderBook.contains(4) == false);
+
+    std::cout << std::endl;
 }
 
 // Test case for getting
@@ -38,6 +48,8 @@ TEST_CASE("Getting in orderbook") {
     CHECK(orderBook.get(3) == 3.0);
     
     CHECK(!orderBook.get(4).has_value());
+
+    std::cout << std::endl;
 }
 
 // Testing iteration through the orderbook
@@ -51,6 +63,8 @@ TEST_CASE("Iterating through orderbook") {
         count++;
     }
     CHECK(count == 3);
+
+    std::cout << std::endl;
 }
 
 // Testing the rule of 5
@@ -85,6 +99,8 @@ TEST_CASE("Testing rule of 5") {
     CHECK(orderBook5.contains(2) == true);
     CHECK(orderBook5.contains(3) == true);
     CHECK(orderBook5.contains(4) == false);
+
+    std::cout << std::endl;
 }
 
 // Testcase for inserting many elements
@@ -96,6 +112,8 @@ TEST_CASE("Inserting many elements") {
     for (int i = 0; i < 1000; i++) {
     }
     CHECK(orderBook.contains(rand() % 1000) == true);
+
+    std::cout << std::endl;
 }
 
 // Testcase for printing elements
@@ -107,4 +125,6 @@ TEST_CASE("Printing elements") {
     for (auto it = orderBook.begin(); it != orderBook.end(); ++it) {
         std::cout << it->key << " " << it->value << std::endl;
     }
+
+    std::cout << std::endl;
 }

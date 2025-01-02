@@ -2,6 +2,9 @@
 #include "company.tpp"
 #include "njordx.hpp"
 
+#include <iostream>
+
+
 
 TEST_CASE("Testing initialization of company classes and getters and setters"){
     // Constructing a new exchange
@@ -48,5 +51,5 @@ TEST_CASE("Testing company's order related methods"){
 
     CHECK(company3.getBalance() == 100200);
     CHECK(company4.getBalance() == 100000);
-    CHECK(company2.getBalance() == 0);    
+    CHECK(company2.getBalance() == 0);  
 }
