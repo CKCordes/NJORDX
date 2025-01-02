@@ -30,13 +30,13 @@ public:
 
 // User defined literals
 namespace StockLiterals {
-    constexpr int operator"" _ID(unsigned long long id) {
+    int operator"" _ID(unsigned long long id) {
         return static_cast<int>(id);
     }
-    constexpr std::string operator"" _SYM(const char* symbol, std::size_t) {
+    std::string operator"" _SYM(const char* symbol, std::size_t) {
         return std::string(symbol);
     }
-    constexpr int operator"" _QTY(unsigned long long qty) {
+    int operator"" _QTY(unsigned long long qty) {
         return static_cast<int>(qty);
     }
 }
