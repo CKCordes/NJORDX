@@ -6,7 +6,6 @@ TEST_CASE("Testing Order class") {
     Stock stock(1_ID, "AAPL"_SYM, 100_QTY);
 
     Order order(OrderType::BUY, 1, std::make_shared<Stock>(stock), 10, 100.0);
-    //CHECK(order.getOrderID() < 1000);
     CHECK(order.getOrderType() == OrderType::BUY);
     CHECK(order.getTraderID() == 1);
     CHECK(order.getStockSymbol() == "AAPL");
@@ -14,12 +13,6 @@ TEST_CASE("Testing Order class") {
     CHECK(order.getQuantity() == 10);
     CHECK(order.getPrice() == 100.0);
     CHECK(order.getIsFilled() == false);
-
-    //order.setStockID(1);
-    //order.setIsFilled(true);
-    //CHECK(order.getStockID() == 1);
-    //CHECK(order.getIsFilled() == true);
-    //order.displayOrderDetails();
 
     Stock stock2(2_ID, "GOOGL"_SYM, 200_QTY);
 
