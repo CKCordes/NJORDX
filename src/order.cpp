@@ -4,6 +4,9 @@
 // Constructor
 Order::Order(OrderType type, int traderID, std::shared_ptr<Stock> stock, int quantity, double price)
     : type(type), traderID(traderID), stock(stock), quantity(quantity), price(price), isFilled(false) {
+        // constexpr sørger for, at kun den ene branch bliver kørt i runtime
+        // Fordi den er evalueret i compile time
+        // Kan hjælpe i tilfælde hvor der er mange ting at forholde sig til i compiletime
         if constexpr (isAmericanEnv()) {
             orderID = constructOrderID();
         } else {
@@ -62,6 +65,7 @@ void Order::displayOrderDetails() const {
     std::cout << "Is Filled: " << (isFilled ? "Yes" : "No") << std::endl;
 }
 
+// decltype: ændrer retur typen til den type, som variablen har (stock)
 auto Order::getStock() const -> decltype(stock) {
     return stock;
 }
@@ -82,6 +86,7 @@ int Order::constructOrderID(){
     return (static_cast<int>(hash % 1000));
 }
 
+// Overloaded equality operator
 bool Order::operator==(const Order& other) const {
     return orderID == other.orderID;
 }

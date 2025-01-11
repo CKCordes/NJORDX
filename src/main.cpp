@@ -36,6 +36,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Create exchange
+    // skal kun bruge new på gamle pointers, ikke shared_pointers fordi RAII
     Njordx* exchange = new Njordx();
     
     std::string user_tp = std::move(argv[1]);
@@ -189,6 +190,9 @@ int main(int argc, char* argv[]) {
 }
 
 void handleBuy(const Variant user, const std::string& stock, int quantity, double price) {
+    // visit har en lamda, & betyder den har adgang til alle variabler i scopet (user, stock...)
+    // auto&& betyder at den kan tage imod en reference eller en værdi, så vi laver en placerer en ordre på den specifikke user
+    // visit sørger for at vi får den rigtige type, altså en person eller company
      std::visit([&](auto&& user) {
         // Check if excange is nullptr
         if (user->exchange == nullptr) {
@@ -242,6 +246,9 @@ void handleInfo(Variant user) {
 }
 
 void handleCreate(Variant user, const std::string symbol, const int num, Njordx* exchange) {
+    // holds_alternative: sørger for at kun company can create stock
+    // hvis det er en anden type end company, så kan de ikke lave en stock
+    // runtime check
     if(!std::holds_alternative<std::shared_ptr<Company>>(user)) {
         std::cerr << "You are not a company, you cannot create stocks\n";
         return;
@@ -252,6 +259,7 @@ void handleCreate(Variant user, const std::string symbol, const int num, Njordx*
         stockID = uniqueStockID++;
     }
    
+   // enable_if i compile time bliver altid enabled, da vi har en company som bruger stock her
     auto& company = std::get<std::shared_ptr<Company>>(user);
     company->createStock(stockID, symbol, num);
     std::cout << "Created stock with ID: " << stockID << " and symbol: " << symbol << " and quantity: " << num << "\n";

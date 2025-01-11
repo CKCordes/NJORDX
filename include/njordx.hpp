@@ -16,6 +16,7 @@ private:
     std::vector<ITrader*> traders;
 public:
     // Constructor, no need for rule of 3
+    // laver kun et objekt. Start ved program start og slutter ved program slut
     Njordx();
 
     // Order management methods

@@ -8,6 +8,7 @@
 #include "stock.hpp"
 #include "config.hpp"
 
+// Strongly typed enum
 enum class OrderType { BUY, SELL, OPTION, FUTURE, SPOT };
 
 class Order {

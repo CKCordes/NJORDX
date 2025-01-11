@@ -7,6 +7,7 @@
 #include <variant>
 
 // Constructor
+// Initialiserer tomme order books
 Njordx::Njordx() : buyOrders(), sellOrders(), validStocks() {}
 
 /* Inserting in StockOrderBook, has a strong guarentee */
@@ -28,6 +29,7 @@ void Njordx::addOrder(std::shared_ptr<Order> order) noexcept {
             buyOrders.insert(order->getOrderID(), order);
             matchOrders();
         } else {
+            // cout måske ikke det smarteste. fx hvis vi har en gui og ikke er i terminalen
           std::cout << "Stock " << order->getStockSymbol() << " is not on the market yet." << std::endl;
         }
         return;
@@ -43,6 +45,7 @@ void Njordx::addTrader(ITrader* trader) noexcept {
 }
 
 // Functor
+// Overloader parentes, structen gør det til en functor
 struct CompareOrder {
     bool operator()(const std::shared_ptr<Order> buy, const std::shared_ptr<Order> sell) const {
         return (buy->getStockSymbol() == sell->getStockSymbol()) && (buy->getPrice() >= sell->getPrice() && buy->getQuantity() == sell->getQuantity());
@@ -54,6 +57,8 @@ void Njordx::matchOrders() {
     using namespace std::placeholders;
     // Use of std::bind with lambda
     const CompareOrder OrderComparator = CompareOrder();
+    // burde stå _1 og _2 i stedet for buy og sell, de er placeholders
+    // this tages med for eksempelvis at kunne tilgå traders
     auto match = std::bind([this, OrderComparator](std::shared_ptr<Order> buy, std::shared_ptr<Order> sell) {
         if (OrderComparator(buy, sell) && !(buy->getIsFilled() || sell->getIsFilled())) {
             int buyer_id = buy->getTraderID();
@@ -91,6 +96,9 @@ void Njordx::matchOrders() {
     }
 }
 
+// std::function
+// vi tager en function ind som har return type void og har en parameter af typen shared_ptr<Order>
+// functionen kalder vi callback
 void Njordx::processOrders(const std::function<void(std::shared_ptr<Order>)>& callback) {
     std::cout << "Buy orders: " << std::endl;
     for (auto& buy_order : buyOrders) {
@@ -103,6 +111,8 @@ void Njordx::processOrders(const std::function<void(std::shared_ptr<Order>)>& ca
 }
 
 // Example usage of processOrders
+// display all orders klader process orders med en lambda funktion
+// process orders bruger lamdafunktionen på alle ordrer
 void Njordx::displayAllOrders() {
     processOrders([](std::shared_ptr<Order> order) {
         std::cout << "Order ID: " << order->getOrderID()
@@ -135,6 +145,9 @@ void Njordx::displayAvailableStocks() {
     std::cout << std::endl;
 }
 
+// const foran symbol betyder at vi ikke kan ændre på stringen i funktionen
+// const efter funktionen betydere at vi ikke kan ændre på objektet
+// fx const i = getStockID(...)
 int Njordx::getStockID(const std::string& symbol) const {
     if (validStocks.contains(symbol)) {
         return validStocks.get(symbol).value();

@@ -29,6 +29,9 @@ public:
 };
 
 // User defined literals
+// Kan være med til at give udvikleren bedre readability, 
+// bruges til casting
+// bruger constexpr for at det lavet i compile time
 namespace StockLiterals {
     constexpr int operator"" _ID(unsigned long long id) {
         return static_cast<int>(id);
@@ -41,7 +44,8 @@ namespace StockLiterals {
     }
 }
 using namespace StockLiterals;
-
+// bruger namespace hernede for at undgå at skulle skrive det hver gang andre steder
+// måske ulovligt, da man ikke ved hvor det kommer fra
 
 
 #endif // STOCK_H

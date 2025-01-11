@@ -7,6 +7,8 @@
 
 class Njordx;
 
+// fordi virtual funktioner har den et vtable, som er en tabel over implementationerne af en method
+// fx hvis company og person har en buy stock, så er de i tabellen
 class ITrader {
 public: 
     virtual ~ITrader() = default;

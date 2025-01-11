@@ -19,6 +19,7 @@ class Person; // Forward declaration
 template <typename T>
 struct TotalTraits;
 
+// hvorfor static her? 
 template <>
 struct TotalTraits<double> {
     typedef double TotalType;
@@ -40,12 +41,17 @@ double calcTotal(T price, int quantity) {
 }
 
 // Variadic templated function for notifying about errors
+// Kan have et ukendt antal argumenter med
+// bruges nok hovedsageligt som prints generelt
 template <typename... Args>
 void notifyTrader(const std::string& eventType, Args... args) {
     std::cerr << "Error: [" << eventType << "] ";
-    (std::cerr << ... << args) << std::endl;
+    // Fold funktion går i gennem args
+    // Folder dem ud i en std::cerr og printer endline til sidst
+    (std::cerr << ... << args) << std::endl; 
 }
 
+// Bruger typename derived til CRTP
 template <typename Derived>
 class Trader : public ITrader {
     protected:
@@ -76,12 +82,17 @@ class Trader : public ITrader {
 
         // Enable if the derived class is a company
         template <typename T = Derived>
+        // Enable if er go når derived er company. type traits
+        // "giver" funktionen typen void
         typename std::enable_if<std::is_same<T, Company>::value, void>::type
         createStock(int stockID, const std::string& symbol, int numberOfStocks) {
             auto newStock = std::make_shared<Stock>(stockID, symbol, numberOfStocks);
             ownedStocks.insertStock(symbol, newStock);
         }
 
+        // shared_point er RAII, fordi den er allokeret nar den er initialiseret
+        // har en count, som sørger for den bliver slettet, hvis der ikke er nogen der peger på den
+        // 
         std::optional<std::shared_ptr<Stock>> getStock(const std::string& symbol) const;
 
         void placeOrder(const std::shared_ptr<Stock>, const OrderType, int, double) override;
@@ -101,7 +112,7 @@ template <typename Derived>
 Trader<Derived>::Trader(int id, double initialBalance, Njordx* exchange) 
     : traderID(id), balance(initialBalance), exchange(exchange) {if (exchange != nullptr) exchange->addTrader(this);}
 
-
+// CRTP. Static cast og derived bruges for at undgå override og virtual
 template <typename Derived>
 void Trader<Derived>::printTrader() const {
     static_cast<const Derived*>(this)->printTrader();}
@@ -182,6 +193,7 @@ void Trader<Derived>::handleOrder(const std::shared_ptr<Order> order, int bought
             break;
         default:
             std::cerr << "Invalid order type" << std::endl;
+        // brude have kørt videre med andre typer
     }  
 }
 
